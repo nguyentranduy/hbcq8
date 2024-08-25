@@ -16,5 +16,5 @@ public class ErrorResponse implements Serializable {
 	private static final long serialVersionUID = -5685164118920946104L;
 
 	private String errorCode;
-    private String errorMessage;
+	private String errorMessage;
 }

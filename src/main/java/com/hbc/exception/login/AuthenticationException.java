@@ -8,10 +8,10 @@ public class AuthenticationException extends RuntimeException {
 	private final String errorMessage;
 
 	public AuthenticationException(String errorCode, String errorMessage) {
-        super(errorMessage);
-        this.errorCode = errorCode;
-        this.errorMessage = errorMessage;
-    }
+		super(errorMessage);
+		this.errorCode = errorCode;
+		this.errorMessage = errorMessage;
+	}
 
 	public String getErrorCode() {
 		return errorCode;
