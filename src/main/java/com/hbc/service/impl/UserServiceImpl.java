@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.hbc.dto.UserResponseDto;
 import com.hbc.entity.User;
+import com.hbc.exception.login.AuthenticationException;
 import com.hbc.repo.UserRepo;
 import com.hbc.service.UserService;
 
@@ -14,20 +16,24 @@ import com.hbc.service.UserService;
 public class UserServiceImpl implements UserService {
 	
 	@Autowired
-	private UserRepo repo;
+	UserRepo repo;
 	
 	private final BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
 
 	@Override
-	public User doLogin(String username, String password) {
-		Optional<User> userResponseOptional = repo.findByUsername(username);
+	public UserResponseDto doLogin(String username, String password) throws AuthenticationException {
+		Optional<User> userResponseOptional = repo.findByUsernameAndIsDeleted(username, false);
 
 		if (userResponseOptional.isEmpty()) {
-			return null;
+			throw new AuthenticationException("401", "User account not found.");
 		}
-
+		
 		User userResponse = userResponseOptional.get();
 		
-		return bcrypt.matches(password, userResponse.getPassword()) ? userResponse : null;
+		if (bcrypt.matches(password, userResponse.getPassword())) {
+			return UserResponseDto.build(userResponse);
+		}
+		
+		throw new AuthenticationException("401", "Incorrect password. Please try again.");
 	}
 }

@@ -1,8 +1,9 @@
 package com.hbc.service;
 
-import com.hbc.entity.User;
+import com.hbc.dto.UserResponseDto;
+import com.hbc.exception.login.AuthenticationException;
 
 public interface UserService {
 
-	User doLogin(String username, String password);
+	UserResponseDto doLogin(String username, String password) throws AuthenticationException;
 }
