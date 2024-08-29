@@ -8,4 +8,5 @@ import com.hbc.entity.TournamentLocation;
 @Repository
 public interface TournamentLocationRepo extends JpaRepository<TournamentLocation, Long> {
 
+	TournamentLocation findByTourId(long tourId);
 }
