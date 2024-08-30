@@ -50,9 +50,7 @@ public class UserResponseDto implements Serializable {
 		dto.address = user.getAddress();
 		
 		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-		if (ObjectUtils.isNotEmpty(user.getBirthday())) {
-			dto.birthday = df.format(user.getBirthday());
-		}
+		dto.birthday = df.format(user.getBirthday());
 		
 		dto.imgUrl = user.getImgUrl();
 		dto.createdAt = user.getCreatedAt();
