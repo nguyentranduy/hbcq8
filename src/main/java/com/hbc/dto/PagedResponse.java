@@ -14,5 +14,5 @@ import lombok.Setter;
 public class PagedResponse<T> {
 
 	private List<T> result;
-    private Pagination pagination;
+	private Pagination pagination;
 }
