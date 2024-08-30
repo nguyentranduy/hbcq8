@@ -5,6 +5,8 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
+import org.apache.commons.lang3.ObjectUtils;
+
 import com.hbc.entity.User;
 
 import lombok.AllArgsConstructor;
@@ -48,7 +50,9 @@ public class UserResponseDto implements Serializable {
 		dto.address = user.getAddress();
 		
 		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-		dto.birthday = df.format(user.getBirthday());
+		if (ObjectUtils.isNotEmpty(user.getBirthday())) {
+			dto.birthday = df.format(user.getBirthday());
+		}
 		
 		dto.imgUrl = user.getImgUrl();
 		dto.createdAt = user.getCreatedAt();

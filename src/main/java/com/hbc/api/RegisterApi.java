@@ -1,4 +1,4 @@
-package com.hbc.api.login;
+package com.hbc.api;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
