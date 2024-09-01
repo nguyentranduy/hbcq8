@@ -11,4 +11,10 @@ function getUserFromSessionStorage() {
     const user = sessionStorage.getItem('currentUser');
     return user ? JSON.parse(user) : null;
 }
-export { ip, port , handleLoginSuccess, getUserFromSessionStorage};
+
+function checkUserLoggedIn() {
+    var user = sessionStorage.getItem('currentUser');
+    console.log(user);
+    return user ? JSON.parse(user) : null;
+}
+export { ip, port , handleLoginSuccess, getUserFromSessionStorage, checkUserLoggedIn};

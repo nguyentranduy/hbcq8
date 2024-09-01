@@ -1,4 +1,4 @@
-import { ip, port } from '../../constant/globals.js';
+import { ip, port , handleLoginSuccess} from '../../constant/globals.js';
 // Khai báo ứng dụng AngularJS
 var app = angular.module('loginApp', []);
 const url = `http://${ip}:${port}/api/v1/login`;
@@ -17,6 +17,7 @@ app.controller('LoginController', function ($scope, $http) {
                 if (response.status == 200) {
                     console.log('Đăng nhập thành công:', response.data);
                     // Chuyển hướng tới trang chính sau khi đăng nhập thành công
+                    handleLoginSuccess(response.data);
                     window.location.href = '/home';
                 }
 

@@ -9,5 +9,6 @@ public interface UserService {
 	UserResponseDto doLogin(String username, String password) throws AuthenticationException;
 
 	UserResponseDto doRegister(UserRegisterRequestDto userRegisterRequestDto) throws Exception;
-
+	
+	Boolean doUpdateImg(String imgUrl,String username) throws Exception;
 }
