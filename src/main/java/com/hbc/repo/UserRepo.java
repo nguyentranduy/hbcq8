@@ -11,4 +11,6 @@ import com.hbc.entity.User;
 public interface UserRepo extends JpaRepository<User, Long> {
 
 	Optional<User> findByUsernameAndIsDeleted(String username, Boolean isDeleted);
+	
+	Optional<User> findByUsernameAndEmailAndPhone(String username, String email, String phone);
 }

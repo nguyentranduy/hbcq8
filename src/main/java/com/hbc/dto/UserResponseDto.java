@@ -32,7 +32,7 @@ public class UserResponseDto implements Serializable {
 	private Timestamp updatedAt;
 	private long updatedBy;
 	private int roleId;
-	
+
 	/**
 	 * Build UserLoginResponseDto from User entity.
 	 * 
@@ -46,17 +46,23 @@ public class UserResponseDto implements Serializable {
 		dto.email = user.getEmail();
 		dto.phone = user.getPhone();
 		dto.address = user.getAddress();
-		
-		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-		dto.birthday = df.format(user.getBirthday());
-		
+
+		if (!(dto.birthday == null)) {
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			dto.birthday = df.format(user.getBirthday());
+		}
+
 		dto.imgUrl = user.getImgUrl();
 		dto.createdAt = user.getCreatedAt();
+
 		dto.createdBy = user.getCreatedBy();
 		dto.updatedAt = user.getUpdatedAt();
-		dto.updatedBy = user.getUpdatedBy();
+
+		if (!(user.getUpdatedBy() == null)) {
+			dto.updatedBy = user.getUpdatedBy();
+		}
 		dto.roleId = user.getRole().getId();
-		
+
 		return dto;
 	}
 }
