@@ -30,4 +30,9 @@ public class Role implements Serializable {
 	
 	@Column
 	private String description;
+
+	public Role(Integer id) {
+		this.id = id;
+	}
+	
 }

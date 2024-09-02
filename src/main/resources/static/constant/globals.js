@@ -3,6 +3,9 @@ const port = "8080";
 // Sau khi đăng nhập thành công và nhận thông tin người dùng
 function handleLoginSuccess(user) {
     // Lưu thông tin người dùng vào sessionStorage
+    if (user.birthday) {
+        user.birthday = new Date(user.birthday);
+    }
     sessionStorage.setItem('currentUser', JSON.stringify(user));
 }
 

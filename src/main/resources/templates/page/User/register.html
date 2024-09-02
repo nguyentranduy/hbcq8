@@ -14,7 +14,7 @@
 
 </head>
 
-<body >
+<body>
   <nav class="navbar navbar-expand-lg border-bottom">
     <div class="container-fluid">
       <a class="navbar-brand text-primary" href="#">HBC Q8 TP.HCM</a>
@@ -60,7 +60,8 @@
           <div class="card text-black" style="border-radius: 8px;">
             <div class="card-body p-md-2">
               <div class="row justify-content-center">
-                <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1" ng-app="registerApp" ng-controller="registerController">
+                <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1" ng-app="registerApp"
+                  ng-controller="registerController">
 
                   <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4 text-primary">Đăng ký tài khoản</p>
 
@@ -113,9 +114,9 @@
                         <label class="form-label" for="form3Example4cd">Nhập lại mật khẩu</label>
 
                       </div>
-                     
+
                     </div>
-                    
+
                     <div class="form-check d-flex justify-content-center mb-5">
                       <p>Bạn đã có tài khoản? Đăng nhập tại <a href="/login" class="text-primary">đây.</a></p>
                     </div>
@@ -140,6 +141,18 @@
       </div>
     </div>
   </section>
+  <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3">
+    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header">
+        <!-- <img src="../../images/web_logo.svg" class="rounded me-2" alt="..."> -->
+        <strong class="me-auto">Thông báo</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body">
+        Đăng ký thành công!
+      </div>
+    </div>
+  </div>
 </body>
 
 </html>

@@ -19,6 +19,10 @@ app.controller('registerController', function ($scope, $http, $window) {
             .then(function (response) {
                 // Đăng ký thành công
                 console.log('Đăng ký thành công:', response.data);
+                $scope.user = {};
+                toast.show();
+                handleLoginSuccess(response.data);
+                window.location.href = '/home';
                 handleLoginSuccess(response.data);
                 // Chuyển hướng tới trang đăng nhập sau khi đăng ký thành công
                 $window.location.href = '/home';

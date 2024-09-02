@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.hbc.constant.Globals;
+import com.hbc.dto.UserResponseDto;
 import com.hbc.service.UserService;
 
 @RestController
@@ -24,19 +27,27 @@ public class UpdateProfileApi {
 	@Autowired
 	UserService userService;
 
-	@PostMapping("/bachhoa/api/upload")
-	public ResponseEntity<String> uploadSanPhamWithImage(@RequestParam(value = "username") String username,
-			@RequestPart("image") MultipartFile img) throws IOException {
+	@PostMapping("/img")
+	public ResponseEntity<?> doUpdateImgUrl(@RequestParam(value = "username") String username,
+			@RequestPart("image") MultipartFile img) {
 		try {
-			String imgName = "avatar_" + username;
-			String filePath = Globals.FOLDER_PATH + imgName;
-			img.transferTo(new File(filePath));
-			String imgUrl = Globals.HOST + Globals.PORT + imgName;
-			userService.doUpdateImg(imgUrl, username);
-			return ResponseEntity.ok(imgUrl);
+			userService.doUpdateImg(img, username);
+			return ResponseEntity.ok("OK");
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload the file");
+		}
+	}
+
+	@PostMapping("/update")
+	public ResponseEntity<?> doUpdateProfile(@RequestBody UserResponseDto userResponseDto) {
+		try {
+			UserResponseDto responseDto = userService.doUpdate(userResponseDto);
+			return ResponseEntity.ok(responseDto);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error");
+
 		}
 	}
 

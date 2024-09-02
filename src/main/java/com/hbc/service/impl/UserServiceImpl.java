@@ -2,8 +2,13 @@ package com.hbc.service.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Optional;
 
+import org.springframework.aop.ThrowsAdvice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,13 +20,13 @@ import com.hbc.entity.User;
 import com.hbc.exception.login.AuthenticationException;
 import com.hbc.repo.UserRepo;
 import com.hbc.service.UserService;
+import com.hbc.utili.SaveFile;
 
 @Service
 public class UserServiceImpl implements UserService {
 
 	@Autowired
 	UserRepo repo;
-	private final String FOLDER_PATH = "C:\\hcmimg\\";
 
 	private final BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
 
@@ -29,9 +34,9 @@ public class UserServiceImpl implements UserService {
 	public UserResponseDto doLogin(String username, String password) throws AuthenticationException {
 
 		Optional<User> userResponseOptional = repo.findByUsernameAndIsDeleted(username, false);
-		
+
 		if (userResponseOptional.isEmpty()) {
-			
+
 			throw new AuthenticationException("401", "User account not found.");
 		}
 
@@ -54,15 +59,36 @@ public class UserServiceImpl implements UserService {
 
 			User user = userRegisterRequestDto.doBuildUser();
 			return UserResponseDto.build(repo.save(user));
-		
+
 		}
 
 		throw new Exception();
 	}
 
 	@Override
-	public Boolean doUpdateImg(String imgUrl, String username) throws Exception {	
-		return repo.updateimgUrlByUsername(imgUrl, username);
+	public Boolean doUpdateImg(MultipartFile file, String username) throws Exception {
+		return repo.updateimgUrlByUsername(SaveFile.doSaveFile(file, username), username);
 	}
-	
+
+	@Override
+	public UserResponseDto doUpdate(UserResponseDto userResponseDto) throws Exception {
+
+		Optional<User> userOptional = repo.findById(userResponseDto.getId());
+		User user = userOptional.get();
+		user.setEmail(userResponseDto.getEmail());
+		user.setPhone(userResponseDto.getPhone());
+		user.setAddress(userResponseDto.getAddress());
+		user.setUpdatedBy(userResponseDto.getId());
+		user.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+		
+		if (userResponseDto.getBirthday() != null) {
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+			java.util.Date utilDate = formatter.parse(userResponseDto.getBirthday());
+			Date sqlDate = new Date(utilDate.getTime());
+			user.setBirthday(sqlDate);
+		}
+		return UserResponseDto.build(repo.save(user));
+
+	}
+
 }

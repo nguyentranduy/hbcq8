@@ -1,4 +1,4 @@
-import { ip, port , handleLoginSuccess} from '../../constant/globals.js';
+import { ip, port, handleLoginSuccess } from '../../constant/globals.js';
 // Khai báo ứng dụng AngularJS
 var app = angular.module('loginApp', []);
 const url = `http://${ip}:${port}/api/v1/login`;
@@ -16,9 +16,14 @@ app.controller('LoginController', function ($scope, $http) {
                 // Đăng nhập thành công
                 if (response.status == 200) {
                     console.log('Đăng nhập thành công:', response.data);
+                    console.log(response.data);
                     // Chuyển hướng tới trang chính sau khi đăng nhập thành công
+                    var toastEl = document.getElementById('liveToast');
+                    var toast = new bootstrap.Toast(toastEl);
+                    $scope.user = {};
+                    toast.show();
                     handleLoginSuccess(response.data);
-                    window.location.href = '/home';
+                    window.location.replace('/home');
                 }
 
             })
@@ -30,7 +35,7 @@ app.controller('LoginController', function ($scope, $http) {
                 } else if (error.status === 401) {
                     $scope.errorMessage = 'Tên đăng nhập hoặc mật khẩu không chính xác';
                 }
-                 else {
+                else {
                     console.error('Chi tiết lỗi:', error.data ? error.data.message : 'Lỗi không xác định');
                 }
             });
