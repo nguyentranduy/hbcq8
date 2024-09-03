@@ -88,4 +88,16 @@ public class TournamentDetail implements Serializable {
 	
 	@Column(name = "rank_of_bird")
 	private Long rankOfBird;
+	
+	@Column(name = "created_at")
+	private Timestamp createdAt;
+	
+	@Column(name = "created_by")
+	private Long createdBy;
+	
+	@Column(name = "updated_at")
+	private Timestamp updatedAt;
+	
+	@Column(name = "updated_by")
+	private Long updatedBy;
 }

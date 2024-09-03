@@ -11,4 +11,6 @@ import com.hbc.entity.TournamentLocation;
 public interface TournamentLocationRepo extends JpaRepository<TournamentLocation, Long> {
 
 	Optional<TournamentLocation> findByTourId(long tourId);
+	boolean existsByTourId(long tourId);
+	TournamentLocation findByIdAndTourId(long id, long tourId);
 }
