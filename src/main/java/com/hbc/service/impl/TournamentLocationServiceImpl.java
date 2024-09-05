@@ -23,7 +23,10 @@ import com.hbc.repo.TournamentLocationRepo;
 import com.hbc.service.TournamentLocationService;
 import com.hbc.service.TournamentService;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class TournamentLocationServiceImpl implements TournamentLocationService {
 	
 	@Autowired
@@ -59,6 +62,7 @@ public class TournamentLocationServiceImpl implements TournamentLocationService 
 	@Override
 	@Transactional
 	public void save(TourLocationDto tourLocationDto, UserResponseDto currentUser) throws Exception {
+		log.info("User {} started create new tour location", currentUser.getUsername());
 		Tournament tour = tournamentService.findByIdAvailable(tourLocationDto.getTourId());
 		if (tour == null) {
 			throw new CreateTourLocationException("400", "Tour is not exists.");
@@ -77,6 +81,7 @@ public class TournamentLocationServiceImpl implements TournamentLocationService 
 		try {
 			repo.saveAndFlush(targetEntity);
 		} catch (Exception ex) {
+			log.warn("Cannot created new tour location with tourId - {}", targetEntity.getTour().getId());
 			throw ex;
 		}
 	}
@@ -84,6 +89,7 @@ public class TournamentLocationServiceImpl implements TournamentLocationService 
 	@Override
 	@Transactional
 	public void update(TourLocationDto tourLocationDto, UserResponseDto currentUser) throws Exception {
+		log.info("User {} started update tour location with id - {}", currentUser.getUsername(), tourLocationDto.getId());
 		if (!repo.existsById(tourLocationDto.getId())) {
 			throw new CreateTourLocationException("400", "Location is not exists.");
 		}
@@ -111,6 +117,7 @@ public class TournamentLocationServiceImpl implements TournamentLocationService 
 		try {
 			repo.saveAndFlush(targetEntity);
 		} catch (Exception ex) {
+			log.warn("Cannot update tour location with id - {}", targetEntity.getId());
 			throw ex;
 		}
 	}
@@ -125,6 +132,7 @@ public class TournamentLocationServiceImpl implements TournamentLocationService 
 		try {
 			repo.deleteById(id);
 		} catch (Exception ex) {
+			log.warn("Cannot delete tour location with id - {}", id);
 			throw ex;
 		}
 	}
