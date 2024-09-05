@@ -1,4 +1,4 @@
-package com.hbc.api.login;
+package com.hbc.api;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
