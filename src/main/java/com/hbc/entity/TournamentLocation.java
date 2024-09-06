@@ -1,6 +1,7 @@
 package com.hbc.entity;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -97,4 +98,16 @@ public class TournamentLocation implements Serializable {
 	
 	@Column(name = "end_point_dist")
 	private Float endPointDist;
+	
+	@Column(name = "created_at")
+	private Timestamp createdAt;
+	
+	@Column(name = "created_by")
+	private Long createdBy;
+	
+	@Column(name = "updated_at")
+	private Timestamp updatedAt;
+	
+	@Column(name = "updated_by")
+	private Long updatedBy;
 }

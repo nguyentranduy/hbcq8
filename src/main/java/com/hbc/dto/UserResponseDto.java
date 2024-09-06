@@ -1,13 +1,10 @@
 package com.hbc.dto;
 
 import java.io.Serializable;
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import com.hbc.entity.Role;
 import com.hbc.entity.User;
 
 import lombok.AllArgsConstructor;
@@ -31,9 +28,9 @@ public class UserResponseDto implements Serializable {
 	private String birthday;
 	private String imgUrl;
 	private Timestamp createdAt;
-	private long createdBy;
+	private Long createdBy;
 	private Timestamp updatedAt;
-	private long updatedBy;
+	private Long updatedBy;
 	private int roleId;
 
 	/**
@@ -49,11 +46,17 @@ public class UserResponseDto implements Serializable {
 		dto.email = user.getEmail();
 		dto.phone = user.getPhone();
 		dto.address = user.getAddress();
+
 		if (user.getBirthday() != null) {
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-			dto.birthday = df.format(user.getBirthday());
+			dto.birthday = df.format(user.getBirthday());	
 		}
+		
 		dto.imgUrl = user.getImgUrl();
+		dto.createdAt = user.getCreatedAt();
+		dto.createdBy = user.getCreatedBy();
+		dto.updatedAt = user.getUpdatedAt() != null ? user.getUpdatedAt() : null;
+		dto.updatedBy = user.getUpdatedBy() != null ? user.getUpdatedBy() : null;
 		dto.roleId = user.getRole().getId();
 		return dto;
 	}

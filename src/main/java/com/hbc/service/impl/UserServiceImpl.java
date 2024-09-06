@@ -1,14 +1,10 @@
 package com.hbc.service.impl;
 
-import java.io.File;
-import java.io.IOException;
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Optional;
 
-import org.springframework.aop.ThrowsAdvice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -36,7 +32,6 @@ public class UserServiceImpl implements UserService {
 		Optional<User> userResponseOptional = repo.findByUsernameAndIsDeleted(username, false);
 
 		if (userResponseOptional.isEmpty()) {
-
 			throw new AuthenticationException("401", "User account not found.");
 		}
 
@@ -51,7 +46,6 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserResponseDto doRegister(UserRegisterRequestDto userRegisterRequestDto) throws Exception {
-		// TODO Auto-generated method stub
 		Optional<User> userResponseOptional = repo.findByUsernameAndEmailAndPhone(userRegisterRequestDto.getUsername(),
 				userRegisterRequestDto.getEmail(), userRegisterRequestDto.getPhone());
 
@@ -59,7 +53,6 @@ public class UserServiceImpl implements UserService {
 
 			User user = userRegisterRequestDto.doBuildUser();
 			return UserResponseDto.build(repo.save(user));
-
 		}
 
 		throw new Exception();
@@ -80,7 +73,7 @@ public class UserServiceImpl implements UserService {
 		user.setAddress(userResponseDto.getAddress());
 		user.setUpdatedBy(userResponseDto.getId());
 		user.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
-		
+
 		if (userResponseDto.getBirthday() != null) {
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 			java.util.Date utilDate = formatter.parse(userResponseDto.getBirthday());
@@ -88,7 +81,5 @@ public class UserServiceImpl implements UserService {
 			user.setBirthday(sqlDate);
 		}
 		return UserResponseDto.build(repo.save(user));
-
 	}
-
 }
