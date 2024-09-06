@@ -11,13 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hbc.constant.SessionConst;
-import com.hbc.dto.ErrorResponse;
 import com.hbc.dto.UserRegisterRequestDto;
 import com.hbc.dto.UserResponseDto;
 import com.hbc.service.UserService;
 
 import jakarta.servlet.http.HttpSession;
-import jakarta.websocket.Session;
 
 @RestController
 @RequestMapping("/api/v1/register")
@@ -30,13 +28,11 @@ public class RegisterApi {
 	@PostMapping
 	public ResponseEntity<?> doPostRegister(@RequestBody UserRegisterRequestDto requestDto, HttpSession session) {
 		try {
-			
 			requestDto.setPassword(bcrypt.encode(requestDto.getPassword()));
 			UserResponseDto responseDto = userService.doRegister(requestDto);
 			session.setAttribute(SessionConst.CURRENT_USER, responseDto);
 			return ResponseEntity.ok(requestDto);
 		} catch (Exception e) {
-			// TODO: handle exception
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
 		}
