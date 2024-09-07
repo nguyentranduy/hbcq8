@@ -36,5 +36,4 @@ public class UserRegisterRequestDto implements Serializable {
 		user.setIsDeleted(false);
 		return user;
 	}
-
 }

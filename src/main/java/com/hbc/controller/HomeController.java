@@ -10,4 +10,14 @@ public class HomeController {
 	public String doGetIndex() {
 		return "page/user/index";
 	}
+
+	@GetMapping("/login")
+	public String doGetLogin() {
+		return "page/User/login";
+	}
+
+	@GetMapping("/register")
+	public String doGetRegister() {
+		return "page/User/register";
+	}
 }
