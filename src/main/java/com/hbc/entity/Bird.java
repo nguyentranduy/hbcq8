@@ -35,6 +35,9 @@ public class Bird implements Serializable {
 	private Long id;
 	
 	@Column
+	private String birdId;
+	
+	@Column
 	private String name;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
