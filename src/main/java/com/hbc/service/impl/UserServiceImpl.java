@@ -48,17 +48,22 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserResponseDto doRegister(UserRegisterRequestDto userRegisterRequestDto) throws DuplicatedUserException {
-		Optional<User> userResponseOptional = repo.findByUsernameAndEmailAndPhone(userRegisterRequestDto.getUsername(),
-				userRegisterRequestDto.getEmail(), userRegisterRequestDto.getPhone());
-
-		if (userResponseOptional.isEmpty()) {
-			String hashPassword = bcrypt.encode(userRegisterRequestDto.getPassword());
-			User user = userRegisterRequestDto.buildUser(userRegisterRequestDto.getUsername(), hashPassword,
-					userRegisterRequestDto.getEmail(), userRegisterRequestDto.getPhone(), RoleConst.ROLE_USER);
-			return UserResponseDto.build(repo.save(user));
+		if (repo.existsByUsername(userRegisterRequestDto.getUsername())) {
+			throw new DuplicatedUserException("409", "Username already exists.");
 		}
 		
-		throw new DuplicatedUserException("409", "A user with this identifier already exists.");
+		if (repo.existsByEmail(userRegisterRequestDto.getEmail())) {
+			throw new DuplicatedUserException("409", "Email already exists.");
+		}
+		
+		if (repo.existsByPhone(userRegisterRequestDto.getPhone())) {
+			throw new DuplicatedUserException("409", "Phone already exists.");
+		}
+
+		String hashPassword = bcrypt.encode(userRegisterRequestDto.getPassword());
+		User user = userRegisterRequestDto.buildUser(userRegisterRequestDto.getUsername(), hashPassword,
+				userRegisterRequestDto.getEmail(), userRegisterRequestDto.getPhone(), RoleConst.ROLE_USER);
+		return UserResponseDto.build(repo.save(user));
 	}
 
 	@Override

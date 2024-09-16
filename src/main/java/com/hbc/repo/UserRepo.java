@@ -14,7 +14,11 @@ public interface UserRepo extends JpaRepository<User, Long> {
 
 	Optional<User> findByUsernameAndIsDeleted(String username, Boolean isDeleted);
 
-	Optional<User> findByUsernameAndEmailAndPhone(String username, String email, String phone);
+	Boolean existsByUsername(String username);
+	
+	Boolean existsByEmail(String email);
+	
+	Boolean existsByPhone(String phone);
 
 	@Query("UPDATE User u SET u.imgUrl = :imgUrl WHERE u.username = :username")
 	Boolean updateimgUrlByUsername(@Param("imgUrl") String imgUrl, @Param("username") String username);

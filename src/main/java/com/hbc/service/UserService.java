@@ -16,5 +16,4 @@ public interface UserService {
 	Boolean doUpdateImg(MultipartFile file,String username) throws Exception;
 	
 	UserResponseDto doUpdate(UserResponseDto userResponseDto) throws Exception;
-	
 }
