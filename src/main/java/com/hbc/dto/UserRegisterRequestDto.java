@@ -24,13 +24,14 @@ public class UserRegisterRequestDto implements Serializable {
 	private String email;
 	private String phone;
 
-	public User doBuildUser() {
+	public User buildUser(String username, String password, String email, String phone,
+			int roleId) {
 		User user = new User();
 		user.setUsername(username);
 		user.setPassword(password);
 		user.setPhone(phone);
 		user.setEmail(email);
-		user.setRole(new Role(3, "User"));
+		user.setRole(new Role(roleId));
 		user.setCreatedBy(1L);
 		user.setCreatedAt(new Timestamp(System.currentTimeMillis()));
 		user.setIsDeleted(false);

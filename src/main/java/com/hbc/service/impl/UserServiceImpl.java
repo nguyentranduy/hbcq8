@@ -10,10 +10,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.hbc.constant.RoleConst;
 import com.hbc.dto.UserRegisterRequestDto;
 import com.hbc.dto.UserResponseDto;
 import com.hbc.entity.User;
 import com.hbc.exception.login.AuthenticationException;
+import com.hbc.exception.register.DuplicatedUserException;
 import com.hbc.repo.UserRepo;
 import com.hbc.service.UserService;
 import com.hbc.util.SaveFile;
@@ -45,17 +47,18 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserResponseDto doRegister(UserRegisterRequestDto userRegisterRequestDto) throws Exception {
+	public UserResponseDto doRegister(UserRegisterRequestDto userRegisterRequestDto) throws DuplicatedUserException {
 		Optional<User> userResponseOptional = repo.findByUsernameAndEmailAndPhone(userRegisterRequestDto.getUsername(),
 				userRegisterRequestDto.getEmail(), userRegisterRequestDto.getPhone());
 
 		if (userResponseOptional.isEmpty()) {
-
-			User user = userRegisterRequestDto.doBuildUser();
+			String hashPassword = bcrypt.encode(userRegisterRequestDto.getPassword());
+			User user = userRegisterRequestDto.buildUser(userRegisterRequestDto.getUsername(), hashPassword,
+					userRegisterRequestDto.getEmail(), userRegisterRequestDto.getPhone(), RoleConst.ROLE_USER);
 			return UserResponseDto.build(repo.save(user));
 		}
-
-		throw new Exception();
+		
+		throw new DuplicatedUserException("409", "A user with this identifier already exists.");
 	}
 
 	@Override
