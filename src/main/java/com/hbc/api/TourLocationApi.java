@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hbc.constant.SessionConst;
 import com.hbc.dto.ErrorResponse;
-import com.hbc.dto.UserResponseDto;
 import com.hbc.dto.tourlocation.TourLocationDto;
+import com.hbc.dto.user.UserResponseDto;
 import com.hbc.service.TournamentLocationService;
 
 import jakarta.servlet.http.HttpSession;

@@ -1,4 +1,4 @@
-package com.hbc.dto;
+package com.hbc.dto.user;
 
 import java.io.Serializable;
 
@@ -11,10 +11,13 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserLoginRequestDto implements Serializable {
+public class UserRegisterRequestDto implements Serializable {
 
-	private static final long serialVersionUID = 3524646768017726731L;
-	
+	private static final long serialVersionUID = 3239108323095064461L;
+
 	private String username;
 	private String password;
+	private String email;
+	private String phone;
+	private String birthday;
 }

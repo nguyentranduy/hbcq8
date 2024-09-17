@@ -1,13 +1,13 @@
-package com.hbc.exception.login;
+package com.hbc.exception;
 
-public class AuthenticationException extends RuntimeException {
+public class CustomException extends RuntimeException {
 
 	private static final long serialVersionUID = 4601014586415545195L;
 	
 	private final String errorCode;
 	private final String errorMessage;
 
-	public AuthenticationException(String errorCode, String errorMessage) {
+	public CustomException(String errorCode, String errorMessage) {
 		super(errorMessage);
 		this.errorCode = errorCode;
 		this.errorMessage = errorMessage;

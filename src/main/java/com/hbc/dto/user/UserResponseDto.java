@@ -1,4 +1,4 @@
-package com.hbc.dto;
+package com.hbc.dto.user;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -48,7 +48,7 @@ public class UserResponseDto implements Serializable {
 		dto.address = user.getAddress();
 
 		if (user.getBirthday() != null) {
-			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 			dto.birthday = df.format(user.getBirthday());	
 		}
 		

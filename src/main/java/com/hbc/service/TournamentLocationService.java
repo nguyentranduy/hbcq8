@@ -1,8 +1,8 @@
 package com.hbc.service;
 
 import com.hbc.dto.PagedResponse;
-import com.hbc.dto.UserResponseDto;
 import com.hbc.dto.tourlocation.TourLocationDto;
+import com.hbc.dto.user.UserResponseDto;
 
 public interface TournamentLocationService {
 

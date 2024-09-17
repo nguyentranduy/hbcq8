@@ -1,24 +1,29 @@
 package com.hbc.service.impl;
 
-import java.sql.Date;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.hbc.constant.RoleConst;
-import com.hbc.dto.UserRegisterRequestDto;
-import com.hbc.dto.UserResponseDto;
+import com.hbc.constant.SessionConst;
+import com.hbc.dto.user.UserRegisterRequestDto;
+import com.hbc.dto.user.UserResponseDto;
+import com.hbc.dto.user.UserUpdateRequestDto;
 import com.hbc.entity.User;
-import com.hbc.exception.login.AuthenticationException;
+import com.hbc.exception.AuthenticationException;
+import com.hbc.exception.CustomException;
 import com.hbc.exception.register.DuplicatedUserException;
 import com.hbc.repo.UserRepo;
 import com.hbc.service.UserService;
 import com.hbc.util.SaveFile;
+import com.hbc.validator.UserValidator;
+
+import jakarta.servlet.http.HttpSession;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -47,7 +52,9 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserResponseDto doRegister(UserRegisterRequestDto userRegisterRequestDto) throws DuplicatedUserException {
+	@Transactional
+	public UserResponseDto doRegister(UserRegisterRequestDto userRegisterRequestDto)
+			throws DuplicatedUserException, CustomException {
 		if (repo.existsByUsername(userRegisterRequestDto.getUsername())) {
 			throw new DuplicatedUserException("409", "Username already exists.");
 		}
@@ -61,33 +68,64 @@ public class UserServiceImpl implements UserService {
 		}
 
 		String hashPassword = bcrypt.encode(userRegisterRequestDto.getPassword());
-		User user = userRegisterRequestDto.buildUser(userRegisterRequestDto.getUsername(), hashPassword,
-				userRegisterRequestDto.getEmail(), userRegisterRequestDto.getPhone(), RoleConst.ROLE_USER);
-		return UserResponseDto.build(repo.save(user));
+		try {
+			User user = User.buildNewUser(userRegisterRequestDto.getUsername(), hashPassword,
+					userRegisterRequestDto.getEmail(), userRegisterRequestDto.getPhone(),
+					RoleConst.ROLE_USER, userRegisterRequestDto.getBirthday());
+			return UserResponseDto.build(repo.save(user));
+		} catch (Exception ex) {
+			throw new CustomException("400", ex.getMessage());
+		}
 	}
 
 	@Override
+	@Transactional(rollbackFor = Exception.class)
 	public Boolean doUpdateImg(MultipartFile file, String username) throws Exception {
 		return repo.updateimgUrlByUsername(SaveFile.doSaveFile(file, username), username);
 	}
 
 	@Override
-	public UserResponseDto doUpdate(UserResponseDto userResponseDto) throws Exception {
+	@Transactional(rollbackFor = Exception.class)
+	public UserResponseDto doUpdate(UserUpdateRequestDto userUpdateRequestDto, HttpSession session)
+			throws DuplicatedUserException, AuthenticationException {
 
-		Optional<User> userOptional = repo.findById(userResponseDto.getId());
-		User user = userOptional.get();
-		user.setEmail(userResponseDto.getEmail());
-		user.setPhone(userResponseDto.getPhone());
-		user.setAddress(userResponseDto.getAddress());
-		user.setUpdatedBy(userResponseDto.getId());
-		user.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
-
-		if (userResponseDto.getBirthday() != null) {
-			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-			java.util.Date utilDate = formatter.parse(userResponseDto.getBirthday());
-			Date sqlDate = new Date(utilDate.getTime());
-			user.setBirthday(sqlDate);
+		if (!UserValidator.canSelfUpdated(userUpdateRequestDto.getUserId(), session)) {
+			throw new AuthenticationException("401-01", "User do not have permission to update.");
 		}
-		return UserResponseDto.build(repo.save(user));
+
+		if (repo.existsByIdAndIsDeleted(userUpdateRequestDto.getUserId(), Boolean.FALSE)) {
+			session.removeAttribute(SessionConst.CURRENT_USER);
+			throw new AuthenticationException("401-02", "User account not found.");
+		}
+
+		if (repo.existsByPhone(userUpdateRequestDto.getPhone())) {
+			throw new AuthenticationException("401-03", "Phone number already exists.");
+		}
+
+		try {
+			int updatedRecord = repo.update(userUpdateRequestDto.getPhone(), userUpdateRequestDto.getAddress(),
+					userUpdateRequestDto.getBirthday(), userUpdateRequestDto.getImgUrl(),
+					new Timestamp(System.currentTimeMillis()), userUpdateRequestDto.getUserId(),
+					userUpdateRequestDto.getUserId());
+	
+			if (updatedRecord < 1) {
+				throw new CustomException("400", String.format("Cannot update user with id: {0}",
+						userUpdateRequestDto.getUserId()));
+			}
+			
+			User userResponse = repo.findById(userUpdateRequestDto.getUserId()).get();
+			
+			if (userResponse == null) {
+				throw new CustomException("400", String.format("Cannot update user with id: {0}",
+						userUpdateRequestDto.getUserId()));
+			}
+			
+			UserResponseDto userResponseDto = UserResponseDto.build(userResponse);
+			return userResponseDto;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw new CustomException("400", String.format("Cannot update user with id: {0}",
+					userUpdateRequestDto.getUserId()));
+		}
 	}
 }

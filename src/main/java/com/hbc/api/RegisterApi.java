@@ -11,8 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hbc.constant.SessionConst;
 import com.hbc.dto.ErrorResponse;
-import com.hbc.dto.UserRegisterRequestDto;
-import com.hbc.dto.UserResponseDto;
+import com.hbc.dto.user.UserRegisterRequestDto;
+import com.hbc.dto.user.UserResponseDto;
+import com.hbc.exception.CustomException;
 import com.hbc.exception.register.DuplicatedUserException;
 import com.hbc.service.UserService;
 
@@ -31,10 +32,13 @@ public class RegisterApi {
 		try {
 			UserResponseDto responseDto = userService.doRegister(requestDto);
 			session.setAttribute(SessionConst.CURRENT_USER, responseDto);
-			return ResponseEntity.ok(requestDto);
+			return ResponseEntity.ok(responseDto);
 		} catch (DuplicatedUserException ex) {
 			ErrorResponse errorResponse = new ErrorResponse(ex.getErrorCode(), ex.getErrorMessage());
 			return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+		} catch (CustomException ex) {
+			ErrorResponse errorResponse = new ErrorResponse(ex.getErrorCode(), ex.getErrorMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 		}
 	}
 }

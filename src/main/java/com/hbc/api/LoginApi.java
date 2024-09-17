@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hbc.constant.SessionConst;
 import com.hbc.dto.ErrorResponse;
-import com.hbc.dto.UserLoginRequestDto;
-import com.hbc.dto.UserResponseDto;
-import com.hbc.exception.login.AuthenticationException;
+import com.hbc.dto.user.UserLoginRequestDto;
+import com.hbc.dto.user.UserResponseDto;
+import com.hbc.exception.AuthenticationException;
 import com.hbc.service.UserService;
 
 import jakarta.servlet.http.HttpSession;

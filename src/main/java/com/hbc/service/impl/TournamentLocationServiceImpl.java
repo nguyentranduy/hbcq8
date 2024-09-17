@@ -14,8 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.hbc.dto.PagedResponse;
 import com.hbc.dto.Pagination;
-import com.hbc.dto.UserResponseDto;
 import com.hbc.dto.tourlocation.TourLocationDto;
+import com.hbc.dto.user.UserResponseDto;
 import com.hbc.entity.Tournament;
 import com.hbc.entity.TournamentLocation;
 import com.hbc.exception.tourlocation.CreateTourLocationException;

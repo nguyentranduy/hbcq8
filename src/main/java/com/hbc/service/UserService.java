@@ -2,10 +2,13 @@ package com.hbc.service;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import com.hbc.dto.UserRegisterRequestDto;
-import com.hbc.dto.UserResponseDto;
-import com.hbc.exception.login.AuthenticationException;
+import com.hbc.dto.user.UserRegisterRequestDto;
+import com.hbc.dto.user.UserResponseDto;
+import com.hbc.dto.user.UserUpdateRequestDto;
+import com.hbc.exception.AuthenticationException;
 import com.hbc.exception.register.DuplicatedUserException;
+
+import jakarta.servlet.http.HttpSession;
 
 public interface UserService {
 
@@ -15,5 +18,6 @@ public interface UserService {
 	
 	Boolean doUpdateImg(MultipartFile file,String username) throws Exception;
 	
-	UserResponseDto doUpdate(UserResponseDto userResponseDto) throws Exception;
+	UserResponseDto doUpdate(UserUpdateRequestDto userUpdateRequestDto, HttpSession session)
+			throws DuplicatedUserException, AuthenticationException;
 }

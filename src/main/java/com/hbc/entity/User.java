@@ -75,4 +75,27 @@ public class User implements Serializable {
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@JoinColumn(name = "role_id", referencedColumnName = "id")
 	private Role role;
+	
+	public static User buildNewUser(String username, String password, String email, String phone,
+			int roleId, String birthday) throws IllegalArgumentException {
+		User user = new User();
+		user.setUsername(username);
+		user.setPassword(password);
+		user.setPhone(phone);
+		user.setEmail(email);
+		user.setRole(new Role(roleId));
+		user.setCreatedBy(0L);
+		user.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+		user.setIsDeleted(false);
+		
+		if (!birthday.isEmpty()) {
+			try {
+				user.setBirthday(Date.valueOf(birthday)); // yyyy-MM-dd
+			} catch (IllegalArgumentException ex) {
+				throw new IllegalArgumentException("Birthday must be follow the pattern: yyyy-MM-dd");
+			}
+		}
+		
+		return user;
+	}
 }
