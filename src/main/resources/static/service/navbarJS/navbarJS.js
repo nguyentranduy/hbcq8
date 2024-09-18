@@ -7,7 +7,7 @@ var app = angular.module('homeApp', []);
 app.controller('navbarController', function ($http,$scope) {
 
     // Cập nhật biến 'currentUser' dựa trên trạng thái đăng nhập
-    $scope.currentUser = getUserFromSessionStorage;
+    $scope.currentUser = getUserFromSessionStorage();
 
     // Hàm đăng xuất
     $scope.logout = function () {

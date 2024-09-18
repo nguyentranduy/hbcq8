@@ -1,4 +1,4 @@
-const ip = "localhost";
+const ip = "192.168.1.21";
 const port = "8080";
 // Sau khi đăng nhập thành công và nhận thông tin người dùng
 function handleLoginSuccess(user) {

@@ -10,13 +10,14 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
     <script src="/angular-1.8.2/angular.min.js" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/1dc96c44e9.js" crossorigin="anonymous"></script>
     <script type="module" src="/service/profileService/profile.js"></script>
 </head>
 
 <body ng-app="profileApp">
-    <nav class="navbar navbar-expand-lg border-bottom">
+    <nav class="navbar navbar-expand-lg border-bottom" ng-controller="navbarController">
         <div class="container-fluid">
-            <a class="navbar-brand text-primary" href="#">HBC Q8 TP.HCM</a>
+            <a class="navbar-brand text-primary" href="#"><i class="fa-solid fa-flag"></i></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">
@@ -28,23 +29,25 @@
                         <a class="nav-link active" aria-current="page" href="/home">Trang chủ</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Bồ câu</a>
+                        <a class="nav-link" href="/bird">Bồ câu</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Giải đua</a>
+                        <a class="nav-link" href="#"><i class="fa-solid fa-flag-checkered"></i> Giải đua</a>
                     </li>
-                    <li class="nav-item dropdown">
+                    <li class="nav-item dropdown" ng-if="currentUser">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                             aria-expanded="false">
                             Tài khoản
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/profile">Thông tin cá nhân</a></li>
-                            <li><a class="dropdown-item" href="#">Đăng xuất</a></li>
+                            <li><a class="dropdown-item" href="/profile"><i class="fa-regular fa-user"></i> Thông tin cá
+                                    nhân</a></li>
+                            <li><a class="dropdown-item" ng-click="logout()"><i
+                                        class="fa-solid fa-right-from-bracket"></i> Đăng xuất</a></li>
                         </ul>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/login">Đăng nhập</a>
+                        <a class="nav-link" href="/login" ng-if="!currentUser">Đăng nhập</a>
                     </li>
                 </ul>
                 <form class="d-flex" role="search">
@@ -199,14 +202,14 @@
     <!-- Footer -->
     <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3">
         <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-          <div class="toast-header">
-            <!-- <img src="../../images/web_logo.svg" class="rounded me-2" alt="..."> -->
-            <strong class="me-auto">Thông báo</strong>
-            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-          </div>
-          <div class="toast-body">
-            Cập nhật thành công!
-          </div>
+            <div class="toast-header">
+                <!-- <img src="../../images/web_logo.svg" class="rounded me-2" alt="..."> -->
+                <strong class="me-auto">Thông báo</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                Cập nhật thành công!
+            </div>
         </div>
 </body>
 

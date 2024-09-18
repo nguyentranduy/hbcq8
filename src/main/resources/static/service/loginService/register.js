@@ -22,17 +22,18 @@ app.controller('registerController', function ($scope, $http, $window) {
                 $scope.user = {};
                 toast.show();
                 handleLoginSuccess(response.data);
-                window.location.href = '/home';
-                handleLoginSuccess(response.data);
-                // Chuyển hướng tới trang đăng nhập sau khi đăng ký thành công
-                $window.location.href = '/home';
+                window.location.href = '/home';;
             })
             .catch(function (error) {
                 // Đăng ký thất bại
                 console.error('Lỗi đăng ký:', error);
                 if (error.status === -1) {
                     console.error("Không thể kết nối đến server. Kiểm tra xem server có đang chạy không và đảm bảo URL chính xác.");
-                } else {
+                }
+                else if (error.status === 409) {
+                    $scope.errorMessageCl = "Tên đăng nhập, email hoặc số điện thoại đã tồn tại";
+                }
+                else {
                     console.error('Chi tiết lỗi:', error.data ? error.data.message : 'Lỗi không xác định');
                 }
             });
