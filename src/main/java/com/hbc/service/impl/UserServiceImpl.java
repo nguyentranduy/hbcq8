@@ -93,7 +93,7 @@ public class UserServiceImpl implements UserService {
 			throw new AuthenticationException("401-01", "User do not have permission to update.");
 		}
 
-		if (repo.existsByIdAndIsDeleted(userUpdateRequestDto.getUserId(), Boolean.FALSE)) {
+		if (!repo.existsByIdAndIsDeleted(userUpdateRequestDto.getUserId(), Boolean.FALSE)) {
 			session.removeAttribute(SessionConst.CURRENT_USER);
 			throw new AuthenticationException("401-02", "User account not found.");
 		}
