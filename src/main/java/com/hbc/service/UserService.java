@@ -15,9 +15,9 @@ public interface UserService {
 	UserResponseDto doLogin(String username, String password) throws AuthenticationException;
 
 	UserResponseDto doRegister(UserRegisterRequestDto userRegisterRequestDto) throws DuplicatedUserException;
-	
-	Boolean doUpdateImg(MultipartFile file,String username) throws Exception;
-	
+
+	Boolean doUpdateImg(MultipartFile file, String username) throws Exception;
+
 	UserResponseDto doUpdate(UserUpdateRequestDto userUpdateRequestDto, HttpSession session)
 			throws DuplicatedUserException, AuthenticationException;
 }
