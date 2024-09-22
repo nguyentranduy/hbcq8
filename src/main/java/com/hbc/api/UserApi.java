@@ -1,5 +1,9 @@
 package com.hbc.api;
 
+import java.io.File;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +25,7 @@ import com.hbc.dto.user.UserResponseDto;
 import com.hbc.dto.user.UserUpdateRequestDto;
 import com.hbc.exception.AuthenticationException;
 import com.hbc.exception.CustomException;
+import com.hbc.gcp.service.GcpService;
 import com.hbc.service.UserService;
 
 import jakarta.servlet.http.HttpSession;
@@ -32,19 +37,42 @@ public class UserApi {
 
 	@Autowired
 	UserService userService;
-	
-	@PostMapping("/img")
-	public ResponseEntity<?> doUpdateImgUrl(@RequestParam(value = "username") String username,
-			@RequestPart("image") MultipartFile img) {
+
+	@Autowired
+	GcpService gcpService;
+	private static final long MAX_FILE_SIZE = 5 * 1024 * 1024;
+
+	@PostMapping("/update-avatar")
+	public ResponseEntity<?> doUpdateImgUrl(@RequestParam("image") MultipartFile file) {
+		if (file.isEmpty()) {
+			ErrorResponse errorResponse = new ErrorResponse("400", "file is empty.");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+		}
+		if (file.getSize() >= MAX_FILE_SIZE) {
+			ErrorResponse errorResponse = new ErrorResponse("400", "file is empty.");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+		}
+		String contentType = file.getContentType();
+		if (!isImage(contentType)) {
+			ErrorResponse errorResponse = new ErrorResponse("400",
+					"File is not an image. Allowed formats: JPEG, PNG, GIF.");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+		}
+
 		try {
-			userService.doUpdateImg(img, username);
-			return ResponseEntity.ok("OK");
-		} catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload the file");
+			File tempFile = File.createTempFile("temp", null);
+			file.transferTo(tempFile);
+			String imgUrl = gcpService.uploadImageToDrive(tempFile);
+			return ResponseEntity.ok(imgUrl);
+		} catch (IOException e) {
+			ErrorResponse errorResponse = new ErrorResponse("500", e.getMessage());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+		} catch (GeneralSecurityException e) {
+			ErrorResponse errorResponse = new ErrorResponse("500", e.getMessage());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
 		}
 	}
-	
+
 	@GetMapping("/{username}")
 	public ResponseEntity<?> doGetProfile(@PathVariable("username") String username) {
 		// TODO
@@ -65,5 +93,10 @@ public class UserApi {
 			ErrorResponse errorResponse = new ErrorResponse(ex.getErrorCode(), ex.getErrorMessage());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 		}
+	}
+
+	private boolean isImage(String contentType) {
+		return contentType != null && (contentType.equals("image/jpeg") || contentType.equals("image/png")
+				|| contentType.equals("image/gif"));
 	}
 }
