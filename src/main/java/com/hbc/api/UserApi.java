@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.hbc.constant.Globals;
 import com.hbc.constant.SessionConst;
 import com.hbc.dto.ErrorResponse;
 import com.hbc.dto.user.UserResponseDto;
@@ -40,7 +41,6 @@ public class UserApi {
 
 	@Autowired
 	GcpService gcpService;
-	private static final long MAX_FILE_SIZE = 5 * 1024 * 1024;
 
 	@PostMapping("/update-avatar")
 	public ResponseEntity<?> doUpdateImgUrl(@RequestParam("image") MultipartFile file) {
@@ -48,7 +48,7 @@ public class UserApi {
 			ErrorResponse errorResponse = new ErrorResponse("400", "file is empty.");
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 		}
-		if (file.getSize() >= MAX_FILE_SIZE) {
+		if (file.getSize() >= Globals.MAX_FILE_SIZE) {
 			ErrorResponse errorResponse = new ErrorResponse("400", "file is empty.");
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 		}

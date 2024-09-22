@@ -81,7 +81,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public Boolean doUpdateImg(MultipartFile file, String username) throws Exception {
-		return repo.updateimgUrlByUsername(SaveFile.doSaveFile(file, username), username);
+		return null;
 	}
 
 	@Override
