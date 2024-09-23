@@ -1,4 +1,4 @@
-package com.hbc.api;
+package com.hbc.api.admin;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,7 +22,7 @@ import com.hbc.service.TournamentLocationService;
 import jakarta.servlet.http.HttpSession;
 
 @RestController
-@RequestMapping("/api/v1/tournament-location")
+@RequestMapping("/api/v1/admin/tournament-location")
 public class TourLocationApi {
 
 	@Autowired

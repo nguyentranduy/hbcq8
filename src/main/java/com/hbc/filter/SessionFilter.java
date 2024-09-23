@@ -19,9 +19,9 @@ import jakarta.servlet.http.HttpSession;
 @Component
 public class SessionFilter implements Filter {
 	
-	private static final List<String> URL_PATTERNS = List.of("/api/v1/tournament-location",
+	private static final List<String> URL_PATTERNS = List.of("/api/v1/admin/tournament-location",
+			"/api/v1/admin/tournament",
 			"/api/v1/logout",
-			"/api/v1/tournament",
 			"/api/v1/user");
 
 	@Override
