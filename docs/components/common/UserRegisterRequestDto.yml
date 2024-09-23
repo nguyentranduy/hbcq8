@@ -1,0 +1,22 @@
+components:
+  schemas:
+    UserRegisterRequestDto:
+      type: object
+      properties:
+        username:
+          type: string
+          minLength: 3
+          maxLength: 20
+        password:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+          length: 10
+        address:
+          type: string
+        birthday:
+          type: string
+          format: date
