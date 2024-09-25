@@ -11,11 +11,19 @@ components:
       $ref: 'components/common/UserLoginRequestDto.yml#/components/schemas/UserLoginRequestDto'
     UserRegisterRequestDto:
       $ref: 'components/common/UserRegisterRequestDto.yml#/components/schemas/UserRegisterRequestDto'
+    TourRequestDto:
+      $ref: 'components/tour/TourRequestDto.yml#/components/schemas/TourRequestDto'
+    UpdateTourRequestDto:
+      $ref: 'components/tour/UpdateTourRequestDto.yml#/components/schemas/UpdateTourRequestDto'
+    TourResponseDto:
+      $ref: 'components/tour/TourResponseDto.yml#/components/schemas/TourResponseDto'
 tags:
   - name: Common
     description: Các api common
   - name: User
     description: Các api liên quan đến thông tin user
+  - name: Tournament
+    description: Các api liên quan đến tour
 paths:
   /api/v1/login:
     post:
@@ -177,3 +185,139 @@ paths:
     post:
         tags:
           - User
+  /api/v1/tour:
+    post:
+        tags:
+          - Tournament
+        summary: Đăng ký giải đua mới
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TourRequestDto'
+              examples:
+                sampleRequest:
+                  value:
+                    name: "new tour"
+                    birdsNum: 100
+                    imgUrl: "/img/test.jpg"
+                    startDate: "10-10-2024"
+                    endDate: "12-10-2024"
+                    restTimePerDay: 8
+                    isActived: true
+        responses:
+          '200':
+            description: Tạo giải đua thành công
+            content:
+              application/json:
+                schema:
+                  items:
+                    $ref: '#/components/schemas/TourResponseDto'
+                  example:
+                    id: 1
+                    name: "new tour"
+                    birdsNum: 100
+                    imgUrl: "/img/test.jpg"
+                    startDate: "10-10-2024"
+                    endDate: "12-10-2024"
+                    restTimePerDay: 8
+                    isActived: true
+                    createdAt: "01-10-2024 10:00:00"
+                    createdBy: 1
+                    updatedAt: null
+                    updatedBy: null
+          '409-11':
+            description: TourInfoFailedException
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorCode:
+                      type: string
+                      example: 409-11
+                    errorMessage:
+                      type: string
+                      example: Tên giải đua đã tồn tại.
+          '409-12':
+            description: TourInfoFailedException
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorCode:
+                      type: string
+                      example: 409-12
+                    errorMessage:
+                      type: string
+                      example: Ngày bắt đầu phải nhỏ hơn hoặc bằng ngày kết thúc.
+    put:
+        tags:
+          - Tournament
+        summary: Cập nhật giải đua
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateTourRequestDto'
+              examples:
+                sampleRequest:
+                  value:
+                    id: 1
+                    name: "updated tour"
+                    birdsNum: 50
+                    imgUrl: "/img/test.jpg"
+                    startDate: "10-10-2024"
+                    endDate: "12-10-2024"
+                    restTimePerDay: 8
+                    isActived: true
+        responses:
+          '200':
+            description: Tạo giải đua thành công
+            content:
+              application/json:
+                schema:
+                  items:
+                    $ref: '#/components/schemas/TourResponseDto'
+                  example:
+                    id: 1
+                    name: "updated tour"
+                    birdsNum: 50
+                    imgUrl: "/img/test.jpg"
+                    startDate: "10-10-2024"
+                    endDate: "12-10-2024"
+                    restTimePerDay: 8
+                    isActived: true
+                    createdAt: "01-10-2024 10:00:00"
+                    createdBy: 1
+                    updatedAt: "02-10-2024 10:00:00"
+                    updatedBy: 1
+          '409-11':
+            description: TourInfoFailedException
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorCode:
+                      type: string
+                      example: 409-11
+                    errorMessage:
+                      type: string
+                      example: Tên giải đua đã tồn tại.
+          '409-12':
+            description: TourInfoFailedException
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    errorCode:
+                      type: string
+                      example: 409-12
+                    errorMessage:
+                      type: string
+                      example: Ngày bắt đầu phải nhỏ hơn hoặc bằng ngày kết thúc.

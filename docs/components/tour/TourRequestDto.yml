@@ -1,0 +1,21 @@
+components:
+  schemas:
+    TourRequestDto:
+      type: object
+      properties:
+        name:
+          type: string
+        birdsNum:
+          type: integer
+        imgUrl:
+          type: string
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        restTimePerDay:
+          type: integer
+        isActived:
+          type: boolean

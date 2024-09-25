@@ -1,0 +1,35 @@
+components:
+  schemas:
+    TourResponseDto:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        birdsNum:
+          type: integer
+        imgUrl:
+          type: string
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        restTimePerDay:
+          type: integer
+        isActived:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        createdBy:
+          type: integer
+          format: int64
+        updatedAt:
+          type: string
+          format: date-time
+        updatedBy:
+          type: integer
+          format: int64
