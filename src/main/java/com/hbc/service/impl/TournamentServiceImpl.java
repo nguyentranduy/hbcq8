@@ -42,7 +42,7 @@ public class TournamentServiceImpl implements TournamentService {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(rollbackFor = Exception.class)
 	public TourResponseDto doRegister(TourRequestDto dto, UserResponseDto currentUser) {
 		log.info("User {} started create new tournament", currentUser.getUsername());
 		
