@@ -3,6 +3,8 @@ package com.hbc.entity;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import com.hbc.dto.tournament.TourRequestDto;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -61,4 +63,25 @@ public class Tournament implements Serializable {
 	
 	@Column(name = "updated_by")
 	private Long updatedBy;
+	
+	public static Tournament build(TourRequestDto tourRequestDto, long createdBy, long updatedBy) {
+		Tournament entity = new Tournament();
+		entity.setName(tourRequestDto.getName());
+		entity.setBirdsNum(tourRequestDto.getBirdsNum());
+		entity.setImgUrl(tourRequestDto.getImgUrl());
+		entity.setStartDate(tourRequestDto.getStartDate());
+		entity.setEndDate(tourRequestDto.getEndDate());
+		entity.setRestTimePerDay(tourRequestDto.getRestTimePerDay());
+		entity.setIsActived(tourRequestDto.getIsActived());
+		entity.setCreatedBy(createdBy);
+		entity.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+		
+		if (updatedBy > 0L) {
+			entity.setUpdatedBy(updatedBy);
+			entity.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+		}
+		
+		return entity;
+	}
 }
+
