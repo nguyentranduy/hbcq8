@@ -130,6 +130,7 @@ public class BirdApi {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 		}
 		try {
+			// TODO Delete old file after change
 			File tempFile = File.createTempFile("temp", null);
 			file.transferTo(tempFile);
 			String imgUrl = gcpService.uploadImageToDrive(tempFile, birdSecretKey);

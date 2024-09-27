@@ -61,6 +61,7 @@ public class UserApi {
 		}
 
 		try {
+			// TODO Delete old file before change
 			File tempFile = File.createTempFile("temp", null);
 			file.transferTo(tempFile);
 			String imgUrl = gcpService.uploadImageToDrive(tempFile, username);
