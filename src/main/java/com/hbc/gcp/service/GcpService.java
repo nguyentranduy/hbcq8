@@ -42,18 +42,19 @@ public class GcpService {
 		return serviceAccountKeyPath;
 	}
 
-	public String uploadImageToDrive(File file) throws GeneralSecurityException, IOException {
+	public String uploadImageToDrive(File file, String avName) throws GeneralSecurityException, IOException {
 		try {
 			String folderId = "1x6N46NhlynITpT5nxXQ7p4E7hLSCj7vb";
 			Drive drive = createDriveService();
 			com.google.api.services.drive.model.File fileMetaData = new com.google.api.services.drive.model.File();
-			fileMetaData.setName(file.getName());
+			fileMetaData.setName(avName);
 			fileMetaData.setParents(Collections.singletonList(folderId));
 			FileContent mediaContent = new FileContent("image/jpeg", file);
 			com.google.api.services.drive.model.File uploadedFile = drive.files().create(fileMetaData, mediaContent)
 					.setFields("id").execute();
 			String imageUrl = "https://drive.google.com/uc?export=view&id=" + uploadedFile.getId();
-			System.out.println("IMAGE URL: " + imageUrl);
+			System.out.println("file id: "+uploadedFile.getId());
+			System.out.println("file url: "+imageUrl);
 			file.delete();
 			return imageUrl;
 		} catch (Exception e) {
@@ -61,6 +62,17 @@ public class GcpService {
 			return null;
 		}
 
+	}
+
+	public boolean deleteFileFromDrive(String fileId) throws GeneralSecurityException, IOException {
+		try {
+			Drive drive = createDriveService();
+			drive.files().delete(fileId).execute();
+			return true; 
+		} catch (Exception e) {
+			System.out.println("Error deleting file: " + e.getMessage());
+			return false;
+		}
 	}
 
 	private Drive createDriveService() throws GeneralSecurityException, IOException {

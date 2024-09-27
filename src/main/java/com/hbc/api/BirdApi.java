@@ -1,5 +1,8 @@
 package com.hbc.api;
 
+import java.io.File;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,9 +17,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.hbc.constant.Globals;
 import com.hbc.dto.ErrorResponse;
 import com.hbc.dto.bird.BirdResponseDto;
 import com.hbc.entity.Bird;
@@ -24,6 +30,7 @@ import com.hbc.exception.AuthenticationException;
 import com.hbc.exception.CustomException;
 import com.hbc.exception.bird.DuplicatedBirdException;
 import com.hbc.exception.bird.KeyConstraintBirdException;
+import com.hbc.gcp.service.GcpService;
 import com.hbc.service.BirdService;
 
 @RestController
@@ -31,6 +38,9 @@ import com.hbc.service.BirdService;
 public class BirdApi {
 	@Autowired
 	BirdService birdService;
+
+	@Autowired
+	GcpService gcpService;
 
 	@PostMapping("/insert")
 	public ResponseEntity<?> doInsert(@RequestBody BirdResponseDto requestDto) {
@@ -61,16 +71,12 @@ public class BirdApi {
 
 	}
 
-	@GetMapping("get-birds/{userId}")
+	@GetMapping("get-user-birds/{userId}")
 	public ResponseEntity<?> doGetBirds(@PathVariable(value = "userId") Long userId) {
 
 		try {
-			List<Bird> list = birdService.doGetBirds(userId);
-			List<BirdResponseDto> listDto = new ArrayList<>();
-			for (Bird bird : list) {
-				listDto.add(BirdResponseDto.build(bird));
-			}
-			return ResponseEntity.ok(listDto);
+			List<BirdResponseDto> list = birdService.doGetBirds(userId);
+			return ResponseEntity.ok(list);
 		} catch (AuthenticationException e) {
 			ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode(), e.getErrorMessage());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
@@ -104,6 +110,45 @@ public class BirdApi {
 			ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode(), e.getMessage());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 		}
+	}
+
+	@PutMapping("/update-avatar")
+	public ResponseEntity<?> doUpdateAvatar(@RequestParam("birdSecretKey") String birdSecretKey,
+			@RequestParam("file") MultipartFile file) {
+
+		if (file.isEmpty()) {
+			ErrorResponse errorResponse = new ErrorResponse("400", "File can't be empty.");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+		}
+		if (file.getSize() >= Globals.MAX_FILE_SIZE) {
+			ErrorResponse errorResponse = new ErrorResponse("400", "File size cannot be lager than 5mb.");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+		}
+		if (!Globals.isImage(file.getContentType())) {
+			ErrorResponse errorResponse = new ErrorResponse("400",
+					"File is not an image. Allowed formats: JPEG, PNG, GIF.");
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+		}
+		try {
+			File tempFile = File.createTempFile("temp", null);
+			file.transferTo(tempFile);
+			String imgUrl = gcpService.uploadImageToDrive(tempFile, birdSecretKey);
+			birdService.doUpdateImg(birdSecretKey, imgUrl);
+			return ResponseEntity.ok(imgUrl);
+		} catch (IOException e) {
+			ErrorResponse errorResponse = new ErrorResponse("500", e.getMessage());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+		} catch (GeneralSecurityException e) {
+			ErrorResponse errorResponse = new ErrorResponse("500", e.getMessage());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+		} catch (AuthenticationException e) {
+			ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode(), e.getErrorMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+		} catch (CustomException e) {
+			ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode(), e.getErrorMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+		}
+
 	}
 
 }

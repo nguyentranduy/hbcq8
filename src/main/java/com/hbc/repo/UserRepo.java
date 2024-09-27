@@ -27,7 +27,7 @@ public interface UserRepo extends JpaRepository<User, Long> {
 
 	@Modifying
 	@Query("UPDATE User u SET u.imgUrl = :imgUrl WHERE u.username = :username")
-	Boolean updateimgUrlByUsername(@Param("imgUrl") String imgUrl, @Param("username") String username);
+	int updateimgUrlByUsername(@Param("imgUrl") String imgUrl, @Param("username") String username);
 
 	@Modifying
 	@Query("UPDATE User u SET u.phone = :phone, u.address = :address," + "u.birthday = :birthday, u.imgUrl = :imgUrl,"
@@ -35,4 +35,5 @@ public interface UserRepo extends JpaRepository<User, Long> {
 	int update(@Param("phone") String phone, @Param("address") String address, @Param("birthday") Date birthday,
 			@Param("imgUrl") String imgUrl, @Param("updatedAt") Timestamp updatedAt, @Param("updatedBy") Long updatedBy,
 			@Param("id") Long id);
+
 }

@@ -1,6 +1,7 @@
 package com.hbc.service.impl;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,10 +48,14 @@ public class BirdServiceImpl implements BirdService {
 	}
 
 	@Override
-	public List<Bird> doGetBirds(Long userId) throws AuthenticationException {
+	public List<BirdResponseDto> doGetBirds(Long userId) throws AuthenticationException {
 		if (userRepo.existsById(userId)) {
 			List<Bird> list = birdRepo.findByUser(new User(userId));
-			return list;
+			List<BirdResponseDto> listResponseDtos = new ArrayList<>();
+			for (Bird bird : list) {
+				listResponseDtos.add(BirdResponseDto.build(bird));
+			}
+			return listResponseDtos;
 		}
 		throw new AuthenticationException("400", "User not found.");
 
@@ -113,9 +118,21 @@ public class BirdServiceImpl implements BirdService {
 	}
 
 	@Override
-	public String doUpdateImg(MultipartFile file, Long id) {
-		// TODO Auto-generated method stub
-		return null;
+	public Boolean doUpdateImg(String birdSecretKey, String imgUrl) throws AuthenticationException, CustomException {
+		if (!birdRepo.existsByBirdSecretKey(birdSecretKey)) {
+			throw new AuthenticationException("401", "Bird not found.");
+		}
+		try {
+			int updated = birdRepo.updateimgUrlById(imgUrl, birdSecretKey);
+
+			if (updated < 1) {
+				throw new CustomException("400", String.format("Can't update avatar for bird {0}", birdSecretKey));
+			}
+			return true;
+		} catch (Exception e) {
+			throw new CustomException("400", String.format("Can't update avatar for bird {0}", e.getMessage()));
+		}
+
 	}
 
 }

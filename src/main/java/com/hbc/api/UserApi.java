@@ -43,17 +43,18 @@ public class UserApi {
 	GcpService gcpService;
 
 	@PostMapping("/update-avatar")
-	public ResponseEntity<?> doUpdateImgUrl(@RequestParam("image") MultipartFile file) {
+	public ResponseEntity<?> doUpdateImgUrl(@RequestParam("username") String username,
+			@RequestParam("image") MultipartFile file) {
 		if (file.isEmpty()) {
-			ErrorResponse errorResponse = new ErrorResponse("400", "file is empty.");
+			ErrorResponse errorResponse = new ErrorResponse("400", "File cannot be empty.");
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 		}
 		if (file.getSize() >= Globals.MAX_FILE_SIZE) {
-			ErrorResponse errorResponse = new ErrorResponse("400", "file is empty.");
+			ErrorResponse errorResponse = new ErrorResponse("400", "File size cannot be larger than 5mb.");
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 		}
 		String contentType = file.getContentType();
-		if (!isImage(contentType)) {
+		if (!Globals.isImage(contentType)) {
 			ErrorResponse errorResponse = new ErrorResponse("400",
 					"File is not an image. Allowed formats: JPEG, PNG, GIF.");
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
@@ -62,7 +63,8 @@ public class UserApi {
 		try {
 			File tempFile = File.createTempFile("temp", null);
 			file.transferTo(tempFile);
-			String imgUrl = gcpService.uploadImageToDrive(tempFile);
+			String imgUrl = gcpService.uploadImageToDrive(tempFile, username);
+			userService.doUpdateImg(imgUrl, username);
 			return ResponseEntity.ok(imgUrl);
 		} catch (IOException e) {
 			ErrorResponse errorResponse = new ErrorResponse("500", e.getMessage());
@@ -70,6 +72,12 @@ public class UserApi {
 		} catch (GeneralSecurityException e) {
 			ErrorResponse errorResponse = new ErrorResponse("500", e.getMessage());
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+		} catch (AuthenticationException e) {
+			ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode(), e.getErrorMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+		} catch (CustomException e) {
+			ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode(), e.getErrorMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 		}
 	}
 
@@ -93,10 +101,5 @@ public class UserApi {
 			ErrorResponse errorResponse = new ErrorResponse(ex.getErrorCode(), ex.getErrorMessage());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 		}
-	}
-
-	private boolean isImage(String contentType) {
-		return contentType != null && (contentType.equals("image/jpeg") || contentType.equals("image/png")
-				|| contentType.equals("image/gif"));
 	}
 }

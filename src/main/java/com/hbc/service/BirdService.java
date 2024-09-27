@@ -12,7 +12,7 @@ import com.hbc.exception.bird.KeyConstraintBirdException;
 public interface BirdService {
 	Boolean doDelete(Long id) throws KeyConstraintBirdException;
 
-	List<Bird> doGetBirds(Long userId);
+	List<BirdResponseDto> doGetBirds(Long userId);
 
 	BirdResponseDto doGetBird(String birdSecretKey);
 
@@ -20,5 +20,5 @@ public interface BirdService {
 
 	BirdResponseDto doUpdate(BirdResponseDto dto);
 
-	String doUpdateImg(MultipartFile file, Long id);
+	Boolean doUpdateImg(String birdSecretKey, String imgUrl);
 }

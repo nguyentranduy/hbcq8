@@ -39,8 +39,8 @@ public class BirdResponseDto implements Serializable {
 		dto.imgUrl = bird.getImgUrl();
 		dto.createdAt = bird.getCreatedAt();
 		dto.createdBy = bird.getCreatedBy();
-		dto.createdAt = bird.getUpdatedAt() != null ? bird.getUpdatedAt() : null;
-		dto.createdBy = bird.getUpdatedBy() != null ? bird.getUser().getId() : null;
+		dto.updatedAt = bird.getUpdatedAt() != null ? bird.getUpdatedAt() : null;
+		dto.updatedBy = bird.getUpdatedBy() != null ? bird.getUser().getId() : null;
 		return dto;
 	}
 }
