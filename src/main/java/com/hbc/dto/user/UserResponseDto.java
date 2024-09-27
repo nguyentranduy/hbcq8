@@ -49,9 +49,9 @@ public class UserResponseDto implements Serializable {
 
 		if (user.getBirthday() != null) {
 			DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-			dto.birthday = df.format(user.getBirthday());	
+			dto.birthday = df.format(user.getBirthday());
 		}
-		
+
 		dto.imgUrl = user.getImgUrl();
 		dto.createdAt = user.getCreatedAt();
 		dto.createdBy = user.getCreatedBy();

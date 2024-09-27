@@ -19,7 +19,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Table(name="bird")
+@Table(name = "bird")
 @Entity
 @Getter
 @Setter
@@ -28,32 +28,52 @@ import lombok.Setter;
 public class Bird implements Serializable {
 
 	private static final long serialVersionUID = -6150517181586432342L;
-	
+
 	@Id
 	@Column
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
+	@Column(name = "bird_secret_key")
+	private String birdSecretKey;
+
 	@Column
 	private String name;
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+	@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 	@JoinColumn(name = "user_id", referencedColumnName = "id")
 	private User user;
-	
+
 	@Column(name = "img_url")
 	private String imgUrl;
-	
+
 	@Column(name = "created_at")
 	private Timestamp createdAt;
-	
+
 	@Column(name = "created_by")
 	private Long createdBy;
-	
+
 	@Column(name = "updated_at")
 	private Timestamp updatedAt;
-	
+
 	@Column(name = "updated_by")
 	private Long updatedBy;
+
+	public static Bird buildNewBird(String birdSecretKey, String name, Long userId) {
+		Bird bird = new Bird();
+		bird.setBirdSecretKey(birdSecretKey);
+		bird.setName(name);
+		bird.setUser(new User(userId));
+		bird.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+		bird.setCreatedBy(userId);
+		return bird;
+	}
+
+	public Bird(Long id) {
+		this.id = id;
+	}
+
+
+
 }

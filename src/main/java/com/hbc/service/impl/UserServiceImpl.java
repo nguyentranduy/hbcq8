@@ -20,7 +20,6 @@ import com.hbc.exception.CustomException;
 import com.hbc.exception.register.DuplicatedUserException;
 import com.hbc.repo.UserRepo;
 import com.hbc.service.UserService;
-import com.hbc.util.SaveFile;
 import com.hbc.validator.UserValidator;
 
 import jakarta.servlet.http.HttpSession;
@@ -58,11 +57,11 @@ public class UserServiceImpl implements UserService {
 		if (repo.existsByUsername(userRegisterRequestDto.getUsername())) {
 			throw new DuplicatedUserException("409", "Username already exists.");
 		}
-		
+
 		if (repo.existsByEmail(userRegisterRequestDto.getEmail())) {
 			throw new DuplicatedUserException("409", "Email already exists.");
 		}
-		
+
 		if (repo.existsByPhone(userRegisterRequestDto.getPhone())) {
 			throw new DuplicatedUserException("409", "Phone already exists.");
 		}
@@ -70,8 +69,8 @@ public class UserServiceImpl implements UserService {
 		String hashPassword = bcrypt.encode(userRegisterRequestDto.getPassword());
 		try {
 			User user = User.buildNewUser(userRegisterRequestDto.getUsername(), hashPassword,
-					userRegisterRequestDto.getEmail(), userRegisterRequestDto.getPhone(),
-					RoleConst.ROLE_USER, userRegisterRequestDto.getBirthday());
+					userRegisterRequestDto.getEmail(), userRegisterRequestDto.getPhone(), RoleConst.ROLE_USER,
+					userRegisterRequestDto.getBirthday());
 			return UserResponseDto.build(repo.save(user));
 		} catch (Exception ex) {
 			throw new CustomException("400", ex.getMessage());
@@ -80,8 +79,20 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public Boolean doUpdateImg(MultipartFile file, String username) throws Exception {
-		return repo.updateimgUrlByUsername(SaveFile.doSaveFile(file, username), username);
+	public Boolean doUpdateImg(String imgUrl, String username) throws AuthenticationException, CustomException {
+		if (!repo.existsByUsername(username)) {
+			throw new AuthenticationException("401", "User not found.");
+		}
+		try {
+			int updated = repo.updateimgUrlByUsername(imgUrl, username);
+			if (updated < 1) {
+				throw new CustomException("400", String.format("Can't update avatar for {0}", username));
+			}
+			return true;
+		} catch (Exception e) {
+			throw new CustomException("400", e.getMessage());
+		}
+
 	}
 
 	@Override
@@ -107,25 +118,25 @@ public class UserServiceImpl implements UserService {
 					userUpdateRequestDto.getBirthday(), userUpdateRequestDto.getImgUrl(),
 					new Timestamp(System.currentTimeMillis()), userUpdateRequestDto.getUserId(),
 					userUpdateRequestDto.getUserId());
-	
+
 			if (updatedRecord < 1) {
-				throw new CustomException("400", String.format("Cannot update user with id: {0}",
-						userUpdateRequestDto.getUserId()));
+				throw new CustomException("400",
+						String.format("Cannot update user with id: {0}", userUpdateRequestDto.getUserId()));
 			}
-			
+
 			User userResponse = repo.findById(userUpdateRequestDto.getUserId()).get();
-			
+
 			if (userResponse == null) {
-				throw new CustomException("400", String.format("Cannot update user with id: {0}",
-						userUpdateRequestDto.getUserId()));
+				throw new CustomException("400",
+						String.format("Cannot update user with id: {0}", userUpdateRequestDto.getUserId()));
 			}
-			
+
 			UserResponseDto userResponseDto = UserResponseDto.build(userResponse);
 			return userResponseDto;
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			throw new CustomException("400", String.format("Cannot update user with id: {0}",
-					userUpdateRequestDto.getUserId()));
+			throw new CustomException("400",
+					String.format("Cannot update user with id: {0}", userUpdateRequestDto.getUserId()));
 		}
 	}
 }

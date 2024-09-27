@@ -20,7 +20,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Table(name="user")
+@Table(name = "user")
 @Entity
 @Getter
 @Setter
@@ -29,55 +29,55 @@ import lombok.Setter;
 public class User implements Serializable {
 
 	private static final long serialVersionUID = -6150517181586432342L;
-	
+
 	@Id
 	@Column
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@Column
 	private String username;
-	
+
 	@Column
 	private String email;
-	
+
 	@Column
 	private String password;
-	
+
 	@Column
 	private String phone;
-	
+
 	@Column
 	private String address;
-	
+
 	@Column
 	private Date birthday;
-	
+
 	@Column(name = "img_url")
 	private String imgUrl;
-	
+
 	@Column(name = "is_deleted")
 	private Boolean isDeleted;
-	
+
 	@Column(name = "created_at")
 	private Timestamp createdAt;
-	
+
 	@Column(name = "created_by")
 	private Long createdBy;
-	
+
 	@Column(name = "updated_at")
 	private Timestamp updatedAt;
-	
+
 	@Column(name = "updated_by")
 	private Long updatedBy;
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+	@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 	@JoinColumn(name = "role_id", referencedColumnName = "id")
 	private Role role;
-	
-	public static User buildNewUser(String username, String password, String email, String phone,
-			int roleId, String birthday) throws IllegalArgumentException {
+
+	public static User buildNewUser(String username, String password, String email, String phone, int roleId,
+			String birthday) throws IllegalArgumentException {
 		User user = new User();
 		user.setUsername(username);
 		user.setPassword(password);
@@ -87,7 +87,7 @@ public class User implements Serializable {
 		user.setCreatedBy(0L);
 		user.setCreatedAt(new Timestamp(System.currentTimeMillis()));
 		user.setIsDeleted(false);
-		
+
 		if (!birthday.isEmpty()) {
 			try {
 				user.setBirthday(Date.valueOf(birthday)); // yyyy-MM-dd
@@ -95,7 +95,11 @@ public class User implements Serializable {
 				throw new IllegalArgumentException("Birthday must be follow the pattern: yyyy-MM-dd");
 			}
 		}
-		
+
 		return user;
+	}
+
+	public User(Long id) {
+		this.id = id;
 	}
 }
