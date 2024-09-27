@@ -71,6 +71,7 @@ DROP TABLE IF EXISTS `tournament_detail`;
 CREATE TABLE `tournament_detail` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `bird_id` bigint NOT NULL,
+  `bird_secret_key` varchar(255) NULL,
   `tour_id` bigint NOT NULL,
   `start_point_time` timestamp DEFAULT NULL,
   `point1_time` timestamp DEFAULT NULL,

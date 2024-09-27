@@ -1,4 +1,4 @@
-package com.hbc.api;
+package com.hbc.api.admin;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hbc.service.TournamentService;
 
 @RestController
-@RequestMapping("/api/v1/tournament")
+@RequestMapping("/api/v1/admin/tournament")
 public class TourApi {
 	
 	@Autowired

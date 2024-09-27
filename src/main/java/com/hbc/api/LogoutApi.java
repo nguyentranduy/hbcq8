@@ -21,7 +21,7 @@ public class LogoutApi {
 			ErrorResponse errorResponse = new ErrorResponse("400", "Bad request");
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 		}
-		
+
 		session.removeAttribute(SessionConst.CURRENT_USER);
 		return ResponseEntity.ok().build();
 	}
