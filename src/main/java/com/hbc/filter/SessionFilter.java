@@ -41,9 +41,14 @@ public class SessionFilter implements Filter {
 			
 			String userId = req.getHeader("userId");
 			String token = req.getHeader("token");
-            LoginManagement loginManagement = loginManagementService.findByUserIdAndToken(Long.parseLong(userId), token);
 			
-            if (ObjectUtils.isEmpty(userId) || ObjectUtils.isEmpty(token) || ObjectUtils.isEmpty(loginManagement)) {
+            if (ObjectUtils.isEmpty(userId) || ObjectUtils.isEmpty(token)) {
+            	res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+				return;
+            }
+            
+            LoginManagement loginManagement = loginManagementService.findByUserIdAndToken(Long.parseLong(userId), token);
+            if (ObjectUtils.isEmpty(loginManagement)) {
             	res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
 				return;
             }
