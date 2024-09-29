@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,9 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hbc.constant.SessionConst;
 import com.hbc.dto.ErrorResponse;
+import com.hbc.dto.tourlocation.CalDistanceRequestDto;
+import com.hbc.dto.tourlocation.CalDistanceResponseDto;
 import com.hbc.dto.tourlocation.TourLocationDto;
 import com.hbc.dto.user.UserResponseDto;
+import com.hbc.exception.calculatedistance.InvalidCoorFormatException;
 import com.hbc.service.TournamentLocationService;
+import com.hbc.service.impl.CalculateDistanceService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -26,6 +31,9 @@ public class TourLocationApi {
 
 	@Autowired
 	TournamentLocationService tournamentLocationService;
+	
+	@Autowired
+	CalculateDistanceService calculateDistanceService;
 	
 	@GetMapping("/list")
 	public ResponseEntity<?> doGetList(@RequestParam("page") int page,
@@ -63,6 +71,17 @@ public class TourLocationApi {
 			tournamentLocationService.delete(id);
 			return ResponseEntity.status(HttpStatus.OK).build();
 		} catch (Exception ex) {
+			ErrorResponse errorResponse = new ErrorResponse("400", ex.getMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+		}
+	}
+	
+	@PostMapping("/calculate-distance")
+	public ResponseEntity<?> calculateDistance(@RequestBody CalDistanceRequestDto calDistanceRequestDto) {
+		try {
+			CalDistanceResponseDto response = calculateDistanceService.calculateDistance(calDistanceRequestDto);
+			return ResponseEntity.ok(response);
+		} catch (InvalidCoorFormatException ex) {
 			ErrorResponse errorResponse = new ErrorResponse("400", ex.getMessage());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 		}
