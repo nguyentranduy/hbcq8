@@ -3,8 +3,12 @@ package com.hbc.dto.tournament;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import org.springframework.util.StringUtils;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.hbc.dto.tournament.TourLocationDto.Point;
 import com.hbc.entity.Tournament;
+import com.hbc.entity.TournamentLocation;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,6 +39,7 @@ public class TourResponseDto implements Serializable {
 	@JsonFormat(pattern = "dd-MM-yyyy hh:mm:ss.SSS")
 	private Timestamp updatedAt;
 	private Long updatedBy;
+	private TourLocationDto tourLocation;
 
 	/**
 	 * Build TourResponseDto from Tournament entity.
@@ -42,21 +47,50 @@ public class TourResponseDto implements Serializable {
 	 * @param entity Tournament entity.
 	 * @return a response dto.
 	 */
-	public static TourResponseDto build(Tournament entity) {
+	public static TourResponseDto build(Tournament tour, TournamentLocation tourLocation) {
 		TourResponseDto dto = new TourResponseDto();
-		dto.setId(entity.getId());
-		dto.setName(entity.getName());
-		dto.setBirdsNum(entity.getBirdsNum());
-		dto.setImgUrl(entity.getImgUrl());
-		dto.setStartDate(entity.getStartDate());
-		dto.setEndDate(entity.getEndDate());
-		dto.setRestTimePerDay(entity.getRestTimePerDay());
-		dto.setIsActived(entity.getIsActived());
-		dto.setCreatedAt(entity.getCreatedAt());
-		dto.setCreatedBy(entity.getCreatedBy());
-		dto.setUpdatedAt(entity.getUpdatedAt());
-		dto.setUpdatedBy(entity.getUpdatedBy());
-
+		dto.setId(tour.getId());
+		dto.setName(tour.getName());
+		dto.setBirdsNum(tour.getBirdsNum());
+		dto.setImgUrl(tour.getImgUrl());
+		dto.setStartDate(tour.getStartDate());
+		dto.setEndDate(tour.getEndDate());
+		dto.setRestTimePerDay(tour.getRestTimePerDay());
+		dto.setIsActived(tour.getIsActived());
+		dto.setCreatedAt(tour.getCreatedAt());
+		dto.setCreatedBy(tour.getCreatedBy());
+		dto.setUpdatedAt(tour.getUpdatedAt());
+		dto.setUpdatedBy(tour.getUpdatedBy());
+		dto.setTourLocation(buildTourLocationDto(tourLocation));
+		
 		return dto;
+	}
+	
+	private static TourLocationDto buildTourLocationDto(TournamentLocation tourLocation) {
+		TourLocationDto tourLocationDto = new TourLocationDto();
+		tourLocationDto.setStartPoint(new Point(tourLocation.getStartPointName(), tourLocation.getStartPointCoor(), 0F));
+		tourLocationDto.setEndPoint(new Point(tourLocation.getEndPointName(), tourLocation.getEndPointCoor(), tourLocation.getEndPointDist()));
+		
+		if (StringUtils.hasText(tourLocation.getPoint1Name())) {
+			tourLocationDto.setPoint1(new Point(tourLocation.getPoint1Name(), tourLocation.getPoint1Coor(), tourLocation.getPoint1Dist()));
+		}
+		
+		if (StringUtils.hasText(tourLocation.getPoint2Name())) {
+			tourLocationDto.setPoint2(new Point(tourLocation.getPoint2Name(), tourLocation.getPoint2Coor(), tourLocation.getPoint2Dist()));
+		}
+		
+		if (StringUtils.hasText(tourLocation.getPoint3Name())) {
+			tourLocationDto.setPoint3(new Point(tourLocation.getPoint3Name(), tourLocation.getPoint3Coor(), tourLocation.getPoint3Dist()));
+		}
+		
+		if (StringUtils.hasText(tourLocation.getPoint4Name())) {
+			tourLocationDto.setPoint4(new Point(tourLocation.getPoint4Name(), tourLocation.getPoint4Coor(), tourLocation.getPoint4Dist()));
+		}
+		
+		if (StringUtils.hasText(tourLocation.getPoint5Name())) {
+			tourLocationDto.setPoint5(new Point(tourLocation.getPoint5Name(), tourLocation.getPoint5Coor(), tourLocation.getPoint5Dist()));
+		}
+		
+		return tourLocationDto;
 	}
 }

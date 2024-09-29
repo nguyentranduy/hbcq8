@@ -38,6 +38,7 @@ DROP TABLE IF EXISTS `bird`;
 CREATE TABLE `bird` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
+  `code` varchar(255) NOT NULL UNIQUE,
   `user_id` bigint NOT NULL,
   `img_url` varchar(255) DEFAULT NULL,
   `created_at` timestamp DEFAULT NOW(),
@@ -70,8 +71,7 @@ CREATE TABLE `tournament` (
 DROP TABLE IF EXISTS `tournament_detail`;
 CREATE TABLE `tournament_detail` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `bird_id` bigint NOT NULL,
-  `bird_secret_key` varchar(255) NULL,
+  `bird_code` varchar(255) NOT NULL,
   `tour_id` bigint NOT NULL,
   `start_point_time` timestamp DEFAULT NULL,
   `point1_time` timestamp DEFAULT NULL,
@@ -94,9 +94,9 @@ CREATE TABLE `tournament_detail` (
   `updated_by` bigint DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `tour_id` (`tour_id`),
-  KEY `bird_id` (`bird_id`),
+  KEY `bird_code` (`bird_code`),
   CONSTRAINT `tournament_detail_ibfk_1` FOREIGN KEY (`tour_id`) REFERENCES `tournament` (`id`),
-  CONSTRAINT `tournament_detail_ibfk_2` FOREIGN KEY (`bird_id`) REFERENCES `bird` (`id`)
+  CONSTRAINT `tournament_detail_ibfk_2` FOREIGN KEY (`bird_code`) REFERENCES `bird` (`code`)
 );
 
 DROP TABLE IF EXISTS `tournament_location`;

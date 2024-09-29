@@ -36,11 +36,8 @@ public class TournamentDetail implements Serializable {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-	@JoinColumn(name = "bird_id", referencedColumnName = "id")
+	@JoinColumn(name = "bird_code", referencedColumnName = "code")
 	private Bird bird;
-	
-	@Column(name = "bird_secret_key")
-	private String birdSecretKey;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})

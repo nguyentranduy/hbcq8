@@ -37,6 +37,9 @@ public class Bird implements Serializable {
 	@Column
 	private String name;
 	
+	@Column
+	private String code;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@JoinColumn(name = "user_id", referencedColumnName = "id")

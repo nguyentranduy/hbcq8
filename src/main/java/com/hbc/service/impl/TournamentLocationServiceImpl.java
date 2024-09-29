@@ -20,8 +20,8 @@ import com.hbc.entity.Tournament;
 import com.hbc.entity.TournamentLocation;
 import com.hbc.exception.tourlocation.CreateTourLocationException;
 import com.hbc.repo.TournamentLocationRepo;
+import com.hbc.repo.TournamentRepo;
 import com.hbc.service.TournamentLocationService;
-import com.hbc.service.TournamentService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,7 +33,7 @@ public class TournamentLocationServiceImpl implements TournamentLocationService 
 	TournamentLocationRepo repo;
 	
 	@Autowired
-	TournamentService tournamentService;
+	TournamentRepo tournamentRepo;
 
 	@Override
 	public TourLocationDto findByTourId(long tourId) throws Exception {
@@ -58,33 +58,6 @@ public class TournamentLocationServiceImpl implements TournamentLocationService 
 
 		return new PagedResponse<TourLocationDto>(pagedList, pagination);
 	}
-
-	@Override
-	@Transactional
-	public void save(TourLocationDto tourLocationDto, UserResponseDto currentUser) throws Exception {
-		log.info("User {} started create new tour location", currentUser.getUsername());
-		Tournament tour = tournamentService.findByIdAvailable(tourLocationDto.getTourId());
-		if (tour == null) {
-			throw new CreateTourLocationException("400", "Tour is not exists.");
-		}
-		
-		if (repo.existsByTourId(tourLocationDto.getTourId())) {
-			throw new CreateTourLocationException("400", "TourId already exists.");
-		}
-	
-		validateDto(tourLocationDto);
-		
-		TournamentLocation targetEntity = convertToEntity(tourLocationDto, tour);
-		targetEntity.setCreatedBy(currentUser.getId());
-		targetEntity.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
-		
-		try {
-			repo.saveAndFlush(targetEntity);
-		} catch (Exception ex) {
-			log.warn("Cannot created new tour location with tourId - {}", targetEntity.getTour().getId());
-			throw ex;
-		}
-	}
 	
 	@Override
 	@Transactional
@@ -101,7 +74,7 @@ public class TournamentLocationServiceImpl implements TournamentLocationService 
 			throw new CreateTourLocationException("400", "Cannot perform update tourId.");
 		}
 		
-		Tournament tour = tournamentService.findByIdAvailable(tourLocationDto.getTourId());
+		Tournament tour = tournamentRepo.findByIdAndIsActived(tourLocationDto.getTourId(), true);
 		if (tour == null) {
 			throw new CreateTourLocationException("400", "Tour is not exists.");
 		}
