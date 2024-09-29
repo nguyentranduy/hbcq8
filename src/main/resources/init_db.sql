@@ -88,6 +88,7 @@ CREATE TABLE `tournament_detail` (
   `end_point_speed` float DEFAULT NULL,
   `avg_speed` float DEFAULT NULL,
   `rank_of_bird` bigint DEFAULT NULL,
+  `memo` text,
   `created_at` timestamp DEFAULT NOW(),
   `created_by` bigint NOT NULL,
   `updated_at` timestamp DEFAULT NULL,
