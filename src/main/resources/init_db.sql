@@ -132,3 +132,27 @@ CREATE TABLE `tournament_location` (
   KEY `tour_id` (`tour_id`),
   CONSTRAINT `tournament_location_ibfk_1` FOREIGN KEY (`tour_id`) REFERENCES `tournament` (`id`)
 );
+
+DROP TABLE IF EXISTS `tournament_apply`;
+CREATE TABLE tournament_apply (
+	`id` bigint NOT NULL AUTO_INCREMENT,
+	`bird_code` varchar(255) NOT NULL,
+	`tour_id` bigint NOT NULL,
+    `is_bird_applied` tinyint(1) NOT NULL DEFAULT 0,
+    `requester_id` bigint NOT NULL,
+    `approver_id` bigint NOT NULL,
+    `memo` text,
+	`created_at` timestamp DEFAULT NOW(),
+	`created_by` bigint NOT NULL,
+	`updated_at` timestamp DEFAULT NULL,
+	`updated_by` bigint DEFAULT NULL,
+	PRIMARY KEY (`id`),
+	KEY `tour_id` (`tour_id`),
+	KEY `bird_code` (`bird_code`),
+    KEY `approver_id` (`approver_id`),
+    KEY `requester_id` (`requester_id`),
+	CONSTRAINT `tournament_apply_ibfk_1` FOREIGN KEY (`tour_id`) REFERENCES `tournament` (`id`),
+	CONSTRAINT `tournament_apply_ibfk_2` FOREIGN KEY (`bird_code`) REFERENCES `bird` (`code`),
+    CONSTRAINT `tournament_apply_ibfk_3` FOREIGN KEY (`approver_id`) REFERENCES `user` (`id`),
+    CONSTRAINT `tournament_apply_ibfk_4` FOREIGN KEY (`requester_id`) REFERENCES `user` (`id`)
+);

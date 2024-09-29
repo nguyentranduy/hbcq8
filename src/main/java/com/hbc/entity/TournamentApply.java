@@ -19,16 +19,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Table(name="tournament_detail")
+@Table(name="tournament_apply")
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TournamentDetail implements Serializable {
+public class TournamentApply implements Serializable {
 
-	private static final long serialVersionUID = -6150517181586432342L;
-	
+	private static final long serialVersionUID = 5256799611817190738L;
+
 	@Id
 	@Column
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,50 +44,14 @@ public class TournamentDetail implements Serializable {
 	@JoinColumn(name = "tour_id", referencedColumnName = "id")
 	private Tournament tour;
 	
-	@Column(name = "start_point_time")
-	private Timestamp startPointTime;
+	@Column(name = "is_bird_applied")
+	private Boolean isBirdApplied;
 	
-	@Column(name = "point1_time")
-	private Timestamp point1Time;
+	@Column(name = "approver_id")
+	private Long approverId;
 	
-	@Column(name = "point1_speed")
-	private Float point1Speed;
-	
-	@Column(name = "point2_time")
-	private Timestamp point2Time;
-	
-	@Column(name = "point2_speed")
-	private Float point2Speed;
-	
-	@Column(name = "point3_time")
-	private Timestamp point3Time;
-	
-	@Column(name = "point3_speed")
-	private Float point3Speed;
-	
-	@Column(name = "point4_time")
-	private Timestamp point4Time;
-	
-	@Column(name = "point4_speed")
-	private Float point4Speed;
-	
-	@Column(name = "point5_time")
-	private Timestamp point5Time;
-	
-	@Column(name = "point5_speed")
-	private Float point5Speed;
-	
-	@Column(name = "end_point_time")
-	private Timestamp endPointTime;
-	
-	@Column(name = "end_point_speed")
-	private Float endPointSpeed;
-	
-	@Column(name = "avg_speed")
-	private Float avgSpeed;
-	
-	@Column(name = "rank_of_bird")
-	private Long rankOfBird;
+	@Column(name = "requester_id")
+	private Long requesterId;
 	
 	@Column(name = "memo")
 	private String memo;
