@@ -16,7 +16,7 @@ import jakarta.servlet.http.HttpSession;
 public class LogoutApi {
 
 	@GetMapping()
-	public ResponseEntity<?> doPostLogin(HttpSession session) {
+	public ResponseEntity<?> doLogout(HttpSession session) {
 		if (session.getAttribute(SessionConst.CURRENT_USER) == null) {
 			ErrorResponse errorResponse = new ErrorResponse("400", "Bad request");
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
