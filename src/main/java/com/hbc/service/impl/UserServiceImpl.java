@@ -99,7 +99,7 @@ public class UserServiceImpl implements UserService {
 		}
 
 		if (repo.existsByPhone(userUpdateRequestDto.getPhone())) {
-			throw new AuthenticationException("401-03", "Phone number already exists.");
+			throw new DuplicatedUserException("400", "Phone number already exists.");
 		}
 
 		try {

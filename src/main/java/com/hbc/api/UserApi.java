@@ -20,6 +20,7 @@ import com.hbc.dto.user.UserResponseDto;
 import com.hbc.dto.user.UserUpdateRequestDto;
 import com.hbc.exception.AuthenticationException;
 import com.hbc.exception.CustomException;
+import com.hbc.exception.register.DuplicatedUserException;
 import com.hbc.service.UserService;
 
 import jakarta.servlet.http.HttpSession;
@@ -59,6 +60,9 @@ public class UserApi {
 		} catch (AuthenticationException ex) {
 			ErrorResponse errorResponse = new ErrorResponse(ex.getErrorCode(), ex.getErrorMessage());
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+		} catch (DuplicatedUserException ex) {
+			ErrorResponse errorResponse = new ErrorResponse(ex.getErrorCode(), ex.getErrorMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 		} catch (CustomException ex) {
 			ErrorResponse errorResponse = new ErrorResponse(ex.getErrorCode(), ex.getErrorMessage());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
