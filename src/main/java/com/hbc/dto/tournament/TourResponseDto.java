@@ -70,6 +70,10 @@ public class TourResponseDto implements Serializable {
 		TourLocationDto tourLocationDto = new TourLocationDto();
 		tourLocationDto.setStartPoint(new Point(tourLocation.getStartPointName(), tourLocation.getStartPointCoor(), 0F));
 		tourLocationDto.setEndPoint(new Point(tourLocation.getEndPointName(), tourLocation.getEndPointCoor(), tourLocation.getEndPointDist()));
+		tourLocationDto.setCreatedAt(tourLocation.getCreatedAt());
+		tourLocationDto.setCreatedBy(tourLocation.getCreatedBy());
+		tourLocationDto.setUpdatedAt(tourLocation.getUpdatedAt());
+		tourLocationDto.setUpdatedAt(tourLocation.getUpdatedAt());
 		
 		if (StringUtils.hasText(tourLocation.getPoint1Name())) {
 			tourLocationDto.setPoint1(new Point(tourLocation.getPoint1Name(), tourLocation.getPoint1Coor(), tourLocation.getPoint1Dist()));
