@@ -20,7 +20,7 @@ public class CalculateDistanceService {
 
 	public CalDistanceResponseDto calculateDistance(CalDistanceRequestDto calDistanceRequestDto)
 			throws InvalidCoorFormatException {
-		validateFormat(calDistanceRequestDto);
+		validateDto(calDistanceRequestDto);
 		CalDistanceResponseDto calDistanceResponseDto = new CalDistanceResponseDto();
 		calDistanceResponseDto.setStartPoint(0D);
 		String[] startPoint = calDistanceRequestDto.getStartPoint().split(";");
@@ -89,13 +89,30 @@ public class CalculateDistanceService {
 		return calDistanceResponseDto;
 	}
 	
-	private void validateFormat(CalDistanceRequestDto calDistanceRequestDto) throws InvalidCoorFormatException {
-		for (String coordinate : new String[] {calDistanceRequestDto.getStartPoint(),
-				calDistanceRequestDto.getPoint1(), calDistanceRequestDto.getPoint2(), calDistanceRequestDto.getPoint3(),
-				calDistanceRequestDto.getPoint4(), calDistanceRequestDto.getPoint5(), calDistanceRequestDto.getEndPoint()}) {
-			if (coordinate != null && !coordinate.isEmpty() && !COORDINATE_PATTERN.matcher(coordinate).matches()) {
-				throw new InvalidCoorFormatException("400", "Định dạng tọa độ không hợp lệ: " + convertPointName(coordinate));
-			}
+	private void validateDto(CalDistanceRequestDto calDistanceRequestDto) throws InvalidCoorFormatException {
+		if (ObjectUtils.isEmpty(calDistanceRequestDto.getStartPoint())) {
+			throw new InvalidCoorFormatException("400", "Tọa độ bắt đầu không được để trống");
+		}
+		
+		if (ObjectUtils.isEmpty(calDistanceRequestDto.getEndPoint())) {
+			throw new InvalidCoorFormatException("400", "Tọa độ kết thúc không được để trống");
+		}
+		
+		String[] coordinates = new String[] {
+			    calDistanceRequestDto.getStartPoint(),
+			    calDistanceRequestDto.getPoint1(), 
+			    calDistanceRequestDto.getPoint2(), 
+			    calDistanceRequestDto.getPoint3(),
+			    calDistanceRequestDto.getPoint4(), 
+			    calDistanceRequestDto.getPoint5(), 
+			    calDistanceRequestDto.getEndPoint()
+			};
+		
+		for (int i = 0; i < coordinates.length; i++) {
+		    String coordinate = coordinates[i];
+		    if (coordinate != null && !coordinate.isEmpty() && !COORDINATE_PATTERN.matcher(coordinate).matches()) {
+		        throw new InvalidCoorFormatException("400", "Định dạng tọa độ không hợp lệ: " + convertPointName(i));
+		    }
 		}
 	}
 	
@@ -116,19 +133,19 @@ public class CalculateDistanceService {
 		return Math.pow(Math.sin(val / 2), 2);
 	}
 	
-	private String convertPointName(String pointName) {
-		switch (pointName) {
-			case "startPoint":
+	private String convertPointName(int index) {
+		switch (index) {
+			case 0:
 				return "Điểm khởi đầu";
-			case "point1":
+			case 1:
 				return "Chặng 1";
-			case "point2":
+			case 2:
 				return "Chặng 2";
-			case "point3":
+			case 3:
 				return "Chặng 3";
-			case "point4":
+			case 4:
 				return "Chặng 4";
-			case "point5":
+			case 5:
 				return "Chặng 5";
 			default:
 				return "Điểm kết thúc";
