@@ -10,26 +10,30 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.hbc.constant.RoleConst;
-import com.hbc.constant.SessionConst;
 import com.hbc.dto.user.UserRegisterRequestDto;
 import com.hbc.dto.user.UserResponseDto;
 import com.hbc.dto.user.UserUpdateRequestDto;
+import com.hbc.entity.LoginManagement;
 import com.hbc.entity.User;
 import com.hbc.exception.AuthenticationException;
 import com.hbc.exception.CustomException;
 import com.hbc.exception.register.DuplicatedUserException;
 import com.hbc.repo.UserRepo;
+import com.hbc.service.LoginManagementService;
 import com.hbc.service.UserService;
 import com.hbc.util.SaveFile;
 import com.hbc.validator.UserValidator;
 
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class UserServiceImpl implements UserService {
 
 	@Autowired
 	UserRepo repo;
+	
+	@Autowired
+	LoginManagementService loginManagementService;
 
 	private final BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
 
@@ -44,11 +48,20 @@ public class UserServiceImpl implements UserService {
 
 		User userResponse = userResponseOptional.get();
 
-		if (bcrypt.matches(password, userResponse.getPassword())) {
-			return UserResponseDto.build(userResponse);
+		if (!bcrypt.matches(password, userResponse.getPassword())) {
+			throw new AuthenticationException("401", "Incorrect password. Please try again.");	
 		}
-
-		throw new AuthenticationException("401", "Incorrect password. Please try again.");
+		
+		UserResponseDto userResponseDto = UserResponseDto.build(userResponse);
+		
+		try {
+			LoginManagement loginManagement = loginManagementService.createToken(userResponseDto.getId());
+			userResponseDto.setToken(loginManagement.getToken());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return userResponseDto;
 	}
 
 	@Override
@@ -86,15 +99,16 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public UserResponseDto doUpdate(UserUpdateRequestDto userUpdateRequestDto, HttpSession session)
+	public UserResponseDto doUpdate(UserUpdateRequestDto userUpdateRequestDto, HttpServletRequest req)
 			throws DuplicatedUserException, AuthenticationException {
 
-		if (!UserValidator.canSelfUpdated(userUpdateRequestDto.getUserId(), session)) {
+		if (!UserValidator.canSelfUpdated(userUpdateRequestDto.getUserId(), req)) {
 			throw new AuthenticationException("401-01", "User do not have permission to update.");
 		}
 
 		if (!repo.existsByIdAndIsDeleted(userUpdateRequestDto.getUserId(), Boolean.FALSE)) {
-			session.removeAttribute(SessionConst.CURRENT_USER);
+			req.removeAttribute("userId");
+			req.removeAttribute("token");
 			throw new AuthenticationException("401-02", "User account not found.");
 		}
 
@@ -121,6 +135,7 @@ public class UserServiceImpl implements UserService {
 			}
 			
 			UserResponseDto userResponseDto = UserResponseDto.build(userResponse);
+			userResponseDto.setToken(req.getHeader("token"));
 			return userResponseDto;
 		} catch (Exception ex) {
 			ex.printStackTrace();

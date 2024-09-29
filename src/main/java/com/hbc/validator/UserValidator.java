@@ -1,9 +1,6 @@
 package com.hbc.validator;
 
-import com.hbc.constant.SessionConst;
-import com.hbc.dto.user.UserResponseDto;
-
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
 
 public class UserValidator {
 	
@@ -11,17 +8,12 @@ public class UserValidator {
 		
 	}
 
-	public static boolean canSelfUpdated(Long userRequestedId, HttpSession session) {
-		if (session.getAttribute(SessionConst.CURRENT_USER) == null) {
-			return false;
-		}
-		
-		try {
-			UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
-			return userRequestedId.longValue() == currentUser.getId();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			return false;
-		}
+	public static boolean canSelfUpdated(Long userRequestedId, HttpServletRequest req) {
+		String userId = req.getHeader("userId");
+		String token = req.getHeader("token");
+        if (Long.parseLong(userId) != userRequestedId || token == null) {
+        	return false;
+        }
+        return true;
 	}
 }

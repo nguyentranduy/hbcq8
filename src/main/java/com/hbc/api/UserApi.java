@@ -14,15 +14,15 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.hbc.constant.SessionConst;
 import com.hbc.dto.ErrorResponse;
 import com.hbc.dto.user.UserResponseDto;
 import com.hbc.dto.user.UserUpdateRequestDto;
 import com.hbc.exception.AuthenticationException;
 import com.hbc.exception.CustomException;
+import com.hbc.service.LoginManagementService;
 import com.hbc.service.UserService;
 
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -30,6 +30,9 @@ public class UserApi {
 
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	LoginManagementService loginManagementService;
 	
 	@PostMapping("/img")
 	public ResponseEntity<?> doUpdateImgUrl(@RequestParam(value = "username") String username,
@@ -51,10 +54,9 @@ public class UserApi {
 
 	@PutMapping("/update")
 	public ResponseEntity<?> doUpdateProfile(@RequestBody UserUpdateRequestDto userUpdateRequestDto,
-			HttpSession session) {
+			HttpServletRequest req) {
 		try {
-			UserResponseDto responseDto = userService.doUpdate(userUpdateRequestDto, session);
-			session.setAttribute(SessionConst.CURRENT_USER, responseDto);
+			UserResponseDto responseDto = userService.doUpdate(userUpdateRequestDto, req);
 			return ResponseEntity.ok(responseDto);
 		} catch (AuthenticationException ex) {
 			ErrorResponse errorResponse = new ErrorResponse(ex.getErrorCode(), ex.getErrorMessage());

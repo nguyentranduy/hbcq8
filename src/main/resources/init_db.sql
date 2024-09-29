@@ -157,3 +157,14 @@ CREATE TABLE tournament_apply (
     CONSTRAINT `tournament_apply_ibfk_3` FOREIGN KEY (`approver_id`) REFERENCES `user` (`id`),
     CONSTRAINT `tournament_apply_ibfk_4` FOREIGN KEY (`requester_id`) REFERENCES `user` (`id`)
 );
+
+DROP TABLE IF EXISTS `login_management`;
+CREATE TABLE login_management (
+	`id` bigint NOT NULL AUTO_INCREMENT,
+    `user_id` bigint NOT NULL,
+    `token` varchar(100) NOT NULL,
+    `is_actived` tinyint(1) DEFAULT 1,
+    PRIMARY KEY (`id`),
+	KEY `login_management_ibfk_1` (`user_id`),
+	CONSTRAINT `login_management_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+)

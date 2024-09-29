@@ -32,6 +32,7 @@ public class UserResponseDto implements Serializable {
 	private Timestamp updatedAt;
 	private Long updatedBy;
 	private int roleId;
+	private String token;
 
 	/**
 	 * Build UserLoginResponseDto from User entity.

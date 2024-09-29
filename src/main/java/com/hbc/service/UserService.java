@@ -8,7 +8,7 @@ import com.hbc.dto.user.UserUpdateRequestDto;
 import com.hbc.exception.AuthenticationException;
 import com.hbc.exception.register.DuplicatedUserException;
 
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
 
 public interface UserService {
 
@@ -18,6 +18,6 @@ public interface UserService {
 	
 	Boolean doUpdateImg(MultipartFile file,String username) throws Exception;
 	
-	UserResponseDto doUpdate(UserUpdateRequestDto userUpdateRequestDto, HttpSession session)
+	UserResponseDto doUpdate(UserUpdateRequestDto userUpdateRequestDto, HttpServletRequest req)
 			throws DuplicatedUserException, AuthenticationException;
 }
