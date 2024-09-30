@@ -8,4 +8,5 @@ import com.hbc.entity.Bird;
 @Repository
 public interface BirdRepo extends JpaRepository<Bird, Long> {
 
+	boolean existsByCode(String birdCode);
 }

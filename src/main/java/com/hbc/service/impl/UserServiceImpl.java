@@ -62,9 +62,11 @@ public class UserServiceImpl implements UserService {
 		if (repo.existsByEmail(userRegisterRequestDto.getEmail())) {
 			throw new DuplicatedUserException("409", "Email already exists.");
 		}
+		Optional<User> userWithPhone = repo.findByPhone(userRegisterRequestDto.getPhone());
 		
-		if (repo.existsByPhone(userRegisterRequestDto.getPhone())) {
-			throw new DuplicatedUserException("409", "Phone already exists.");
+		if (userWithPhone.isPresent()
+				&& !userRegisterRequestDto.getPhone().equals(userWithPhone.get().getPhone())) {
+			throw new DuplicatedUserException("409", "Phone number already exists.");
 		}
 
 		String hashPassword = bcrypt.encode(userRegisterRequestDto.getPassword());
@@ -98,8 +100,11 @@ public class UserServiceImpl implements UserService {
 			throw new AuthenticationException("401-02", "User account not found.");
 		}
 
-		if (repo.existsByPhone(userUpdateRequestDto.getPhone())) {
-			throw new DuplicatedUserException("400", "Phone number already exists.");
+		Optional<User> userWithPhone = repo.findByPhone(userUpdateRequestDto.getPhone());
+		
+		if (userWithPhone.isPresent()
+				&& !userUpdateRequestDto.getPhone().equals(userWithPhone.get().getPhone())) {
+			throw new DuplicatedUserException("409", "Phone number already exists.");
 		}
 
 		try {
@@ -119,7 +124,7 @@ public class UserServiceImpl implements UserService {
 				throw new CustomException("400", String.format("Cannot update user with id: {0}",
 						userUpdateRequestDto.getUserId()));
 			}
-			
+
 			UserResponseDto userResponseDto = UserResponseDto.build(userResponse);
 			return userResponseDto;
 		} catch (Exception ex) {

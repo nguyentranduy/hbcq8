@@ -23,7 +23,7 @@ public interface UserRepo extends JpaRepository<User, Long> {
 	
 	Boolean existsByEmail(String email);
 	
-	Boolean existsByPhone(String phone);
+	Optional<User> findByPhone(String phone);
 
 	@Modifying
 	@Query("UPDATE User u SET u.imgUrl = :imgUrl WHERE u.username = :username")

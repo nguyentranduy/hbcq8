@@ -22,7 +22,8 @@ public class SessionFilter implements Filter {
 	private static final List<String> URL_PATTERNS = List.of("/api/v1/admin/tournament-location",
 			"/api/v1/admin/tournament",
 			"/api/v1/logout",
-			"/api/v1/user");
+			"/api/v1/user",
+			"/api/v1/tour-apply");
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
