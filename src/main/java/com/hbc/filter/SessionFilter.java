@@ -5,7 +5,9 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
+import com.hbc.constant.RoleConst;
 import com.hbc.constant.SessionConst;
+import com.hbc.dto.user.UserResponseDto;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -18,12 +20,16 @@ import jakarta.servlet.http.HttpSession;
 
 @Component
 public class SessionFilter implements Filter {
-	
-	private static final List<String> URL_PATTERNS = List.of("/api/v1/admin/tournament-location",
-			"/api/v1/admin/tournament",
+
+	private static final List<String> URL_PATTERNS = List.of(
 			"/api/v1/logout",
 			"/api/v1/user",
 			"/api/v1/tour-apply");
+
+	private static final List<String> URL_ADMIN_PATTERNS = List.of(
+			"/api/v1/admin/tournament-location",
+			"/api/v1/admin/tournament",
+			"/api/v1/admin/tour-apply");
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -36,6 +42,20 @@ public class SessionFilter implements Filter {
 		if (URL_PATTERNS.stream().anyMatch(pattern -> requestURI.startsWith(pattern))) {
 			HttpSession session = req.getSession(false);
 			if (session == null || session.getAttribute(SessionConst.CURRENT_USER) == null) {
+				res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+				return;
+			}
+		}
+
+		if (URL_ADMIN_PATTERNS.stream().anyMatch(pattern -> requestURI.startsWith(pattern))) {
+			HttpSession session = req.getSession(false);
+			if (session == null || session.getAttribute(SessionConst.CURRENT_USER) == null) {
+				res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+				return;
+			}
+
+			UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
+			if (currentUser.getRoleId() != RoleConst.ROLE_ADMIN) {
 				res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
 				return;
 			}

@@ -1,10 +1,12 @@
 package com.hbc.service.impl;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import com.hbc.constant.SessionConst;
 import com.hbc.dto.tourapply.TourApplyRequestDto;
@@ -51,26 +53,50 @@ public class TournamentApplyServiceImpl implements TournamentApplyService {
 			session.removeAttribute(SessionConst.CURRENT_USER);
 			throw new AuthenticationException("401", "Không có quyền thao tác.");
 		}
+		
+		if (ObjectUtils.isEmpty(request.getBirdCode())) {
+			throw new TourApplyException("400", "Phải chọn chim đua.");
+		}
 
 		if (!tourRepo.existsById(request.getTourId())) {
 			throw new TourApplyException("400", "Giải đua không tồn tại.");
 		}
 
-		if (!birdRepo.existsByCode(request.getBirdCode())) {
-			throw new TourApplyException("400", "Chim đua không hợp lệ, mã kiềng: " + request.getBirdCode());
-		}
-
-		if (tournamentApplyRepo.existsByBirdCodeAndTourId(request.getBirdCode(), request.getTourId())) {
-			throw new TourApplyException("400", "Chim đã được đăng ký, mã kiềng: " + request.getBirdCode());
-		}
+		request.getBirdCode().forEach(birdCode -> {
+			if (!birdRepo.existsByCode(birdCode)) {
+				throw new TourApplyException("400", "Chim đua không hợp lệ, mã kiềng: " + birdCode);
+			}
+			
+			if (tournamentApplyRepo.existsByBirdCodeAndTourId(birdCode, request.getTourId())) {
+				throw new TourApplyException("400", "Chim đã được đăng ký, mã kiềng: " + birdCode);
+			}
+		});
 		
 		try {
-			tournamentApplyRepo.doRegister(request.getBirdCode(), request.getTourId(), request.getRequesterId(),
-					new Timestamp(System.currentTimeMillis()), request.getRequesterId());
-			TournamentApply responseEntity = tournamentApplyRepo.findByBirdCodeAndTourIdAndRequesterId(request.getBirdCode(),
-					request.getTourId(), request.getRequesterId());
+			long tourId = request.getTourId();
+			long requesterId = request.getRequesterId();
+			Timestamp createdAt = new Timestamp(System.currentTimeMillis());
+			long createdBy = request.getRequesterId();
+
+			request.getBirdCode().forEach(birdCode -> {
+				tournamentApplyRepo.doRegister(birdCode, tourId, requesterId, createdAt, createdBy);
+			});
 			
-			return TourApplyResponseDto.build(responseEntity);
+			List<TournamentApply> responseEntities = tournamentApplyRepo.findByTourIdAndRequesterIdAndBirdCodeIn(tourId,
+					requesterId, request.getBirdCode());
+			
+			if (request.getBirdCode().size() != responseEntities.size()) {
+				throw new IllegalStateException();
+			}
+			
+			List<String> birdCodesInserted = responseEntities.stream()
+					.map(i -> i.getBird().getCode()).toList();
+			
+			return new TourApplyResponseDto(responseEntities.get(0).getId(), birdCodesInserted,
+					responseEntities.get(0).getTour().getId(), responseEntities.get(0).getTour().getName(),
+					responseEntities.get(0).getTour().getStartDate(), responseEntities.get(0).getTour().getEndDate(),
+					responseEntities.get(0).getRequesterId(), responseEntities.get(0).getCreatedBy(),
+					responseEntities.get(0).getCreatedAt());
 		} catch (Exception ex) {
 			throw new CustomException("400", ex.getMessage());
 		}

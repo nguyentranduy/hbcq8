@@ -1,6 +1,7 @@
 package com.hbc.repo;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -24,5 +25,5 @@ public interface TournamentApplyRepo extends JpaRepository<TournamentApply, Long
 	
 	boolean existsByBirdCodeAndTourId(String birdCode, long tourId);
 	
-	TournamentApply findByBirdCodeAndTourIdAndRequesterId(String birdCode, long tourId, long requesterId);
+	List<TournamentApply> findByTourIdAndRequesterIdAndBirdCodeIn(long tourId, long requesterId, List<String> birdCodes);
 }
