@@ -76,10 +76,9 @@ public class TournamentApplyServiceImpl implements TournamentApplyService {
 			long tourId = request.getTourId();
 			long requesterId = request.getRequesterId();
 			Timestamp createdAt = new Timestamp(System.currentTimeMillis());
-			long createdBy = request.getRequesterId();
 
 			request.getBirdCode().forEach(birdCode -> {
-				tournamentApplyRepo.doRegister(birdCode, tourId, requesterId, createdAt, createdBy);
+				tournamentApplyRepo.doRegister(birdCode, tourId, requesterId, createdAt, requesterId);
 			});
 			
 			List<TournamentApply> responseEntities = tournamentApplyRepo.findByTourIdAndRequesterIdAndBirdCodeIn(tourId,
