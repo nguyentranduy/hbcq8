@@ -29,6 +29,8 @@ import com.hbc.repo.TournamentRepo;
 import com.hbc.service.TournamentService;
 import com.hbc.validator.DateValidator;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -40,6 +42,9 @@ public class TournamentServiceImpl implements TournamentService {
 	
 	@Autowired
 	TournamentLocationRepo tourLocationRepo;
+	
+    @PersistenceContext
+    private EntityManager entityManager;
 
 	@Override
 	public List<TourResponseDto> findAllAvailable() {
@@ -141,6 +146,9 @@ public class TournamentServiceImpl implements TournamentService {
 					tourLocationEntity.getPoint5Name(), tourLocationEntity.getPoint5Coor(), tourLocationEntity.getPoint5Dist(),
 					tourLocationEntity.getEndPointName(), tourLocationEntity.getEndPointCoor(), tourLocationEntity.getEndPointDist(),
 					tourLocationEntity.getUpdatedAt(), tourLocationEntity.getUpdatedBy(), tourLocationEntity.getTourIdValue());
+			
+			entityManager.clear();
+			
 			Tournament tourEntityUpdated = tourRepo.findById(tourEntity.getId()).get();
 			TournamentLocation tourLocationEntityUpdated = tourLocationRepo.findByTourId(tourEntity.getId()).get();
 

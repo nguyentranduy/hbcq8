@@ -28,6 +28,8 @@ import com.hbc.repo.TournamentRepo;
 import com.hbc.repo.UserRepo;
 import com.hbc.service.TournamentApplyService;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.servlet.http.HttpSession;
 
 @Service
@@ -49,6 +51,9 @@ public class TournamentApplyServiceImpl implements TournamentApplyService {
 	
 	@Autowired
 	UserRepo userRepo;
+	
+	@PersistenceContext
+    private EntityManager entityManager;
 
 	@Transactional(rollbackFor = Exception.class)
 	@Override
@@ -91,6 +96,8 @@ public class TournamentApplyServiceImpl implements TournamentApplyService {
 			request.getBirdCode().forEach(birdCode -> {
 				tourApplyRepo.doRegister(birdCode, tourId, requesterId, createdAt, requesterId, STATUS_CODE_WAITING);
 			});
+			
+			entityManager.clear();
 			
 			List<TournamentApply> responseEntities = tourApplyRepo.findByTourIdAndRequesterIdAndBirdCodeIn(tourId,
 					requesterId, request.getBirdCode());
