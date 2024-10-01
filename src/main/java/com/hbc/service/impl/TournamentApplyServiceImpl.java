@@ -87,7 +87,7 @@ public class TournamentApplyServiceImpl implements TournamentApplyService {
 			if (request.getBirdCode().size() != responseEntities.size()) {
 				throw new IllegalStateException();
 			}
-			
+
 			List<String> birdCodesInserted = responseEntities.stream()
 					.map(i -> i.getBird().getCode()).toList();
 			

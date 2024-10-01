@@ -5,9 +5,13 @@ import java.sql.Timestamp;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class TourRequestDto implements Serializable {
 
 	private static final long serialVersionUID = -5201269028402956941L;

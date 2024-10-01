@@ -13,5 +13,5 @@ public class UpdateTourRequestDto extends TourRequestDto {
 
 	private static final long serialVersionUID = -3821113955321900106L;
 
-	private Long id;
+	private long id;
 }

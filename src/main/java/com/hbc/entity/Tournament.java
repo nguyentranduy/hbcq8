@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 import com.hbc.dto.tournament.TourRequestDto;
+import com.hbc.dto.tournament.UpdateTourRequestDto;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -64,7 +65,7 @@ public class Tournament implements Serializable {
 	@Column(name = "updated_by")
 	private Long updatedBy;
 	
-	public static Tournament build(TourRequestDto tourRequestDto, long createdBy, long updatedBy) {
+	public static Tournament build(TourRequestDto tourRequestDto, long createdBy) {
 		Tournament entity = new Tournament();
 		entity.setName(tourRequestDto.getName());
 		entity.setBirdsNum(tourRequestDto.getBirdsNum());
@@ -76,11 +77,22 @@ public class Tournament implements Serializable {
 		entity.setCreatedBy(createdBy);
 		entity.setCreatedAt(new Timestamp(System.currentTimeMillis()));
 		
-		if (updatedBy > 0L) {
-			entity.setUpdatedBy(updatedBy);
-			entity.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
-		}
-		
+		return entity;
+	}
+	
+	public static Tournament buildForUpdate(UpdateTourRequestDto tourRequestDto, long updatedBy) {
+		Tournament entity = new Tournament();
+		entity.setId(tourRequestDto.getId());
+		entity.setName(tourRequestDto.getName());
+		entity.setBirdsNum(tourRequestDto.getBirdsNum());
+		entity.setImgUrl(tourRequestDto.getImgUrl());
+		entity.setStartDate(tourRequestDto.getStartDate());
+		entity.setEndDate(tourRequestDto.getEndDate());
+		entity.setRestTimePerDay(tourRequestDto.getRestTimePerDay());
+		entity.setIsActived(tourRequestDto.getIsActived());
+		entity.setUpdatedBy(updatedBy);
+		entity.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+
 		return entity;
 	}
 }
