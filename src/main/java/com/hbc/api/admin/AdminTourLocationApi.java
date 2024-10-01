@@ -27,7 +27,7 @@ import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/api/v1/admin/tournament-location")
-public class TourLocationApi {
+public class AdminTourLocationApi {
 
 	@Autowired
 	TournamentLocationService tournamentLocationService;

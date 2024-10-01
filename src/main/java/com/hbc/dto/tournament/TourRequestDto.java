@@ -14,9 +14,9 @@ public class TourRequestDto implements Serializable {
 	private String name;
 	private Integer birdsNum;
 	private String imgUrl;
-	@JsonFormat(pattern = "dd-MM-yyyy hh:mm:ss")
+	@JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
 	private Timestamp startDate;
-	@JsonFormat(pattern = "dd-MM-yyyy hh:mm:ss")
+	@JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
 	private Timestamp endDate;	
 	private Float restTimePerDay;
 	private Boolean isActived;

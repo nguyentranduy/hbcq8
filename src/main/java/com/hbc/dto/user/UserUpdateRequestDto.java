@@ -21,7 +21,7 @@ public class UserUpdateRequestDto implements Serializable {
 	private Long userId;
 	private String address;
 	private String imgUrl;
-	@JsonFormat(pattern = "dd-MM-yyyy")
+	@JsonFormat(pattern = "dd-MM-yyyy", timezone = "Asia/Ho_Chi_Minh")
 	private Date birthday;
 	private String phone;
 }

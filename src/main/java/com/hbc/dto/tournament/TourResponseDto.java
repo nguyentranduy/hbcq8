@@ -27,16 +27,16 @@ public class TourResponseDto implements Serializable {
 	private String name;
 	private Integer birdsNum;
 	private String imgUrl;
-	@JsonFormat(pattern = "dd-MM-yyyy hh:mm:ss")
+	@JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
 	private Timestamp startDate;
-	@JsonFormat(pattern = "dd-MM-yyyy hh:mm:ss")
+	@JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
 	private Timestamp endDate;
 	private Float restTimePerDay;
 	private Boolean isActived;
-	@JsonFormat(pattern = "dd-MM-yyyy hh:mm:ss.SSS")
+	@JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss.SSS", timezone = "Asia/Ho_Chi_Minh")
 	private Timestamp createdAt;
 	private Long createdBy;
-	@JsonFormat(pattern = "dd-MM-yyyy hh:mm:ss.SSS")
+	@JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss.SSS", timezone = "Asia/Ho_Chi_Minh")
 	private Timestamp updatedAt;
 	private Long updatedBy;
 	private TourLocationDto tourLocation;
