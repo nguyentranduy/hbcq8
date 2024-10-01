@@ -35,4 +35,7 @@ public interface TournamentRepo extends JpaRepository<Tournament, Long> {
 			@Param("endDate") Timestamp endDate, @Param("restTimePerDay") float restTimePerDay,
 			@Param("isActived") boolean isActived, @Param("updatedAt") Timestamp updatedAt,
 			@Param("updatedBy") Long updatedBy, @Param("id") long id);
+
+	@Query(value = "SELECT birds_num FROM tournament WHERE id = :tourId", nativeQuery = true)
+	int findBirdsNumById(@Param("tourId") long tourId);
 }

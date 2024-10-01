@@ -25,7 +25,7 @@ public class TourApplyApi {
 	@Autowired
 	TournamentApplyService tournamentApplyService;
 	
-	@PostMapping()
+	@PostMapping
 	public ResponseEntity<?> doPost(@RequestBody TourApplyRequestDto dto, HttpSession session) {
 		try {
 			TourApplyResponseDto response = tournamentApplyService.doRegister(dto, session);

@@ -1,6 +1,8 @@
 package com.hbc.service.impl;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,11 +13,13 @@ import org.springframework.util.ObjectUtils;
 import com.hbc.constant.SessionConst;
 import com.hbc.dto.tourapply.TourApplyRequestDto;
 import com.hbc.dto.tourapply.TourApplyResponseDto;
+import com.hbc.dto.tourapply.admin.AdminTourApplyInfoDto;
 import com.hbc.dto.user.UserResponseDto;
 import com.hbc.entity.TournamentApply;
 import com.hbc.exception.AuthenticationException;
 import com.hbc.exception.CustomException;
 import com.hbc.exception.tourapply.TourApplyException;
+import com.hbc.exception.tourapply.TourApplyNotFoundException;
 import com.hbc.repo.BirdRepo;
 import com.hbc.repo.TournamentApplyRepo;
 import com.hbc.repo.TournamentRepo;
@@ -98,6 +102,45 @@ public class TournamentApplyServiceImpl implements TournamentApplyService {
 					responseEntities.get(0).getCreatedAt());
 		} catch (Exception ex) {
 			throw new CustomException("400", ex.getMessage());
+		}
+	}
+
+	@Override
+	public List<AdminTourApplyInfoDto> findByTourId(long tourId) throws Exception {
+		List<Object[]> tourApplyRawData = tournamentApplyRepo.findCustomByTourId(tourId);
+
+		if (ObjectUtils.isEmpty(tourApplyRawData)) {
+			throw new TourApplyNotFoundException("404", "Giải đua không tồn tại.");
+		}
+
+		try {
+			List<AdminTourApplyInfoDto> result = new ArrayList<>();
+			
+			tourApplyRawData.forEach(item -> {
+				long dtoTourId = (long) item[0];
+				String birdCodesRaw = (String) item[1];
+				List<String> birdCodes = Arrays.asList(birdCodesRaw.split(","));
+				long requesterId = (long) item[2];
+				String requesterName = userRepo.findUserNameById(requesterId);
+				Long approverId = null;
+				String approverName = null;
+				if (!ObjectUtils.isEmpty(item[3])) {
+					approverId = (long) item[3];
+					approverName = userRepo.findUserNameById(approverId);
+				}
+				boolean isBirdApplied = (boolean) item[4];
+				String memo = (String) item[5];
+				Timestamp createdAt = (Timestamp) item[6];
+				int birdsNum = tourRepo.findBirdsNumById(dtoTourId);
+				
+				AdminTourApplyInfoDto dto = new AdminTourApplyInfoDto(dtoTourId, birdCodes, requesterId, requesterName,
+						approverId, approverName, isBirdApplied, memo, createdAt, birdsNum);
+				result.add(dto);
+			});
+			return result;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw ex;
 		}
 	}
 }

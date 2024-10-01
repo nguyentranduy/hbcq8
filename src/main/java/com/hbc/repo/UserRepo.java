@@ -37,4 +37,7 @@ public interface UserRepo extends JpaRepository<User, Long> {
 			@Param("birthday") Date birthday, @Param("imgUrl") String imgUrl,
 			@Param("updatedAt") Timestamp updatedAt, @Param("updatedBy") Long updatedBy,
 			@Param("id") Long id);
+	
+	@Query(value = "SELECT username FROM user WHERE id = :userId", nativeQuery = true)
+	String findUserNameById(@Param("userId") long userId);
 }

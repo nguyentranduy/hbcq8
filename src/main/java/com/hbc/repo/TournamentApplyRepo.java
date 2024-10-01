@@ -26,4 +26,11 @@ public interface TournamentApplyRepo extends JpaRepository<TournamentApply, Long
 	boolean existsByBirdCodeAndTourId(String birdCode, long tourId);
 	
 	List<TournamentApply> findByTourIdAndRequesterIdAndBirdCodeIn(long tourId, long requesterId, List<String> birdCodes);
+	
+	@Query(value = "SELECT tour_id, GROUP_CONCAT(bird_code) AS birdCodes, requester_id, approver_id,"
+			+ " is_bird_applied, memo, created_at"
+			+ " FROM tournament_apply"
+			+ " WHERE tour_id = :tourId"
+			+ " GROUP BY requester_id", nativeQuery = true)
+	List<Object[]> findCustomByTourId(@Param("tourId") long tourId);
 }
