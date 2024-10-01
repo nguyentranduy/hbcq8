@@ -141,7 +141,7 @@ CREATE TABLE tournament_apply (
 	`tour_id` bigint NOT NULL,
     `is_bird_applied` tinyint(1) NOT NULL DEFAULT 0,
     `requester_id` bigint NOT NULL,
-    `approver_id` bigint NOT NULL,
+    `approver_id` bigint,
     `memo` text,
 	`created_at` timestamp DEFAULT NOW(),
 	`created_by` bigint NOT NULL,
