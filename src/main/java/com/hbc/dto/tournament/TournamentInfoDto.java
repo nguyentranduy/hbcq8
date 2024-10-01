@@ -26,7 +26,8 @@ public class TournamentInfoDto implements Serializable {
 	private String startLocationName;
 	private String endLocationName;
 	private int birdsNum;
-	private String status;
+	private String tourApplyStatusCode;
 	@JsonProperty("isActived")
 	private boolean isActived;
+	private String tourStatus;
 }

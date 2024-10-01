@@ -27,6 +27,7 @@ public class TournamentInfoServiceImpl implements TournamentInfoService {
 			Timestamp startDate = (Timestamp) item[2];
 			Timestamp endDate = (Timestamp) item[3];
 			boolean isRawActived = (boolean) item[7];
+			String tourStatusCode = String.valueOf(item[8]);
 			Timestamp now = new Timestamp(System.currentTimeMillis());
 			
 			dto.setTourId((long) item[0]);
@@ -36,8 +37,9 @@ public class TournamentInfoServiceImpl implements TournamentInfoService {
 			dto.setStartLocationName((String) item[4]);
 			dto.setEndLocationName((String) item[5]);
 			dto.setBirdsNum((int) item[6]);
+			dto.setTourApplyStatusCode(tourStatusCode);
 			dto.setActived(getIsActived(isRawActived, startDate, endDate, now));
-			dto.setStatus(getStatus(isRawActived, startDate, endDate, now));
+			dto.setTourStatus(getStatus(isRawActived, startDate, endDate, now));
 			result.add(dto);
 		});
 		
