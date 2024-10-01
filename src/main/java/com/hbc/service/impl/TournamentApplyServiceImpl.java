@@ -107,10 +107,14 @@ public class TournamentApplyServiceImpl implements TournamentApplyService {
 
 	@Override
 	public List<AdminTourApplyInfoDto> findByTourId(long tourId) throws Exception {
+		if (!tourRepo.existsById(tourId)) {
+			throw new TourApplyNotFoundException("404", "Giải đua không tồn tại.");
+		}
+		
 		List<Object[]> tourApplyRawData = tournamentApplyRepo.findCustomByTourId(tourId);
 
 		if (ObjectUtils.isEmpty(tourApplyRawData)) {
-			throw new TourApplyNotFoundException("404", "Giải đua không tồn tại.");
+			return List.of();
 		}
 
 		try {

@@ -31,6 +31,6 @@ public interface TournamentApplyRepo extends JpaRepository<TournamentApply, Long
 			+ " is_bird_applied, memo, created_at"
 			+ " FROM tournament_apply"
 			+ " WHERE tour_id = :tourId"
-			+ " GROUP BY requester_id", nativeQuery = true)
+			+ " GROUP BY requester_id, approver_id, memo, created_at, is_bird_applied, tour_id", nativeQuery = true)
 	List<Object[]> findCustomByTourId(@Param("tourId") long tourId);
 }
