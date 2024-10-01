@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import com.hbc.constant.SessionConst;
 import com.hbc.dto.tourapply.TourApplyRequestDto;
@@ -171,6 +172,28 @@ public class TournamentApplyServiceImpl implements TournamentApplyService {
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
+		}
+	}
+
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public void doCancel(long tourId, long requesterId) throws Exception {
+		TournamentApply tournamentApply = tourApplyRepo.findByTourIdAndRequesterId(tourId, requesterId);
+		
+		if (ObjectUtils.isEmpty(tournamentApply)) {
+			throw new TourApplyNotFoundException("404", "Đơn không tồn tại.");
+		}
+		
+		if (StringUtils.hasText(tournamentApply.getStatusCode())
+				&& !tournamentApply.getStatusCode().equals(STATUS_CODE_WAITING)) {
+			throw new TourApplyException("400", "Đơn đã được phê duyệt hoặc từ chối thì không được phép hủy.");
+		}
+		
+		try {
+			tourApplyRepo.deleteByTourIdAndRequesterId(tourId, requesterId);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw ex;
 		}
 	}
 }

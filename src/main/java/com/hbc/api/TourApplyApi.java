@@ -10,12 +10,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hbc.constant.SessionConst;
 import com.hbc.dto.ErrorResponse;
 import com.hbc.dto.tourapply.TourApplyRequestDto;
 import com.hbc.dto.tourapply.TourApplyResponseDto;
+import com.hbc.dto.user.UserResponseDto;
 import com.hbc.exception.AuthenticationException;
 import com.hbc.exception.CustomException;
 import com.hbc.exception.tourapply.TourApplyException;
+import com.hbc.exception.tourapply.TourApplyNotFoundException;
 import com.hbc.service.TournamentApplyService;
 
 import jakarta.servlet.http.HttpSession;
@@ -45,8 +48,19 @@ public class TourApplyApi {
 	}
 	
 	@GetMapping("/cancel")
-	public ResponseEntity<?> cancel(@RequestParam("tourId") long tourId) {
-		
-		return null;
+	public ResponseEntity<?> cancel(@RequestParam("tourId") long tourId, HttpSession session) {
+		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
+		try {
+			tournamentApplyService.doCancel(tourId, currentUser.getId());
+			return ResponseEntity.ok().build();
+		} catch (TourApplyNotFoundException ex) {
+			ErrorResponse errorResponse = new ErrorResponse(ex.getErrorCode(), ex.getErrorMessage());
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+		} catch (TourApplyException ex) {
+			ErrorResponse errorResponse = new ErrorResponse(ex.getErrorCode(), ex.getErrorMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+		} catch (Exception ex) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex);
+		}
 	}
 }
