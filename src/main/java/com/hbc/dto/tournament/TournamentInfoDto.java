@@ -30,4 +30,5 @@ public class TournamentInfoDto implements Serializable {
 	@JsonProperty("isActived")
 	private boolean isActived;
 	private String tourStatus;
+	private String memo;
 }

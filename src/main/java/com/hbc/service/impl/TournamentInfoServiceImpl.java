@@ -33,6 +33,7 @@ public class TournamentInfoServiceImpl implements TournamentInfoService {
 			Timestamp endDate = (Timestamp) item[3];
 			boolean isRawActived = (boolean) item[7];
 			String tourStatusCode = tourApplyRepo.findStatusCodeByTourIdAndRequesterId(tourId, requesterId);
+			String memo = tourApplyRepo.findMemoByTourIdAndRequesterId(tourId, requesterId);
 			Timestamp now = new Timestamp(System.currentTimeMillis());
 			
 			dto.setTourId(tourId);
@@ -45,6 +46,7 @@ public class TournamentInfoServiceImpl implements TournamentInfoService {
 			dto.setTourApplyStatusCode(tourStatusCode);
 			dto.setActived(getIsActived(isRawActived, startDate, endDate, now));
 			dto.setTourStatus(getStatus(isRawActived, startDate, endDate, now));
+			dto.setMemo(memo);
 			result.add(dto);
 		});
 		
