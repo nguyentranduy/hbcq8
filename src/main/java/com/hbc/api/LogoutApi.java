@@ -23,6 +23,6 @@ public class LogoutApi {
 		}
 
 		session.removeAttribute(SessionConst.CURRENT_USER);
-		return ResponseEntity.noContent().build();
+		return ResponseEntity.ok().build();
 	}
 }

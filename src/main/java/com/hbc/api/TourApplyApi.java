@@ -52,7 +52,7 @@ public class TourApplyApi {
 		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
 		try {
 			tournamentApplyService.doCancel(tourId, currentUser.getId());
-			return ResponseEntity.noContent().build();
+			return ResponseEntity.ok().build();
 		} catch (TourApplyNotFoundException ex) {
 			ErrorResponse errorResponse = new ErrorResponse(ex.getErrorCode(), ex.getErrorMessage());
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
