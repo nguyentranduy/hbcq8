@@ -23,6 +23,8 @@ import com.hbc.service.UserService;
 import com.hbc.util.SaveFile;
 import com.hbc.validator.UserValidator;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.servlet.http.HttpSession;
 
 @Service
@@ -30,6 +32,9 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	UserRepo repo;
+	
+    @PersistenceContext
+    private EntityManager entityManager;
 
 	private final BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
 
@@ -117,6 +122,8 @@ public class UserServiceImpl implements UserService {
 				throw new CustomException("400", String.format("Cannot update user with id: {0}",
 						userUpdateRequestDto.getUserId()));
 			}
+			
+			entityManager.clear();
 			
 			User userResponse = repo.findById(userUpdateRequestDto.getUserId()).get();
 			

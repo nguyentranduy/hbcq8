@@ -1,10 +1,10 @@
 package com.hbc.dto.user;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hbc.entity.User;
 
 import lombok.AllArgsConstructor;
@@ -25,10 +25,13 @@ public class UserResponseDto implements Serializable {
 	private String email;
 	private String phone;
 	private String address;
-	private String birthday;
+	@JsonFormat(pattern = "dd-MM-yyyy", timezone = "Asia/Ho_Chi_Minh")
+	private Date birthday;
 	private String imgUrl;
+	@JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
 	private Timestamp createdAt;
 	private Long createdBy;
+	@JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
 	private Timestamp updatedAt;
 	private Long updatedBy;
 	private int roleId;
@@ -46,12 +49,7 @@ public class UserResponseDto implements Serializable {
 		dto.email = user.getEmail();
 		dto.phone = user.getPhone();
 		dto.address = user.getAddress();
-
-		if (user.getBirthday() != null) {
-			DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-			dto.birthday = df.format(user.getBirthday());	
-		}
-		
+		dto.birthday = user.getBirthday();	
 		dto.imgUrl = user.getImgUrl();
 		dto.createdAt = user.getCreatedAt();
 		dto.createdBy = user.getCreatedBy();
