@@ -178,14 +178,15 @@ public class TournamentApplyServiceImpl implements TournamentApplyService {
 	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public void doCancel(long tourId, long requesterId) throws Exception {
-		TournamentApply tournamentApply = tourApplyRepo.findByTourIdAndRequesterId(tourId, requesterId);
+		int tournamentApplyCount = tourApplyRepo.countByTourIdAndRequesterId(tourId, requesterId);
 		
-		if (ObjectUtils.isEmpty(tournamentApply)) {
+		if (tournamentApplyCount < 1) {
 			throw new TourApplyNotFoundException("404", "Đơn không tồn tại.");
 		}
+
+		String tourStatusCode = tourApplyRepo.findStatusCodeByTourIdAndRequesterId(tourId, requesterId);
 		
-		if (StringUtils.hasText(tournamentApply.getStatusCode())
-				&& !tournamentApply.getStatusCode().equals(STATUS_CODE_WAITING)) {
+		if (StringUtils.hasText(tourStatusCode) && !tourStatusCode.equals(STATUS_CODE_WAITING)) {
 			throw new TourApplyException("400", "Đơn đã được phê duyệt hoặc từ chối thì không được phép hủy.");
 		}
 		

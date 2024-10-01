@@ -27,7 +27,7 @@ public interface TournamentApplyRepo extends JpaRepository<TournamentApply, Long
 	
 	boolean existsByTourIdAndRequesterId(long tourId, long requesterId);
 	
-	TournamentApply findByTourIdAndRequesterId(long tourId, long requesterId);
+	int countByTourIdAndRequesterId(long tourId, long requesterId);
 	
 	List<TournamentApply> findByTourIdAndRequesterIdAndBirdCodeIn(long tourId, long requesterId, List<String> birdCodes);
 	
