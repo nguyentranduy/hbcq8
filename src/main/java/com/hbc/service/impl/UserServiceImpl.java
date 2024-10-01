@@ -23,6 +23,8 @@ import com.hbc.service.UserService;
 import com.hbc.util.SaveFile;
 import com.hbc.validator.UserValidator;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.servlet.http.HttpSession;
 
 @Service
@@ -30,6 +32,9 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	UserRepo repo;
+	
+    @PersistenceContext
+    private EntityManager entityManager;
 
 	private final BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
 
@@ -62,9 +67,10 @@ public class UserServiceImpl implements UserService {
 		if (repo.existsByEmail(userRegisterRequestDto.getEmail())) {
 			throw new DuplicatedUserException("409", "Email already exists.");
 		}
+		Optional<User> userWithPhone = repo.findByPhone(userRegisterRequestDto.getPhone());
 		
-		if (repo.existsByPhone(userRegisterRequestDto.getPhone())) {
-			throw new DuplicatedUserException("409", "Phone already exists.");
+		if (userWithPhone.isPresent()) {
+			throw new DuplicatedUserException("409", "Phone number already exists.");
 		}
 
 		String hashPassword = bcrypt.encode(userRegisterRequestDto.getPassword());
@@ -98,8 +104,10 @@ public class UserServiceImpl implements UserService {
 			throw new AuthenticationException("401-02", "User account not found.");
 		}
 
-		if (repo.existsByPhone(userUpdateRequestDto.getPhone())) {
-			throw new AuthenticationException("401-03", "Phone number already exists.");
+		Optional<User> userWithPhone = repo.findByPhoneAndIdNot(userUpdateRequestDto.getPhone(), userUpdateRequestDto.getUserId());
+		
+		if (userWithPhone.isPresent()) {
+			throw new DuplicatedUserException("409", "Phone number already exists.");
 		}
 
 		try {
@@ -113,13 +121,15 @@ public class UserServiceImpl implements UserService {
 						userUpdateRequestDto.getUserId()));
 			}
 			
+			entityManager.clear();
+			
 			User userResponse = repo.findById(userUpdateRequestDto.getUserId()).get();
 			
 			if (userResponse == null) {
 				throw new CustomException("400", String.format("Cannot update user with id: {0}",
 						userUpdateRequestDto.getUserId()));
 			}
-			
+
 			UserResponseDto userResponseDto = UserResponseDto.build(userResponse);
 			return userResponseDto;
 		} catch (Exception ex) {
@@ -127,5 +137,10 @@ public class UserServiceImpl implements UserService {
 			throw new CustomException("400", String.format("Cannot update user with id: {0}",
 					userUpdateRequestDto.getUserId()));
 		}
+	}
+
+	@Override
+	public UserResponseDto findById(long userId) {
+		return UserResponseDto.build(repo.findById(userId).get());
 	}
 }

@@ -38,6 +38,7 @@ DROP TABLE IF EXISTS `bird`;
 CREATE TABLE `bird` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
+  `code` varchar(255) NOT NULL UNIQUE,
   `user_id` bigint NOT NULL,
   `img_url` varchar(255) DEFAULT NULL,
   `created_at` timestamp DEFAULT NOW(),
@@ -70,8 +71,7 @@ CREATE TABLE `tournament` (
 DROP TABLE IF EXISTS `tournament_detail`;
 CREATE TABLE `tournament_detail` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `bird_id` bigint NOT NULL,
-  `bird_secret_key` varchar(255) NULL,
+  `bird_code` varchar(255) NOT NULL,
   `tour_id` bigint NOT NULL,
   `start_point_time` timestamp DEFAULT NULL,
   `point1_time` timestamp DEFAULT NULL,
@@ -88,15 +88,16 @@ CREATE TABLE `tournament_detail` (
   `end_point_speed` float DEFAULT NULL,
   `avg_speed` float DEFAULT NULL,
   `rank_of_bird` bigint DEFAULT NULL,
+  `memo` text,
   `created_at` timestamp DEFAULT NOW(),
   `created_by` bigint NOT NULL,
   `updated_at` timestamp DEFAULT NULL,
   `updated_by` bigint DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `tour_id` (`tour_id`),
-  KEY `bird_id` (`bird_id`),
+  KEY `bird_code` (`bird_code`),
   CONSTRAINT `tournament_detail_ibfk_1` FOREIGN KEY (`tour_id`) REFERENCES `tournament` (`id`),
-  CONSTRAINT `tournament_detail_ibfk_2` FOREIGN KEY (`bird_id`) REFERENCES `bird` (`id`)
+  CONSTRAINT `tournament_detail_ibfk_2` FOREIGN KEY (`bird_code`) REFERENCES `bird` (`code`)
 );
 
 DROP TABLE IF EXISTS `tournament_location`;
@@ -131,4 +132,28 @@ CREATE TABLE `tournament_location` (
   UNIQUE KEY `uniq_tour_id` (`tour_id`),
   KEY `tour_id` (`tour_id`),
   CONSTRAINT `tournament_location_ibfk_1` FOREIGN KEY (`tour_id`) REFERENCES `tournament` (`id`)
+);
+
+DROP TABLE IF EXISTS `tournament_apply`;
+CREATE TABLE tournament_apply (
+	`id` bigint NOT NULL AUTO_INCREMENT,
+	`bird_code` varchar(255) NOT NULL,
+	`tour_id` bigint NOT NULL,
+    `status_code` varchar(1) NOT NULL,
+    `requester_id` bigint NOT NULL,
+    `approver_id` bigint,
+    `memo` text,
+	`created_at` timestamp DEFAULT NOW(),
+	`created_by` bigint NOT NULL,
+	`updated_at` timestamp DEFAULT NULL,
+	`updated_by` bigint DEFAULT NULL,
+	PRIMARY KEY (`id`),
+	KEY `tour_id` (`tour_id`),
+	KEY `bird_code` (`bird_code`),
+    KEY `approver_id` (`approver_id`),
+    KEY `requester_id` (`requester_id`),
+	CONSTRAINT `tournament_apply_ibfk_1` FOREIGN KEY (`tour_id`) REFERENCES `tournament` (`id`),
+	CONSTRAINT `tournament_apply_ibfk_2` FOREIGN KEY (`bird_code`) REFERENCES `bird` (`code`),
+    CONSTRAINT `tournament_apply_ibfk_3` FOREIGN KEY (`approver_id`) REFERENCES `user` (`id`),
+    CONSTRAINT `tournament_apply_ibfk_4` FOREIGN KEY (`requester_id`) REFERENCES `user` (`id`)
 );

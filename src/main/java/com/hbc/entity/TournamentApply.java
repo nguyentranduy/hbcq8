@@ -19,34 +19,42 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Table(name="bird")
+@Table(name="tournament_apply")
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Bird implements Serializable {
+public class TournamentApply implements Serializable {
 
-	private static final long serialVersionUID = -6150517181586432342L;
-	
+	private static final long serialVersionUID = 5256799611817190738L;
+
 	@Id
 	@Column
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column
-	private String name;
-	
-	@Column
-	private String code;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+	@JoinColumn(name = "bird_code", referencedColumnName = "code")
+	private Bird bird;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-	@JoinColumn(name = "user_id", referencedColumnName = "id")
-	private User user;
+	@JoinColumn(name = "tour_id", referencedColumnName = "id")
+	private Tournament tour;
 	
-	@Column(name = "img_url")
-	private String imgUrl;
+	@Column(name = "status_code")
+	private String statusCode;
+	
+	@Column(name = "approver_id")
+	private Long approverId;
+	
+	@Column(name = "requester_id")
+	private Long requesterId;
+	
+	@Column(name = "memo")
+	private String memo;
 	
 	@Column(name = "created_at")
 	private Timestamp createdAt;

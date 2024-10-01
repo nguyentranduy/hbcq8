@@ -3,6 +3,8 @@ package com.hbc.dto.user;
 import java.io.Serializable;
 import java.sql.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +21,7 @@ public class UserUpdateRequestDto implements Serializable {
 	private Long userId;
 	private String address;
 	private String imgUrl;
+	@JsonFormat(pattern = "dd-MM-yyyy", timezone = "Asia/Ho_Chi_Minh")
 	private Date birthday;
 	private String phone;
 }

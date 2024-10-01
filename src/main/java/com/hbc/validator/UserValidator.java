@@ -6,6 +6,10 @@ import com.hbc.dto.user.UserResponseDto;
 import jakarta.servlet.http.HttpSession;
 
 public class UserValidator {
+	
+	private UserValidator() {
+		
+	}
 
 	public static boolean canSelfUpdated(Long userRequestedId, HttpSession session) {
 		if (session.getAttribute(SessionConst.CURRENT_USER) == null) {

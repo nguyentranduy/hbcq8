@@ -20,4 +20,6 @@ public interface UserService {
 	
 	UserResponseDto doUpdate(UserUpdateRequestDto userUpdateRequestDto, HttpSession session)
 			throws DuplicatedUserException, AuthenticationException;
+	
+	UserResponseDto findById(long userId);
 }

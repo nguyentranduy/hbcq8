@@ -110,4 +110,8 @@ public class TournamentLocation implements Serializable {
 	
 	@Column(name = "updated_by")
 	private Long updatedBy;
+	
+	public long getTourIdValue() {
+		return this.tour.getId();
+	}
 }

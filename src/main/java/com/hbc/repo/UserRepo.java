@@ -23,7 +23,8 @@ public interface UserRepo extends JpaRepository<User, Long> {
 	
 	Boolean existsByEmail(String email);
 	
-	Boolean existsByPhone(String phone);
+	Optional<User> findByPhone(String phone);
+	Optional<User> findByPhoneAndIdNot(String phone, long userId);
 
 	@Modifying
 	@Query("UPDATE User u SET u.imgUrl = :imgUrl WHERE u.username = :username")
@@ -37,4 +38,7 @@ public interface UserRepo extends JpaRepository<User, Long> {
 			@Param("birthday") Date birthday, @Param("imgUrl") String imgUrl,
 			@Param("updatedAt") Timestamp updatedAt, @Param("updatedBy") Long updatedBy,
 			@Param("id") Long id);
+	
+	@Query(value = "SELECT username FROM user WHERE id = :userId", nativeQuery = true)
+	String findUserNameById(@Param("userId") long userId);
 }

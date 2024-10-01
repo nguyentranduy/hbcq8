@@ -1,5 +1,7 @@
 package com.hbc.api;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +18,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.hbc.constant.SessionConst;
 import com.hbc.dto.ErrorResponse;
+import com.hbc.dto.bird.BirdResponseDto;
 import com.hbc.dto.user.UserResponseDto;
 import com.hbc.dto.user.UserUpdateRequestDto;
 import com.hbc.exception.AuthenticationException;
 import com.hbc.exception.CustomException;
+import com.hbc.exception.register.DuplicatedUserException;
+import com.hbc.service.BirdService;
 import com.hbc.service.UserService;
 
 import jakarta.servlet.http.HttpSession;
@@ -31,6 +36,9 @@ public class UserApi {
 	@Autowired
 	UserService userService;
 	
+	@Autowired
+	BirdService birdService;
+	
 	@PostMapping("/img")
 	public ResponseEntity<?> doUpdateImgUrl(@RequestParam(value = "username") String username,
 			@RequestPart("image") MultipartFile img) {
@@ -41,6 +49,13 @@ public class UserApi {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload the file");
 		}
+	}
+	
+	@GetMapping("/me")
+	public ResponseEntity<?> doGetProfile(HttpSession session) {
+		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
+		UserResponseDto response = userService.findById(currentUser.getId());
+		return ResponseEntity.ok(response);
 	}
 	
 	@GetMapping("/{username}")
@@ -59,9 +74,23 @@ public class UserApi {
 		} catch (AuthenticationException ex) {
 			ErrorResponse errorResponse = new ErrorResponse(ex.getErrorCode(), ex.getErrorMessage());
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+		} catch (DuplicatedUserException ex) {
+			ErrorResponse errorResponse = new ErrorResponse(ex.getErrorCode(), ex.getErrorMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 		} catch (CustomException ex) {
 			ErrorResponse errorResponse = new ErrorResponse(ex.getErrorCode(), ex.getErrorMessage());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+		}
+	}
+	
+	@GetMapping("/my-birds")
+	public ResponseEntity<?> doGetMyBirds(HttpSession session) {
+		UserResponseDto currentDto = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
+		try {
+			List<BirdResponseDto> response = birdService.doGetBirds(currentDto.getId());
+			return ResponseEntity.ok(response);
+		} catch (Exception ex) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex);
 		}
 	}
 }
