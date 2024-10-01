@@ -14,6 +14,7 @@ import com.hbc.constant.SessionConst;
 import com.hbc.dto.tourapply.TourApplyRequestDto;
 import com.hbc.dto.tourapply.TourApplyResponseDto;
 import com.hbc.dto.tourapply.admin.AdminTourApplyInfoDto;
+import com.hbc.dto.tourapply.admin.AdminTourApplyUpdateDto;
 import com.hbc.dto.user.UserResponseDto;
 import com.hbc.entity.TournamentApply;
 import com.hbc.exception.AuthenticationException;
@@ -30,9 +31,14 @@ import jakarta.servlet.http.HttpSession;
 
 @Service
 public class TournamentApplyServiceImpl implements TournamentApplyService {
+	
+	private static final String STATUS_CODE_REJECTED = "R";
+	private static final String STATUS_CODE_APPROVED = "A";
+	private static final String STATUS_CODE_WAITING = "W";
+	private static final List<String> LIST_STATUS_CODE = List.of(STATUS_CODE_REJECTED, STATUS_CODE_APPROVED, STATUS_CODE_WAITING);
 
 	@Autowired
-	TournamentApplyRepo tournamentApplyRepo;
+	TournamentApplyRepo tourApplyRepo;
 	
 	@Autowired
 	BirdRepo birdRepo;
@@ -71,7 +77,7 @@ public class TournamentApplyServiceImpl implements TournamentApplyService {
 				throw new TourApplyException("400", "Chim đua không hợp lệ, mã kiềng: " + birdCode);
 			}
 			
-			if (tournamentApplyRepo.existsByBirdCodeAndTourId(birdCode, request.getTourId())) {
+			if (tourApplyRepo.existsByBirdCodeAndTourId(birdCode, request.getTourId())) {
 				throw new TourApplyException("400", "Chim đã được đăng ký, mã kiềng: " + birdCode);
 			}
 		});
@@ -82,10 +88,10 @@ public class TournamentApplyServiceImpl implements TournamentApplyService {
 			Timestamp createdAt = new Timestamp(System.currentTimeMillis());
 
 			request.getBirdCode().forEach(birdCode -> {
-				tournamentApplyRepo.doRegister(birdCode, tourId, requesterId, createdAt, requesterId);
+				tourApplyRepo.doRegister(birdCode, tourId, requesterId, createdAt, requesterId, STATUS_CODE_WAITING);
 			});
 			
-			List<TournamentApply> responseEntities = tournamentApplyRepo.findByTourIdAndRequesterIdAndBirdCodeIn(tourId,
+			List<TournamentApply> responseEntities = tourApplyRepo.findByTourIdAndRequesterIdAndBirdCodeIn(tourId,
 					requesterId, request.getBirdCode());
 			
 			if (request.getBirdCode().size() != responseEntities.size()) {
@@ -111,7 +117,7 @@ public class TournamentApplyServiceImpl implements TournamentApplyService {
 			throw new TourApplyNotFoundException("404", "Giải đua không tồn tại.");
 		}
 		
-		List<Object[]> tourApplyRawData = tournamentApplyRepo.findCustomByTourId(tourId);
+		List<Object[]> tourApplyRawData = tourApplyRepo.findCustomByTourId(tourId);
 
 		if (ObjectUtils.isEmpty(tourApplyRawData)) {
 			return List.of();
@@ -132,19 +138,39 @@ public class TournamentApplyServiceImpl implements TournamentApplyService {
 					approverId = (long) item[3];
 					approverName = userRepo.findUserNameById(approverId);
 				}
-				boolean isBirdApplied = (boolean) item[4];
+				String statusCode = String.valueOf(item[4]);
 				String memo = (String) item[5];
 				Timestamp createdAt = (Timestamp) item[6];
 				int birdsNum = tourRepo.findBirdsNumById(dtoTourId);
 				
 				AdminTourApplyInfoDto dto = new AdminTourApplyInfoDto(dtoTourId, birdCodes, requesterId, requesterName,
-						approverId, approverName, isBirdApplied, memo, createdAt, birdsNum);
+						approverId, approverName, statusCode, memo, createdAt, birdsNum);
 				result.add(dto);
 			});
 			return result;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			throw ex;
+		}
+	}
+	
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public void doApprove(AdminTourApplyUpdateDto dto) throws Exception {
+		if (!tourApplyRepo.existsByTourIdAndRequesterId(dto.getTourId(), dto.getRequesterId())) {
+			throw new TourApplyNotFoundException("404", "Dữ liệu đăng ký không tồn tại.");
+		}
+		
+		if(!LIST_STATUS_CODE.contains(dto.getStatusCode())) {
+			throw new TourApplyException("400", "Trạng thái phê duyệt chưa đúng.");
+		}
+		
+		try {
+			tourApplyRepo.doUpdate(dto.getStatusCode(), dto.getMemo(), dto.getApproverId(), dto.getApproverId(),
+				new Timestamp(System.currentTimeMillis()), dto.getTourId(), dto.getRequesterId());
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
 		}
 	}
 }

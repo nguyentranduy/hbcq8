@@ -15,22 +15,32 @@ import com.hbc.entity.TournamentApply;
 public interface TournamentApplyRepo extends JpaRepository<TournamentApply, Long> {
 
 	@Modifying
-	@Query(value = "INSERT INTO tournament_apply(bird_code, tour_id, requester_id, created_at, created_by, is_bird_applied)"
-			+ "VALUE (:birdCode, :tourId, :requesterId, :createdAt, :createdBy, 0)", nativeQuery = true)
+	@Query(value = "INSERT INTO tournament_apply(bird_code, tour_id, requester_id, created_at, created_by, status_code)"
+			+ "VALUE (:birdCode, :tourId, :requesterId, :createdAt, :createdBy, :statusCode)", nativeQuery = true)
 	void doRegister(@Param("birdCode") String birdCode, @Param("tourId") long tourId,
 			@Param("requesterId") long requesterId, @Param("createdAt") Timestamp createdAt,
-			@Param("createdBy") long createdBy);
+			@Param("createdBy") long createdBy, @Param("statusCode") String statusCode);
 	
 	TournamentApply findByTourId(long tourId);
 	
 	boolean existsByBirdCodeAndTourId(String birdCode, long tourId);
 	
+	boolean existsByTourIdAndRequesterId(long tourId, long requesterId);
+	
 	List<TournamentApply> findByTourIdAndRequesterIdAndBirdCodeIn(long tourId, long requesterId, List<String> birdCodes);
 	
 	@Query(value = "SELECT tour_id, GROUP_CONCAT(bird_code) AS birdCodes, requester_id, approver_id,"
-			+ " is_bird_applied, memo, created_at"
+			+ " status_code, memo, created_at"
 			+ " FROM tournament_apply"
 			+ " WHERE tour_id = :tourId"
-			+ " GROUP BY requester_id, approver_id, memo, created_at, is_bird_applied, tour_id", nativeQuery = true)
+			+ " GROUP BY requester_id, approver_id, memo, created_at, status_code, tour_id", nativeQuery = true)
 	List<Object[]> findCustomByTourId(@Param("tourId") long tourId);
+	
+	@Modifying
+	@Query(value = "UPDATE tournament_apply SET status_code = :statusCode, memo = :memo,"
+			+ " approver_id = :approverId, updated_by = :updatedBy, updated_at = :updatedAt"
+			+ " WHERE tour_id = :tourId AND requester_id = :requesterId", nativeQuery = true)
+	void doUpdate(@Param("statusCode") String statusCode, @Param("memo") String memo, @Param("approverId") long approverId,
+			@Param("updatedBy") long updatedBy, @Param("updatedAt") Timestamp updatedAt,
+			@Param("tourId") long tourId, @Param("requesterId") long requesterId);
 }

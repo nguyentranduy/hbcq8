@@ -44,8 +44,8 @@ public class TournamentApply implements Serializable {
 	@JoinColumn(name = "tour_id", referencedColumnName = "id")
 	private Tournament tour;
 	
-	@Column(name = "is_bird_applied")
-	private Boolean isBirdApplied;
+	@Column(name = "status_code")
+	private String statusCode;
 	
 	@Column(name = "approver_id")
 	private Long approverId;

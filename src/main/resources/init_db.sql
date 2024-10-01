@@ -139,7 +139,7 @@ CREATE TABLE tournament_apply (
 	`id` bigint NOT NULL AUTO_INCREMENT,
 	`bird_code` varchar(255) NOT NULL,
 	`tour_id` bigint NOT NULL,
-    `is_bird_applied` tinyint(1) NOT NULL DEFAULT 0,
+    `status_code` varchar(1) NOT NULL,
     `requester_id` bigint NOT NULL,
     `approver_id` bigint,
     `memo` text,
