@@ -14,7 +14,7 @@ import com.hbc.entity.Tournament;
 @Repository
 public interface TournamentRepo extends JpaRepository<Tournament, Long> {
 
-	List<Tournament> findByIsActived(boolean isActived);
+	List<Tournament> findByIsActivedOrderByCreatedAtDesc(boolean isActived);
 	Tournament findByIdAndIsActived(long tourId, boolean isActived);
 	boolean existsByName(String tourName);
 	boolean existsByNameAndIdNot(String tourName, long tourId);
@@ -23,7 +23,7 @@ public interface TournamentRepo extends JpaRepository<Tournament, Long> {
 			+ " l.end_point_name, t.birds_num, t.is_actived"
 			+ " FROM tournament t"
 			+ " LEFT JOIN tournament_location l ON t.id = l.tour_id"
-			+ " ORDER BY t.created_at desc", nativeQuery = true)
+			+ " ORDER BY t.created_at ASC", nativeQuery = true)
 	List<Object[]> getTournamentInfo();
 	
 	@Modifying

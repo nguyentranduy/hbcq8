@@ -51,6 +51,13 @@ public class UserApi {
 		}
 	}
 	
+	@GetMapping("/me")
+	public ResponseEntity<?> doGetProfile(HttpSession session) {
+		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
+		UserResponseDto response = userService.findById(currentUser.getId());
+		return ResponseEntity.ok(response);
+	}
+	
 	@GetMapping("/{username}")
 	public ResponseEntity<?> doGetProfile(@PathVariable("username") String username) {
 		// TODO

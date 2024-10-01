@@ -48,7 +48,7 @@ public class TournamentServiceImpl implements TournamentService {
 
 	@Override
 	public List<TourResponseDto> findAllAvailable() {
-		List<Tournament> tournaments = tourRepo.findByIsActived(true);
+		List<Tournament> tournaments = tourRepo.findByIsActivedOrderByCreatedAtDesc(true);
 		List<Long> tourIds = tournaments.stream().map(Tournament::getId).toList();
 		List<TournamentLocation> tournamentLocations = tourLocationRepo.findListByTourIds(tourIds);
 		

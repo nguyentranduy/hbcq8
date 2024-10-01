@@ -69,8 +69,7 @@ public class UserServiceImpl implements UserService {
 		}
 		Optional<User> userWithPhone = repo.findByPhone(userRegisterRequestDto.getPhone());
 		
-		if (userWithPhone.isPresent()
-				&& !userRegisterRequestDto.getPhone().equals(userWithPhone.get().getPhone())) {
+		if (userWithPhone.isPresent()) {
 			throw new DuplicatedUserException("409", "Phone number already exists.");
 		}
 
@@ -105,10 +104,9 @@ public class UserServiceImpl implements UserService {
 			throw new AuthenticationException("401-02", "User account not found.");
 		}
 
-		Optional<User> userWithPhone = repo.findByPhone(userUpdateRequestDto.getPhone());
+		Optional<User> userWithPhone = repo.findByPhoneAndIdNot(userUpdateRequestDto.getPhone(), userUpdateRequestDto.getUserId());
 		
-		if (userWithPhone.isPresent()
-				&& !userUpdateRequestDto.getPhone().equals(userWithPhone.get().getPhone())) {
+		if (userWithPhone.isPresent()) {
 			throw new DuplicatedUserException("409", "Phone number already exists.");
 		}
 
@@ -139,5 +137,10 @@ public class UserServiceImpl implements UserService {
 			throw new CustomException("400", String.format("Cannot update user with id: {0}",
 					userUpdateRequestDto.getUserId()));
 		}
+	}
+
+	@Override
+	public UserResponseDto findById(long userId) {
+		return UserResponseDto.build(repo.findById(userId).get());
 	}
 }
