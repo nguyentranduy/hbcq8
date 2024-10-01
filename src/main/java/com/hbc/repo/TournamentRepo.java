@@ -20,10 +20,9 @@ public interface TournamentRepo extends JpaRepository<Tournament, Long> {
 	boolean existsByNameAndIdNot(String tourName, long tourId);
 	
 	@Query(value = "SELECT t.id, t.name, t.start_date, t.end_date, l.start_point_name,"
-			+ " l.end_point_name, t.birds_num, t.is_actived, a.status_code"
+			+ " l.end_point_name, t.birds_num, t.is_actived"
 			+ " FROM tournament t"
 			+ " LEFT JOIN tournament_location l ON t.id = l.tour_id"
-			+ " LEFT JOIN tournament_apply a ON t.id = a.tour_id"
 			+ " ORDER BY t.created_at desc", nativeQuery = true)
 	List<Object[]> getTournamentInfo();
 	

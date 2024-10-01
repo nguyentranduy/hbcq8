@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hbc.dto.tournament.TournamentInfoDto;
+import com.hbc.repo.TournamentApplyRepo;
 import com.hbc.repo.TournamentRepo;
 import com.hbc.service.TournamentInfoService;
 
@@ -16,21 +17,25 @@ public class TournamentInfoServiceImpl implements TournamentInfoService {
 
 	@Autowired
 	TournamentRepo tourRepo;
+	
+	@Autowired
+	TournamentApplyRepo tourApplyRepo;
 
 	@Override
-	public List<TournamentInfoDto> doGetList() {
+	public List<TournamentInfoDto> doGetList(long requesterId) {
 		List<Object[]> rawData = tourRepo.getTournamentInfo();
 		List<TournamentInfoDto> result = new ArrayList<>();
 		
 		rawData.forEach(item -> {
 			TournamentInfoDto dto = new TournamentInfoDto();
+			long tourId = (long) item[0];
 			Timestamp startDate = (Timestamp) item[2];
 			Timestamp endDate = (Timestamp) item[3];
 			boolean isRawActived = (boolean) item[7];
-			String tourStatusCode = String.valueOf(item[8]);
+			String tourStatusCode = tourApplyRepo.findStatusCodeByTourIdAndRequesterId(tourId, requesterId);
 			Timestamp now = new Timestamp(System.currentTimeMillis());
 			
-			dto.setTourId((long) item[0]);
+			dto.setTourId(tourId);
 			dto.setTourName((String) item[1]);
 			dto.setStartDate(startDate);
 			dto.setEndDate(endDate);

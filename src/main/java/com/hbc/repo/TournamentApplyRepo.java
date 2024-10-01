@@ -43,4 +43,11 @@ public interface TournamentApplyRepo extends JpaRepository<TournamentApply, Long
 	void doUpdate(@Param("statusCode") String statusCode, @Param("memo") String memo, @Param("approverId") long approverId,
 			@Param("updatedBy") long updatedBy, @Param("updatedAt") Timestamp updatedAt,
 			@Param("tourId") long tourId, @Param("requesterId") long requesterId);
+	
+	int deleteByTourIdAndRequesterId(long tourId, long requesterId);
+	
+	@Query(value = "SELECT status_code FROM tournament_apply"
+			+ " WHERE tour_id = :tourId AND requester_id = :requesterId"
+			+ " GROUP BY tour_id, requester_id", nativeQuery = true)
+	String findStatusCodeByTourIdAndRequesterId(@Param("tourId") long tourId, @Param("requesterId") long requesterId);
 }
