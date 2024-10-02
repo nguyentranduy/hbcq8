@@ -25,7 +25,8 @@ public class SessionFilter implements Filter {
 			"/api/v1/logout",
 			"/api/v1/user",
 			"/api/v1/tour-apply",
-			"/api/v1/tour");
+			"/api/v1/tour",
+			"/api/v1/bird");
 
 	private static final List<String> URL_ADMIN_PATTERNS = List.of(
 			"/api/v1/admin/tournament-location",
