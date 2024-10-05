@@ -51,6 +51,10 @@ public class BirdServiceImpl implements BirdService {
 	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public BirdResponseDto register(BirdRequestDto birdDto, Long currentUserId) throws Exception {
+		if (!ObjectUtils.isEmpty(currentUserId) && birdDto.getUserId() != currentUserId.longValue()) {
+			throw new AuthenticationException("401", "Không có quyền thêm chim.");
+		}
+		
 		if (!StringUtils.hasText(birdDto.getCode())) {
 			throw new CustomException("400", "Mã kiềng không được để trống.");
 		}
@@ -79,6 +83,10 @@ public class BirdServiceImpl implements BirdService {
 	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public BirdResponseDto update(BirdUpdateRequestDto birdDto, Long currentUserId) throws Exception {
+		if (!ObjectUtils.isEmpty(currentUserId) && birdDto.getUserId() != currentUserId.longValue()) {
+			throw new AuthenticationException("401", "Không có quyền cập nhạt chim.");
+		}
+
 		Optional<Bird> requestChangeBird = birdRepo.findById(birdDto.getId());
 		
 		if (requestChangeBird.isEmpty()) {
@@ -93,7 +101,7 @@ public class BirdServiceImpl implements BirdService {
 			throw new CustomException("400", "Tên chim không được để trống.");
 		}
 
-		if (birdRepo.existsByCodeAndIdNot(birdDto.getCode(), birdDto.getId())) {
+		if (birdRepo.existsByCodeAndIsDeletedAndIdNot(birdDto.getCode(), false, birdDto.getId())) {
 			throw new DuplicatedBirdInfoException("400", "Mã kiềng đã tồn tại.");
 		}
 
@@ -114,7 +122,7 @@ public class BirdServiceImpl implements BirdService {
 	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public void delete(String code, long currentUserId) throws Exception {
-		if (!birdRepo.existsByCode(code)) {
+		if (!birdRepo.existsByCode(code) || birdRepo.existsByCodeAndIsDeleted(code, true)) {
 			throw new BirdNotFoundException("404", "Chim không tồn tại.");
 		}
 

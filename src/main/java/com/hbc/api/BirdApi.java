@@ -41,6 +41,9 @@ public class BirdApi {
 		try {
 			BirdResponseDto response = birdService.register(requestDto, currentUser.getId());
 			return ResponseEntity.ok(response);
+		} catch (AuthenticationException e) {
+			ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode(), e.getErrorMessage());
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
 		} catch (CustomException e) {
 			ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode(), e.getErrorMessage());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
@@ -69,6 +72,9 @@ public class BirdApi {
 		try {
 			BirdResponseDto response = birdService.update(requestDto, currentUser.getId());
 			return ResponseEntity.ok(response);
+		} catch (AuthenticationException e) {
+			ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode(), e.getErrorMessage());
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
 		} catch (CustomException e) {
 			ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode(), e.getErrorMessage());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);

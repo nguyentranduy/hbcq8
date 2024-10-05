@@ -15,7 +15,8 @@ import com.hbc.entity.Bird;
 public interface BirdRepo extends JpaRepository<Bird, Long> {
 
 	boolean existsByCode(String birdCode);
-	boolean existsByCodeAndIdNot(String birdCode, long id);
+	boolean existsByCodeAndIsDeletedAndIdNot(String birdCode, boolean isDeleted, long id);
+	boolean existsByCodeAndIsDeleted(String birdCode, boolean isDeleted);
 	boolean existsByCodeAndUserId(String birdCode, long userId);
 	List<Bird> findByUserIdAndIsDeleted(long userId, boolean isDeleted);
 	Bird findByCode(String birdCode);
