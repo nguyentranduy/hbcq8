@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 
 @SpringBootApplication(exclude = SecurityAutoConfiguration.class)
 public class Hoibocauq8Application {
+
 	public static void main(String[] args) {
 		SpringApplication.run(Hoibocauq8Application.class, args);
 	}
