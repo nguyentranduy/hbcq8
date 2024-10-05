@@ -13,4 +13,5 @@ public interface TournamentService {
 	TourResponseDto findById(long tourId) throws Exception;
 	TourResponseDto doRegister(TourRequestDto dto, UserResponseDto currentUser);
 	TourResponseDto doUpdate(UpdateTourRequestDto dto, UserResponseDto currentUser);
+	void doDelete(long id, UserResponseDto currentUser) throws Exception;
 }

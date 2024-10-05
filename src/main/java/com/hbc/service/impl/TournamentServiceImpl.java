@@ -158,6 +158,23 @@ public class TournamentServiceImpl implements TournamentService {
 		}
 	}
 	
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public void doDelete(long id, UserResponseDto currentUser) throws Exception {
+		if (currentUser == null || currentUser.getRoleId() != RoleConst.ROLE_ADMIN) {
+			throw new AuthenticationException("401", "Người dùng không có quyền này.");
+		}
+		
+		try {
+			int countDeleted = tourRepo.deletePhysical(false, id);
+			if (countDeleted < 1) {
+				throw new Exception();
+			}
+		} catch (Exception ex) {
+			throw ex;
+		}
+	}
+	
 	private void validateDto(TourRequestDto dto) {
 		if (!StringUtils.hasText(dto.getName())) {
 			throw new CustomException("400", "Tên giải đua không được bỏ trống.");
