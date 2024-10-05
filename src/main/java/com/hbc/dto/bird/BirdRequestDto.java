@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegisterBirdRequestDto implements Serializable {
+public class BirdRequestDto implements Serializable {
 
 	private static final long serialVersionUID = 8075065438234302050L;
 	

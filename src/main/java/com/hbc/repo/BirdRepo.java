@@ -1,5 +1,6 @@
 package com.hbc.repo;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,6 +15,8 @@ import com.hbc.entity.Bird;
 public interface BirdRepo extends JpaRepository<Bird, Long> {
 
 	boolean existsByCode(String birdCode);
+	boolean existsByCodeAndIdNot(String birdCode, long id);
+	boolean existsByCodeAndUserId(String birdCode, long userId);
 	List<Bird> findByUserId(long userId);
 	Bird findByCode(String birdCode);
 	
@@ -22,4 +25,12 @@ public interface BirdRepo extends JpaRepository<Bird, Long> {
 			+ " VALUE (:name, :code, :userId, :imgUrl, :createdBy)", nativeQuery = true)
 	void doRegister(@Param("name") String name, @Param("code") String code, @Param("userId") long userId,
 			@Param("imgUrl") String imgUrl, @Param("createdBy") long createdBy);
+	
+	@Modifying
+	@Query(value = "UPDATE bird SET name = :name, code = :code, img_url = :imgUrl, updated_by = :updatedBy, updated_at = :updatedAt"
+			+ " WHERE user_id = :userId", nativeQuery = true)
+	void doUpdate(@Param("name") String name, @Param("code") String code, @Param("imgUrl") String imgUrl,
+			@Param("updatedBy") long updatedBy, @Param("updatedAt") Timestamp updatedAt, @Param("userId") long userId);
+	
+	void deleteByCode(String code);
 }

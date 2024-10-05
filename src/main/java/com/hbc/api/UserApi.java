@@ -1,7 +1,5 @@
 package com.hbc.api;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.hbc.constant.SessionConst;
 import com.hbc.dto.ErrorResponse;
-import com.hbc.dto.bird.BirdResponseDto;
 import com.hbc.dto.user.UserResponseDto;
 import com.hbc.dto.user.UserUpdateRequestDto;
 import com.hbc.exception.AuthenticationException;
@@ -80,17 +77,6 @@ public class UserApi {
 		} catch (CustomException ex) {
 			ErrorResponse errorResponse = new ErrorResponse(ex.getErrorCode(), ex.getErrorMessage());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-		}
-	}
-	
-	@GetMapping("/my-birds")
-	public ResponseEntity<?> doGetMyBirds(HttpSession session) {
-		UserResponseDto currentDto = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
-		try {
-			List<BirdResponseDto> response = birdService.doGetBirds(currentDto.getId());
-			return ResponseEntity.ok(response);
-		} catch (Exception ex) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex);
 		}
 	}
 }
