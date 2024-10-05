@@ -16,6 +16,7 @@ public interface TournamentRepo extends JpaRepository<Tournament, Long> {
 
 	List<Tournament> findByIsActivedOrderByCreatedAtDesc(boolean isActived);
 	Tournament findByIdAndIsActived(long tourId, boolean isActived);
+	boolean existsByIdAndIsActived(long id, boolean isActived);
 	boolean existsByName(String tourName);
 	boolean existsByNameAndIdNot(String tourName, long tourId);
 	

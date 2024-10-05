@@ -21,6 +21,7 @@ import com.hbc.dto.tournament.UpdateTourRequestDto;
 import com.hbc.dto.user.UserResponseDto;
 import com.hbc.exception.AuthenticationException;
 import com.hbc.exception.tournament.TourInfoFailedException;
+import com.hbc.exception.tournament.TourNotFoundException;
 import com.hbc.service.TournamentService;
 
 import jakarta.servlet.http.HttpSession;
@@ -90,6 +91,9 @@ public class AdminTourApi {
 		} catch (AuthenticationException ex) {
 			ErrorResponse errorResponse = new ErrorResponse(ex.getErrorCode(), ex.getErrorMessage());
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+		} catch (TourNotFoundException ex) {
+			ErrorResponse errorResponse = new ErrorResponse(ex.getErrorCode(), ex.getErrorMessage());
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
 		} catch (Exception ex) {
 			ErrorResponse errorResponse = new ErrorResponse("400", ex.getMessage());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
