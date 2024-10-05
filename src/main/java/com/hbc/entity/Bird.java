@@ -59,4 +59,7 @@ public class Bird implements Serializable {
 	
 	@Column(name = "updated_by")
 	private Long updatedBy;
+	
+	@Column(name = "is_deleted")
+	private Boolean isDeleted;
 }

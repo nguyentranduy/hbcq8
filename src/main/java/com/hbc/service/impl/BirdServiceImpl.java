@@ -40,7 +40,7 @@ public class BirdServiceImpl implements BirdService {
 
 	@Override
 	public List<BirdResponseDto> doGetBirds(long userId) {
-		List<Bird> birds = birdRepo.findByUserId(userId);
+		List<Bird> birds = birdRepo.findByUserIdAndIsDeleted(userId, false);
 		List<BirdResponseDto> birdResponseDtos = new ArrayList<>();
 		for (Bird bird : birds) {
 			birdResponseDtos.add(BirdResponseDto.build(bird));
@@ -111,18 +111,19 @@ public class BirdServiceImpl implements BirdService {
 		}
 	}
 
+	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public void delete(String code, long currentUserId) throws Exception {
 		if (!birdRepo.existsByCode(code)) {
 			throw new BirdNotFoundException("404", "Chim không tồn tại.");
 		}
 
-		if (birdRepo.existsByCodeAndUserId(code, currentUserId)) {
+		if (!birdRepo.existsByCodeAndUserId(code, currentUserId)) {
 			throw new AuthenticationException("401", "Không có quyền xóa.");
 		}
 
 		try {
-			birdRepo.deleteByCode(code);
+			birdRepo.deleteByCode(currentUserId, new Timestamp(System.currentTimeMillis()), code);
 		} catch (Exception ex) {
 			throw ex;
 		}

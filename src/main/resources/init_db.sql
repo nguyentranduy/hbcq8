@@ -45,6 +45,7 @@ CREATE TABLE `bird` (
   `created_by` bigint NOT NULL,
   `updated_at` timestamp DEFAULT NULL,
   `updated_by` bigint DEFAULT NULL,
+  `is_deleted` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `bird_ibfk_1` (`user_id`),
   CONSTRAINT `bird_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)

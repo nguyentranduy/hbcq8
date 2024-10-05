@@ -17,7 +17,7 @@ public interface BirdRepo extends JpaRepository<Bird, Long> {
 	boolean existsByCode(String birdCode);
 	boolean existsByCodeAndIdNot(String birdCode, long id);
 	boolean existsByCodeAndUserId(String birdCode, long userId);
-	List<Bird> findByUserId(long userId);
+	List<Bird> findByUserIdAndIsDeleted(long userId, boolean isDeleted);
 	Bird findByCode(String birdCode);
 	
 	@Modifying
@@ -31,6 +31,10 @@ public interface BirdRepo extends JpaRepository<Bird, Long> {
 			+ " WHERE user_id = :userId", nativeQuery = true)
 	void doUpdate(@Param("name") String name, @Param("code") String code, @Param("imgUrl") String imgUrl,
 			@Param("updatedBy") long updatedBy, @Param("updatedAt") Timestamp updatedAt, @Param("userId") long userId);
-	
-	void deleteByCode(String code);
+
+	@Modifying
+	@Query(value = "UPDATE bird SET is_deleted = 1, updated_by = :updatedBy, updated_at = :updatedAt"
+			+ " WHERE code = :code", nativeQuery = true)
+	void deleteByCode(@Param("updatedBy") long updatedBy, @Param("updatedAt") Timestamp updatedAt,
+			@Param("code") String code);
 }
