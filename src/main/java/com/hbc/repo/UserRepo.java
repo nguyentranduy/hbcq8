@@ -2,6 +2,7 @@ package com.hbc.repo;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -41,4 +42,6 @@ public interface UserRepo extends JpaRepository<User, Long> {
 	
 	@Query(value = "SELECT username FROM user WHERE id = :userId", nativeQuery = true)
 	String findUserNameById(@Param("userId") long userId);
+	
+	List<User> findByIsDeletedOrderByUsernameAsc(boolean isDeleted);
 }
