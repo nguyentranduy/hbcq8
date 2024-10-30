@@ -8,20 +8,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.hbc.dto.userlocation.UserLocationRequestDto;
+import com.hbc.dto.userlocation.UserLocationAdminRequestDto;
 import com.hbc.dto.userlocation.UserLocationResponseDto;
 import com.hbc.entity.UserLocation;
+import com.hbc.exception.user.UserNotFoundException;
 import com.hbc.exception.userlocation.DuplicatedLocationCodeException;
 import com.hbc.exception.userlocation.InvalidCodeException;
 import com.hbc.exception.userlocation.LocationNotFoundException;
 import com.hbc.repo.UserLocationRepo;
-import com.hbc.service.UserLocationService;
+import com.hbc.repo.UserRepo;
+import com.hbc.service.AdminUserLocationService;
 
 @Service
-public class UserLocationServiceImpl implements UserLocationService {
+public class AdminUserLocationServiceImpl implements AdminUserLocationService {
 
 	@Autowired
 	UserLocationRepo repo;
+	
+	@Autowired
+	UserRepo userRepo;
     
     private static final String CODE_PATTERN = "^Z\\d{3,4}$";
 
@@ -32,8 +37,8 @@ public class UserLocationServiceImpl implements UserLocationService {
 	}
 
 	@Override
-	public UserLocationResponseDto findById(long id, long userId) throws LocationNotFoundException {
-		UserLocation userLocation = repo.findByIdAndUser_IdAndIsDeleted(id, userId, false);
+	public UserLocationResponseDto findByCode(String code) throws LocationNotFoundException {
+		UserLocation userLocation = repo.findByCodeAndIsDeleted(code, false);
 
 		if (Objects.isNull(userLocation)) {
 			throw new LocationNotFoundException("404", "Không tìm thấy căn cứ.");
@@ -44,8 +49,13 @@ public class UserLocationServiceImpl implements UserLocationService {
 
 	@Transactional(rollbackFor = Exception.class)
 	@Override
-	public void doRegister(UserLocationRequestDto requestDto, long currentUserId)
-			throws DuplicatedLocationCodeException, InvalidCodeException {
+	public void doRegister(UserLocationAdminRequestDto requestDto, long currentUserId)
+			throws DuplicatedLocationCodeException, InvalidCodeException, UserNotFoundException {
+
+		if (!userRepo.existsByIdAndIsDeleted(requestDto.getUserId(), false)) {
+			throw new UserNotFoundException("404", "Người dùng không tồn tại.");
+		}
+		
 		if (!requestDto.getCode().matches(CODE_PATTERN)) {
 			throw new InvalidCodeException("400", "Mã căn cứ không đúng định dạng.");
 		}
@@ -54,17 +64,22 @@ public class UserLocationServiceImpl implements UserLocationService {
 			throw new DuplicatedLocationCodeException("409", "Tên căn cứ đã tồn tại.");
 		}
 		Timestamp createdAt = new Timestamp(System.currentTimeMillis());
-		repo.doRegister(requestDto.getCode(), currentUserId, requestDto.getPointCoor(), createdAt, currentUserId);
+		repo.doRegister(requestDto.getCode(), requestDto.getUserId(), requestDto.getPointCoor(), createdAt, currentUserId);
 	}
 
 	@Transactional(rollbackFor = Exception.class)
 	@Override
-	public void doUpdate(long locationId, UserLocationRequestDto requestDto, long currentUserId)
-			throws DuplicatedLocationCodeException, LocationNotFoundException, InvalidCodeException {
+	public void doUpdate(String code, UserLocationAdminRequestDto requestDto, long currentUserId)
+			throws DuplicatedLocationCodeException, LocationNotFoundException,
+			UserNotFoundException, InvalidCodeException {
 
-		UserLocation userLocation = repo.findByIdAndUser_IdAndIsDeleted(locationId, currentUserId, false);
+		UserLocation userLocation = repo.findByCodeAndIsDeleted(code, false);
 		if (Objects.isNull(userLocation)) {
 			throw new LocationNotFoundException("404", "Không tìm thấy căn cứ.");
+		}
+
+		if (!userRepo.existsByIdAndIsDeleted(requestDto.getUserId(), false)) {
+			throw new UserNotFoundException("404", "Người dùng không tồn tại.");
 		}
 
 		if (!requestDto.getCode().matches(CODE_PATTERN)) {
@@ -77,18 +92,18 @@ public class UserLocationServiceImpl implements UserLocationService {
 		}
 
 		Timestamp updatedAt = new Timestamp(System.currentTimeMillis());
-		repo.doUpdate(requestDto.getCode(), requestDto.getPointCoor(), updatedAt, currentUserId, currentUserId);
+		repo.doUpdate(requestDto.getCode(), requestDto.getPointCoor(), updatedAt, currentUserId, requestDto.getUserId());
 	}
 
 	@Transactional(rollbackFor = Exception.class)
 	@Override
-	public void doDelete(long locationId, long currentUserId) throws LocationNotFoundException {
-		UserLocation userLocation = repo.findByIdAndUser_IdAndIsDeleted(locationId, currentUserId, false);
+	public void doDelete(String code, long currentUserId) throws LocationNotFoundException {
+		UserLocation userLocation = repo.findByCodeAndIsDeleted(code, false);
 		if (Objects.isNull(userLocation)) {
 			throw new LocationNotFoundException("404", "Không tìm thấy căn cứ.");
 		}
 
 		Timestamp updatedAt = new Timestamp(System.currentTimeMillis());
-		repo.doLogicalDelete(updatedAt, currentUserId, locationId);
+		repo.doLogicalDeleteByCode(updatedAt, currentUserId, code);
 	}
 }

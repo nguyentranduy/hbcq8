@@ -33,7 +33,8 @@ public class SessionFilter implements Filter {
 			"/api/v1/admin/tournament-location",
 			"/api/v1/admin/tournament",
 			"/api/v1/admin/tour-apply",
-			"/api/v1/admin/user");
+			"/api/v1/admin/user",
+			"/api/v1/admin/user-location");
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)

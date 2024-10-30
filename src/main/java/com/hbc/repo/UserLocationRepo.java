@@ -16,6 +16,7 @@ public interface UserLocationRepo extends JpaRepository<UserLocation, Long> {
 
 	List<UserLocation> findByUser_IdAndIsDeletedOrderByCreatedAtAsc(long userId, boolean isDeleted);
 	UserLocation findByIdAndUser_IdAndIsDeleted(long id, long userId, boolean isDeleted);
+	UserLocation findByCodeAndIsDeleted(String code, boolean isDeleted);
 
 	@Modifying
 	@Query(value = "INSERT INTO user_location(code, user_id, point_coor, created_at, created_by) "
@@ -36,6 +37,12 @@ public interface UserLocationRepo extends JpaRepository<UserLocation, Long> {
 	@Query(value = "UPDATE user_location SET is_deleted = true, updated_at = :updatedAt, updated_by = :updatedBy "
 			+ "WHERE id = :id", nativeQuery = true)
 	void doLogicalDelete(@Param("updatedAt") Timestamp updatedAt, @Param("updatedBy") long updatedBy, @Param("id") long id);
+
+	@Modifying
+	@Query(value = "UPDATE user_location SET is_deleted = true, updated_at = :updatedAt, updated_by = :updatedBy "
+			+ "WHERE code = :code", nativeQuery = true)
+	void doLogicalDeleteByCode(@Param("updatedAt") Timestamp updatedAt,
+			@Param("updatedBy") long updatedBy, @Param("code") String code);
 
 	boolean existsByCodeAndIsDeleted(String code, boolean isDeleted);
 }

@@ -16,5 +16,5 @@ public interface UserLocationService {
 			throws DuplicatedLocationCodeException, InvalidCodeException;
 	void doUpdate(long locationId, UserLocationRequestDto requestDto, long currentUserId)
 			throws DuplicatedLocationCodeException, LocationNotFoundException, InvalidCodeException;
-	void doDelete(long locationId, long currentUserId);
+	void doDelete(long locationId, long currentUserId) throws LocationNotFoundException;
 }
