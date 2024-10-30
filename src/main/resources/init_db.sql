@@ -51,6 +51,23 @@ CREATE TABLE `bird` (
   CONSTRAINT `bird_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 );
 
+DROP TABLE IF EXISTS `user_location`;
+CREATE TABLE `user_location` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `code` varchar(5) NOT NULL,
+  `user_id` bigint NOT NULL,
+  `point_coor` varchar(255) NOT NULL,
+  `is_deleted` tinyint(1) DEFAULT 0,
+  `created_at` timestamp DEFAULT NOW(),
+  `created_by` bigint NOT NULL,
+  `updated_at` timestamp DEFAULT NULL,
+  `updated_by` bigint DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `code` (`code`),
+  KEY `user_location_ibfk_1` (`user_id`),
+  CONSTRAINT `user_location_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+);
+
 DROP TABLE IF EXISTS `tournament`;
 CREATE TABLE `tournament` (
   `id` bigint NOT NULL AUTO_INCREMENT,

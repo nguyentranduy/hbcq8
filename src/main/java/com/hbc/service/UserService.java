@@ -24,6 +24,7 @@ public interface UserService {
 			throws DuplicatedUserException, AuthenticationException;
 	
 	UserResponseDto findById(long userId);
+	UserResponseDto findByIdAvailable(long userId);
 	
 	List<UserResponseDto> findAllAvailable();
 }

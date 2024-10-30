@@ -17,6 +17,7 @@ import com.hbc.entity.User;
 public interface UserRepo extends JpaRepository<User, Long> {
 
 	Optional<User> findByUsernameAndIsDeleted(String username, Boolean isDeleted);
+	Optional<User> findByIdAndIsDeleted(long id, Boolean isDeleted);
 	
 	Boolean existsByIdAndIsDeleted(Long userId, Boolean isDeleted);
 
@@ -38,6 +39,20 @@ public interface UserRepo extends JpaRepository<User, Long> {
 	int update(@Param("phone") String phone, @Param("address") String address,
 			@Param("birthday") Date birthday, @Param("imgUrl") String imgUrl,
 			@Param("updatedAt") Timestamp updatedAt, @Param("updatedBy") Long updatedBy,
+			@Param("id") Long id);
+	
+	@Modifying
+	@Query("UPDATE User u SET u.username = :username, u.phone = :phone, u.address = :address,"
+			+ "u.birthday = :birthday, u.imgUrl = :imgUrl,"
+			+ "u.updatedAt = :updatedAt, u.updatedBy = :updatedBy WHERE u.id = :id")
+	int updateIncludeUsername(@Param("username") String username, @Param("phone") String phone,
+			@Param("address") String address, @Param("birthday") Date birthday, @Param("imgUrl") String imgUrl,
+			@Param("updatedAt") Timestamp updatedAt, @Param("updatedBy") Long updatedBy,
+			@Param("id") Long id);
+	
+	@Modifying
+	@Query("UPDATE User u SET u.isDeleted = true, u.updatedAt = :updatedAt, u.updatedBy = :updatedBy WHERE u.id = :id")
+	void deleteLogical(@Param("updatedAt") Timestamp updatedAt, @Param("updatedBy") Long updatedBy,
 			@Param("id") Long id);
 	
 	@Query(value = "SELECT username FROM user WHERE id = :userId", nativeQuery = true)

@@ -29,7 +29,7 @@ public class TourApplyApi {
 
 	@Autowired
 	TournamentApplyService tournamentApplyService;
-	
+
 	@PostMapping
 	public ResponseEntity<?> doPost(@RequestBody TourApplyRequestDto dto, HttpSession session) {
 		try {
