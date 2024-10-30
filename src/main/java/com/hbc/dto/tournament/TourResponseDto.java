@@ -68,31 +68,31 @@ public class TourResponseDto implements Serializable {
 	
 	private static TourLocationDto buildTourLocationDto(TournamentLocation tourLocation) {
 		TourLocationDto tourLocationDto = new TourLocationDto();
-		tourLocationDto.setStartPoint(new Point(tourLocation.getStartPointName(), tourLocation.getStartPointCoor(), 0F));
-		tourLocationDto.setEndPoint(new Point(tourLocation.getEndPointName(), tourLocation.getEndPointCoor(), tourLocation.getEndPointDist()));
+		tourLocationDto.setStartPoint(new Point(tourLocation.getStartPointCode(), tourLocation.getStartPointCoor(), 0F));
+		tourLocationDto.setEndPoint(new Point(tourLocation.getEndPointCode(), tourLocation.getEndPointCoor(), tourLocation.getEndPointDist()));
 		tourLocationDto.setCreatedAt(tourLocation.getCreatedAt());
 		tourLocationDto.setCreatedBy(tourLocation.getCreatedBy());
 		tourLocationDto.setUpdatedAt(tourLocation.getUpdatedAt());
 		tourLocationDto.setUpdatedAt(tourLocation.getUpdatedAt());
 		
-		if (StringUtils.hasText(tourLocation.getPoint1Name())) {
-			tourLocationDto.setPoint1(new Point(tourLocation.getPoint1Name(), tourLocation.getPoint1Coor(), tourLocation.getPoint1Dist()));
+		if (StringUtils.hasText(tourLocation.getPoint1Code())) {
+			tourLocationDto.setPoint1(new Point(tourLocation.getPoint1Code(), tourLocation.getPoint1Coor(), tourLocation.getPoint1Dist()));
 		}
 		
-		if (StringUtils.hasText(tourLocation.getPoint2Name())) {
-			tourLocationDto.setPoint2(new Point(tourLocation.getPoint2Name(), tourLocation.getPoint2Coor(), tourLocation.getPoint2Dist()));
+		if (StringUtils.hasText(tourLocation.getPoint2Code())) {
+			tourLocationDto.setPoint2(new Point(tourLocation.getPoint2Code(), tourLocation.getPoint2Coor(), tourLocation.getPoint2Dist()));
 		}
 		
-		if (StringUtils.hasText(tourLocation.getPoint3Name())) {
-			tourLocationDto.setPoint3(new Point(tourLocation.getPoint3Name(), tourLocation.getPoint3Coor(), tourLocation.getPoint3Dist()));
+		if (StringUtils.hasText(tourLocation.getPoint3Code())) {
+			tourLocationDto.setPoint3(new Point(tourLocation.getPoint3Code(), tourLocation.getPoint3Coor(), tourLocation.getPoint3Dist()));
 		}
 		
-		if (StringUtils.hasText(tourLocation.getPoint4Name())) {
-			tourLocationDto.setPoint4(new Point(tourLocation.getPoint4Name(), tourLocation.getPoint4Coor(), tourLocation.getPoint4Dist()));
+		if (StringUtils.hasText(tourLocation.getPoint4Code())) {
+			tourLocationDto.setPoint4(new Point(tourLocation.getPoint4Code(), tourLocation.getPoint4Coor(), tourLocation.getPoint4Dist()));
 		}
 		
-		if (StringUtils.hasText(tourLocation.getPoint5Name())) {
-			tourLocationDto.setPoint5(new Point(tourLocation.getPoint5Name(), tourLocation.getPoint5Coor(), tourLocation.getPoint5Dist()));
+		if (StringUtils.hasText(tourLocation.getPoint5Code())) {
+			tourLocationDto.setPoint5(new Point(tourLocation.getPoint5Code(), tourLocation.getPoint5Coor(), tourLocation.getPoint5Dist()));
 		}
 		
 		return tourLocationDto;

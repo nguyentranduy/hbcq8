@@ -38,15 +38,20 @@ public class TournamentLocation implements Serializable {
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@JoinColumn(name = "tour_id", referencedColumnName = "id")
 	private Tournament tour;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+	@JoinColumn(name = "user_id", referencedColumnName = "id")
+	private User user;
 	
-	@Column(name = "start_point_name")
-	private String startPointName;
+	@Column(name = "start_point_code")
+	private String startPointCode;
 	
 	@Column(name = "start_point_coor")
 	private String startPointCoor;
 	
-	@Column(name = "point1_name")
-	private String point1Name;
+	@Column(name = "point1_code")
+	private String point1Code;
 	
 	@Column(name = "point1_coor")
 	private String point1Coor;
@@ -54,8 +59,8 @@ public class TournamentLocation implements Serializable {
 	@Column(name = "point1_dist")
 	private Float point1Dist;
 	
-	@Column(name = "point2_name")
-	private String point2Name;
+	@Column(name = "point2_code")
+	private String point2Code;
 	
 	@Column(name = "point2_coor")
 	private String point2Coor;
@@ -63,8 +68,8 @@ public class TournamentLocation implements Serializable {
 	@Column(name = "point2_dist")
 	private Float point2Dist;
 	
-	@Column(name = "point3_name")
-	private String point3Name;
+	@Column(name = "point3_code")
+	private String point3Code;
 	
 	@Column(name = "point3_coor")
 	private String point3Coor;
@@ -72,8 +77,8 @@ public class TournamentLocation implements Serializable {
 	@Column(name = "point3_dist")
 	private Float point3Dist;
 	
-	@Column(name = "point4_name")
-	private String point4Name;
+	@Column(name = "point4_code")
+	private String point4Code;
 	
 	@Column(name = "point4_coor")
 	private String point4Coor;
@@ -81,8 +86,8 @@ public class TournamentLocation implements Serializable {
 	@Column(name = "point4_dist")
 	private Float point4Dist;
 	
-	@Column(name = "point5_name")
-	private String point5Name;
+	@Column(name = "point5_code")
+	private String point5Code;
 	
 	@Column(name = "point5_coor")
 	private String point5Coor;
@@ -90,8 +95,8 @@ public class TournamentLocation implements Serializable {
 	@Column(name = "point5_dist")
 	private Float point5Dist;
 	
-	@Column(name = "end_point_name")
-	private String endPointName;
+	@Column(name = "end_point_code")
+	private String endPointCode;
 	
 	@Column(name = "end_point_coor")
 	private String endPointCoor;

@@ -26,7 +26,7 @@ public class TourLocationDto {
 	@AllArgsConstructor
 	@NoArgsConstructor
 	public static class Point {
-		private String name;
+		private String code;
 		private String coor;
 		private Float dist;
 	}
