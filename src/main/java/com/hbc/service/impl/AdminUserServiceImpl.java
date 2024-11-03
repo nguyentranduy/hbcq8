@@ -120,8 +120,12 @@ public class AdminUserServiceImpl implements AdminUserService {
 	}
 
 	@Override
-	public UserResponseDto findByIdAvailable(long userId) {
-		return UserResponseDto.build(repo.findByIdAndIsDeleted(userId, false).get());
+	public UserResponseDto findByIdAvailable(long userId) throws UserNotFoundException {
+		Optional<User> user = repo.findByIdAndIsDeleted(userId, false);
+		if (user.isPresent()) {
+			return UserResponseDto.build(user.get());	
+		}
+		throw new UserNotFoundException("404", "Tài khoản không tồn tại.");
 	}
 
 	@Transactional(rollbackFor = Exception.class)

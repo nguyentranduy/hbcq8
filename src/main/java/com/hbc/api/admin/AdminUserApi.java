@@ -39,7 +39,12 @@ public class AdminUserApi {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<?> doGetById(@PathVariable("id") long id) {
-		return ResponseEntity.ok(adminUserService.findByIdAvailable(id));
+		try {
+			return ResponseEntity.ok(adminUserService.findByIdAvailable(id));
+		} catch (UserNotFoundException ex) {
+			ErrorResponse errorResponse = new ErrorResponse(ex.getErrorCode(), ex.getErrorMessage());
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+		}
 	}
 
 	@PostMapping

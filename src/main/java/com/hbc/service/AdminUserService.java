@@ -18,7 +18,7 @@ public interface AdminUserService {
 	UserResponseDto doUpdate(UserUpdateAdminRequestDto userUpdateRequestDto, HttpSession session)
 			throws DuplicatedUserException, UserNotFoundException;
 
-	UserResponseDto findByIdAvailable(long userId);
+	UserResponseDto findByIdAvailable(long userId) throws UserNotFoundException;
 
 	List<UserResponseDto> findAllAvailable();
 	
