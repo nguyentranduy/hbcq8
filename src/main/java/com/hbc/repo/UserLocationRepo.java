@@ -50,4 +50,5 @@ public interface UserLocationRepo extends JpaRepository<UserLocation, Long> {
 
 	boolean existsByCodeAndIsDeleted(String code, boolean isDeleted);
 	boolean existsByIdAndUserIdAndIsDeleted(long userLocationId, long userId, boolean isDeleted);
+	boolean existsByCodeAndUserIdAndIsDeleted(String code, long userId, boolean isDeleted);
 }
