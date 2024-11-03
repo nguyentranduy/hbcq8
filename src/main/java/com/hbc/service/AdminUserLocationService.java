@@ -15,7 +15,7 @@ public interface AdminUserLocationService {
 	UserLocationResponseDto findByCode(String code) throws LocationNotFoundException;
 	void doRegister(UserLocationAdminRequestDto requestDto, long currentUserId)
 			throws DuplicatedLocationCodeException, InvalidCodeException, UserNotFoundException;
-	void doUpdate(String code, UserLocationAdminRequestDto requestDto, long currentUserId)
+	void doUpdate(long userLocationId, UserLocationAdminRequestDto requestDto, long currentUserId)
 			throws DuplicatedLocationCodeException, LocationNotFoundException, InvalidCodeException, UserNotFoundException;
 	void doDelete(String code, long currentUserId) throws LocationNotFoundException;
 }

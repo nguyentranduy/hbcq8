@@ -16,6 +16,7 @@ public interface UserLocationRepo extends JpaRepository<UserLocation, Long> {
 
 	List<UserLocation> findByUser_IdAndIsDeletedOrderByCreatedAtAsc(long userId, boolean isDeleted);
 	UserLocation findByIdAndUser_IdAndIsDeleted(long id, long userId, boolean isDeleted);
+	UserLocation findByIdAndIsDeleted(long userLocationId, boolean isDeleted);
 	UserLocation findByCodeAndIsDeleted(String code, boolean isDeleted);
 
 	@Query("SELECT u.pointCoor FROM UserLocation u WHERE u.code = :code")
@@ -48,5 +49,5 @@ public interface UserLocationRepo extends JpaRepository<UserLocation, Long> {
 			@Param("updatedBy") long updatedBy, @Param("code") String code);
 
 	boolean existsByCodeAndIsDeleted(String code, boolean isDeleted);
-	boolean existsByCodeAndUserIdAndIsDeleted(String code, long userId, boolean isDeleted);
+	boolean existsByIdAndUserIdAndIsDeleted(long userLocationId, long userId, boolean isDeleted);
 }

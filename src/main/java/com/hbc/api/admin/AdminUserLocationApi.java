@@ -70,12 +70,12 @@ public class AdminUserLocationApi {
 		}
 	}
 
-	@PutMapping("/{code}")
-	public ResponseEntity<?> doUpdate(@PathVariable("code") String code,
+	@PutMapping("/{id}")
+	public ResponseEntity<?> doUpdate(@PathVariable("id") long userLocationId,
 			@RequestBody UserLocationAdminRequestDto requestDto, HttpSession session) {
 		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
 		try {
-			adminUserLocationService.doUpdate(code, requestDto, currentUser.getId());
+			adminUserLocationService.doUpdate(userLocationId, requestDto, currentUser.getId());
 			return ResponseEntity.ok().build();
 		} catch (LocationNotFoundException ex) {
 			ErrorResponse errorResponse = new ErrorResponse(ex.getErrorCode(), ex.getErrorMessage());

@@ -69,15 +69,19 @@ public class AdminUserLocationServiceImpl implements AdminUserLocationService {
 
 	@Transactional(rollbackFor = Exception.class)
 	@Override
-	public void doUpdate(String code, UserLocationAdminRequestDto requestDto, long currentUserId)
+	public void doUpdate(long userLocationId, UserLocationAdminRequestDto requestDto, long currentUserId)
 			throws DuplicatedLocationCodeException, LocationNotFoundException,
 			UserNotFoundException, InvalidCodeException {
 
-		UserLocation userLocation = repo.findByCodeAndIsDeleted(code, false);
+		UserLocation userLocation = repo.findByIdAndIsDeleted(userLocationId, false);
 		if (Objects.isNull(userLocation)) {
 			throw new LocationNotFoundException("404", "Không tìm thấy căn cứ.");
 		}
-
+		
+		if (!repo.existsByIdAndUserIdAndIsDeleted(userLocationId, requestDto.getUserId(), false) ) {
+			throw new LocationNotFoundException("404", "Không có căn cứ khớp với thông tin người chơi.");
+		}
+		
 		if (!userRepo.existsByIdAndIsDeleted(requestDto.getUserId(), false)) {
 			throw new UserNotFoundException("404", "Người dùng không tồn tại.");
 		}
