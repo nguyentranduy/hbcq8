@@ -14,11 +14,11 @@ import com.hbc.entity.Tournament;
 @Repository
 public interface TournamentRepo extends JpaRepository<Tournament, Long> {
 
-	List<Tournament> findByIsActivedOrderByCreatedAtDesc(boolean isActived);
-	Tournament findByIdAndIsActived(long tourId, boolean isActived);
+	List<Tournament> findByIsDeletedOrderByCreatedAtDesc(boolean isDeleted);
 	boolean existsByIdAndIsActived(long id, boolean isActived);
-	boolean existsByName(String tourName);
-	boolean existsByNameAndIdNot(String tourName, long tourId);
+	boolean existsByNameAndIsDeleted(String tourName, boolean isDeleted);
+	boolean existsByIdAndIsDeleted(long id, boolean isDeleted);
+	boolean existsByNameAndIdNotAndIsDeleted(String tourName, long tourId, boolean isDeleted);
 	
 	@Query(value = "SELECT t.id, t.name, t.start_date, t.end_date, l.start_point_name,"
 			+ " l.end_point_name, t.birds_num, t.is_actived"
@@ -29,11 +29,15 @@ public interface TournamentRepo extends JpaRepository<Tournament, Long> {
 	
 	@Modifying
 	@Query(value = "UPDATE Tournament t SET t.name = :name, t.birdsNum = :birdsNum, t.startDate = :startDate,"
-			+ " t.endDate = :endDate, t.restTimePerDay = :restTimePerDay, t.isActived = :isActived,"
-			+ " t.updatedAt = :updatedAt, t.updatedBy = :updatedBy"
+			+ " t.endDate = :endDate, t.restTimePerDay = :restTimePerDay,"
+			+ " t.startPointCode = :startPointCode, t.startPointCoor = :startPointCoor,"
+			+ " t.endPointCode = :endPointCode, t.endPointCoor = :endPointCoor,"
+			+ " t.isActived = :isActived, t.updatedAt = :updatedAt, t.updatedBy = :updatedBy"
 			+ " WHERE t.id = :id")
 	int update(@Param("name") String name, @Param("birdsNum") int birdsNum, @Param("startDate") Timestamp startDate,
 			@Param("endDate") Timestamp endDate, @Param("restTimePerDay") float restTimePerDay,
+			@Param("startPointCode") String startPointCode, @Param("startPointCoor") String startPointCoor,
+			@Param("endPointCode") String endPointCode, @Param("endPointCoor") String endPointCoor,
 			@Param("isActived") boolean isActived, @Param("updatedAt") Timestamp updatedAt,
 			@Param("updatedBy") Long updatedBy, @Param("id") long id);
 
@@ -41,6 +45,6 @@ public interface TournamentRepo extends JpaRepository<Tournament, Long> {
 	int findBirdsNumById(@Param("tourId") long tourId);
 	
 	@Modifying
-	@Query(value = "UPDATE Tournament t SET t.isActived = :isActived WHERE t.id = :id")
-	int deletePhysical(@Param("isActived") boolean isActived, @Param("id") long id);
+	@Query(value = "UPDATE Tournament t SET t.isDeleted = :isDeleted WHERE t.id = :id")
+	int deleteLogical(@Param("isDeleted") boolean isDeleted, @Param("id") long id);
 }

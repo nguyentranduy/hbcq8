@@ -43,9 +43,29 @@ public class TournamentDetail implements Serializable {
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@JoinColumn(name = "tour_id", referencedColumnName = "id")
 	private Tournament tour;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+	@JoinColumn(name = "user_id", referencedColumnName = "id")
+	private User user;
+
+	@Column(name = "start_point_code")
+	private String startPointCode;
+	
+	@Column(name = "start_point_coor")
+	private String startPointCoor;
 	
 	@Column(name = "start_point_time")
 	private Timestamp startPointTime;
+	
+	@Column(name = "point1_code")
+	private String point1Code;
+	
+	@Column(name = "point1_coor")
+	private String point1Coor;
+	
+	@Column(name = "point1_dist")
+	private Float point1Dist;
 	
 	@Column(name = "point1_time")
 	private Timestamp point1Time;
@@ -53,11 +73,29 @@ public class TournamentDetail implements Serializable {
 	@Column(name = "point1_speed")
 	private Float point1Speed;
 	
+	@Column(name = "point2_code")
+	private String point2Code;
+	
+	@Column(name = "point2_coor")
+	private String point2Coor;
+	
+	@Column(name = "point2_dist")
+	private Float point2Dist;
+	
 	@Column(name = "point2_time")
 	private Timestamp point2Time;
 	
 	@Column(name = "point2_speed")
 	private Float point2Speed;
+	
+	@Column(name = "point3_code")
+	private String point3Code;
+	
+	@Column(name = "point3_coor")
+	private String point3Coor;
+	
+	@Column(name = "point3_dist")
+	private Float point3Dist;
 	
 	@Column(name = "point3_time")
 	private Timestamp point3Time;
@@ -65,17 +103,44 @@ public class TournamentDetail implements Serializable {
 	@Column(name = "point3_speed")
 	private Float point3Speed;
 	
+	@Column(name = "point4_code")
+	private String point4Code;
+	
+	@Column(name = "point4_coor")
+	private String point4Coor;
+	
+	@Column(name = "point4_dist")
+	private Float point4Dist;
+	
 	@Column(name = "point4_time")
 	private Timestamp point4Time;
 	
 	@Column(name = "point4_speed")
 	private Float point4Speed;
 	
+	@Column(name = "point5_code")
+	private String point5Code;
+	
+	@Column(name = "point5_coor")
+	private String point5Coor;
+	
+	@Column(name = "point5_dist")
+	private Float point5Dist;
+	
 	@Column(name = "point5_time")
 	private Timestamp point5Time;
 	
 	@Column(name = "point5_speed")
 	private Float point5Speed;
+	
+	@Column(name = "end_point_code")
+	private String endPointCode;
+	
+	@Column(name = "end_point_coor")
+	private String endPointCoor;
+	
+	@Column(name = "end_point_dist")
+	private Float endPointDist;
 	
 	@Column(name = "end_point_time")
 	private Timestamp endPointTime;

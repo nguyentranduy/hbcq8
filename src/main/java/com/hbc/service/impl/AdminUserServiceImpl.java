@@ -41,16 +41,16 @@ public class AdminUserServiceImpl implements AdminUserService {
 	public UserResponseDto doRegister(UserRegisterRequestDto userRegisterRequestDto)
 			throws DuplicatedUserException, CustomException {
 		if (repo.existsByUsername(userRegisterRequestDto.getUsername())) {
-			throw new DuplicatedUserException("409", "Username already exists.");
+			throw new DuplicatedUserException("409", "Tên tài khoản đã tồn tại.");
 		}
 		
 		if (repo.existsByEmail(userRegisterRequestDto.getEmail())) {
-			throw new DuplicatedUserException("409", "Email already exists.");
+			throw new DuplicatedUserException("409", "Địa chỉ email đã tồn tại.");
 		}
 		Optional<User> userWithPhone = repo.findByPhone(userRegisterRequestDto.getPhone());
 		
 		if (userWithPhone.isPresent()) {
-			throw new DuplicatedUserException("409", "Phone number already exists.");
+			throw new DuplicatedUserException("409", "Số điện thoại đã tồn tại.");
 		}
 
 		String hashPassword = bcrypt.encode(userRegisterRequestDto.getPassword());
@@ -74,7 +74,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 		}
 		
 		if (repo.existsByUsername(userUpdateRequestDto.getUsername())) {
-			throw new DuplicatedUserException("409", "Username đã tồn tại.");
+			throw new DuplicatedUserException("409", "Tên tài khoản đã tồn tại.");
 		}
 
 		Optional<User> userWithPhone = repo.findByPhoneAndIdNot(userUpdateRequestDto.getPhone(), userUpdateRequestDto.getUserId());

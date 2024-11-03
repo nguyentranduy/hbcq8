@@ -41,7 +41,10 @@ public class Post implements Serializable {
 	
 	@Column
 	private String slug;
-	
+
+	@Column(name = "img_url")
+	private String imgUrl;
+
 	@Column
 	private String title;
 	

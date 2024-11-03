@@ -18,6 +18,9 @@ public interface UserLocationRepo extends JpaRepository<UserLocation, Long> {
 	UserLocation findByIdAndUser_IdAndIsDeleted(long id, long userId, boolean isDeleted);
 	UserLocation findByCodeAndIsDeleted(String code, boolean isDeleted);
 
+	@Query("SELECT u.pointCoor FROM UserLocation u WHERE u.code = :code")
+	String findPointCoorByCode(String code);
+
 	@Modifying
 	@Query(value = "INSERT INTO user_location(code, user_id, point_coor, created_at, created_by) "
 			+ "VALUE (:code, :userId, :pointCoor, :createdAt, :createdBy)", nativeQuery = true)
@@ -45,4 +48,5 @@ public interface UserLocationRepo extends JpaRepository<UserLocation, Long> {
 			@Param("updatedBy") long updatedBy, @Param("code") String code);
 
 	boolean existsByCodeAndIsDeleted(String code, boolean isDeleted);
+	boolean existsByCodeAndUserIdAndIsDeleted(String code, long userId, boolean isDeleted);
 }

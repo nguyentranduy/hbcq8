@@ -30,11 +30,11 @@ public class SessionFilter implements Filter {
 			"/api/v1/user-location");
 
 	private static final List<String> URL_ADMIN_PATTERNS = List.of(
-			"/api/v1/admin/tournament-location",
 			"/api/v1/admin/tournament",
 			"/api/v1/admin/tour-apply",
 			"/api/v1/admin/user",
-			"/api/v1/admin/user-location");
+			"/api/v1/admin/user-location",
+			"/api/v1/admin/post");
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)

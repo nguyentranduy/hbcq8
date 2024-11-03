@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 import com.hbc.dto.tournament.TourRequestDto;
-import com.hbc.dto.tournament.UpdateTourRequestDto;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -53,6 +52,21 @@ public class Tournament implements Serializable {
 	@Column(name = "is_actived")
 	private Boolean isActived;
 	
+	@Column(name = "start_point_code")
+	private String startPointCode;
+	
+	@Column(name = "start_point_coor")
+	private String startPointCoor;
+	
+	@Column(name = "end_point_code")
+	private String endPointCode;
+	
+	@Column(name = "end_point_coor")
+	private String endPointCoor;
+
+	@Column(name = "is_deleted")
+	private Boolean isDeleted;
+	
 	@Column(name = "created_at")
 	private Timestamp createdAt;
 	
@@ -65,13 +79,17 @@ public class Tournament implements Serializable {
 	@Column(name = "updated_by")
 	private Long updatedBy;
 	
-	public static Tournament build(TourRequestDto tourRequestDto, long createdBy) {
+	public static Tournament build(TourRequestDto tourRequestDto, String startPointCoor, String endPointCoor, long createdBy) {
 		Tournament entity = new Tournament();
 		entity.setName(tourRequestDto.getName());
 		entity.setBirdsNum(tourRequestDto.getBirdsNum());
 		entity.setImgUrl(tourRequestDto.getImgUrl());
 		entity.setStartDate(tourRequestDto.getStartDate());
 		entity.setEndDate(tourRequestDto.getEndDate());
+		entity.setStartPointCode(tourRequestDto.getStartPointCode());
+		entity.setStartPointCoor(startPointCoor);
+		entity.setEndPointCode(tourRequestDto.getEndPointCode());
+		entity.setEndPointCoor(endPointCoor);
 		entity.setRestTimePerDay(tourRequestDto.getRestTimePerDay());
 		entity.setIsActived(tourRequestDto.getIsActived());
 		entity.setCreatedBy(createdBy);
@@ -80,15 +98,20 @@ public class Tournament implements Serializable {
 		return entity;
 	}
 	
-	public static Tournament buildForUpdate(UpdateTourRequestDto tourRequestDto, long updatedBy) {
+	public static Tournament buildForUpdate(long tourId, TourRequestDto tourRequestDto,
+			String startPointCoor, String endPointCoor, long updatedBy) {
 		Tournament entity = new Tournament();
-		entity.setId(tourRequestDto.getId());
+		entity.setId(tourId);
 		entity.setName(tourRequestDto.getName());
 		entity.setBirdsNum(tourRequestDto.getBirdsNum());
 		entity.setImgUrl(tourRequestDto.getImgUrl());
 		entity.setStartDate(tourRequestDto.getStartDate());
 		entity.setEndDate(tourRequestDto.getEndDate());
 		entity.setRestTimePerDay(tourRequestDto.getRestTimePerDay());
+		entity.setStartPointCode(tourRequestDto.getStartPointCode());
+		entity.setStartPointCoor(startPointCoor);
+		entity.setEndPointCode(tourRequestDto.getEndPointCode());
+		entity.setEndPointCoor(endPointCoor);
 		entity.setIsActived(tourRequestDto.getIsActived());
 		entity.setUpdatedBy(updatedBy);
 		entity.setUpdatedAt(new Timestamp(System.currentTimeMillis()));

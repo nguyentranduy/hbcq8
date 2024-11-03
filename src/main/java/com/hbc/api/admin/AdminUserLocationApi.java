@@ -32,6 +32,7 @@ public class AdminUserLocationApi {
 	@Autowired
 	AdminUserLocationService adminUserLocationService;
 
+	// /api/v1/admin/user-location?user={userId}
 	@GetMapping
 	public ResponseEntity<?> doGetByUserId(@RequestParam("user") long userId) {
 		return ResponseEntity.ok(adminUserLocationService.findByUserId(userId));

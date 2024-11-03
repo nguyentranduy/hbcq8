@@ -22,7 +22,7 @@ import com.hbc.service.TournamentApplyService;
 @RestController
 @RequestMapping("/api/v1/admin/tour-apply")
 public class AdminTourApplyApi {
-	
+
 	@Autowired
 	TournamentApplyService tournamentApplyService;
 

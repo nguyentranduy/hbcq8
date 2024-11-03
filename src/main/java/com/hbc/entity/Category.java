@@ -32,9 +32,6 @@ public class Category implements Serializable {
 	@Column
 	private String name;
 	
-	@Column
-	private String code;
-	
 	@Column(name = "is_deleted")
 	private Boolean isDeleted;
 
