@@ -11,15 +11,18 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
+import com.hbc.constant.TourApplyStatusCodeConst;
 import com.hbc.dto.bird.BirdRequestDto;
 import com.hbc.dto.bird.BirdResponseDto;
 import com.hbc.dto.bird.BirdUpdateRequestDto;
 import com.hbc.entity.Bird;
 import com.hbc.exception.AuthenticationException;
 import com.hbc.exception.CustomException;
+import com.hbc.exception.bird.BirdAlreadyRequestedException;
 import com.hbc.exception.bird.BirdNotFoundException;
 import com.hbc.exception.bird.DuplicatedBirdInfoException;
 import com.hbc.repo.BirdRepo;
+import com.hbc.repo.TournamentApplyRepo;
 import com.hbc.repo.UserRepo;
 import com.hbc.service.BirdService;
 
@@ -34,6 +37,9 @@ public class BirdServiceImpl implements BirdService {
 	
 	@Autowired
 	UserRepo userRepo;
+	
+	@Autowired
+	TournamentApplyRepo tourApplyRepo;
 	
     @PersistenceContext
     private EntityManager entityManager;
@@ -130,6 +136,11 @@ public class BirdServiceImpl implements BirdService {
 			throw new AuthenticationException("401", "Không có quyền xóa.");
 		}
 
+		if (tourApplyRepo.existsByBirdCodeAndRequesterIdAndStatusCodeNot(code, currentUserId,
+				TourApplyStatusCodeConst.STATUS_CODE_REJECTED)) {
+			throw new BirdAlreadyRequestedException("400", "Không thể xóa chim đang dự giải đua.");
+		}
+		
 		try {
 			birdRepo.deleteByCode(currentUserId, new Timestamp(System.currentTimeMillis()), code);
 		} catch (Exception ex) {

@@ -22,6 +22,7 @@ import com.hbc.dto.bird.BirdUpdateRequestDto;
 import com.hbc.dto.user.UserResponseDto;
 import com.hbc.exception.AuthenticationException;
 import com.hbc.exception.CustomException;
+import com.hbc.exception.bird.BirdAlreadyRequestedException;
 import com.hbc.exception.bird.BirdNotFoundException;
 import com.hbc.exception.bird.DuplicatedBirdInfoException;
 import com.hbc.service.BirdService;
@@ -51,6 +52,7 @@ public class BirdApi {
 			ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode(), e.getErrorMessage());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e);
 		}
 	}
@@ -62,6 +64,7 @@ public class BirdApi {
 			List<BirdResponseDto> response = birdService.doGetBirds(currentDto.getId());
 			return ResponseEntity.ok(response);
 		} catch (Exception ex) {
+			ex.printStackTrace();
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex);
 		}
 	}
@@ -82,6 +85,7 @@ public class BirdApi {
 			ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode(), e.getErrorMessage());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e);
 		}
 	}
@@ -94,11 +98,15 @@ public class BirdApi {
 			return ResponseEntity.ok().build();
 		} catch (BirdNotFoundException e) {
 			ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode(), e.getErrorMessage());
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+		} catch (BirdAlreadyRequestedException e) {
+			ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode(), e.getErrorMessage());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 		} catch (AuthenticationException e) {
 			ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode(), e.getErrorMessage());
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e);
 		}
 	}

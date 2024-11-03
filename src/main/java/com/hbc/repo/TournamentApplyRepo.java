@@ -24,7 +24,7 @@ public interface TournamentApplyRepo extends JpaRepository<TournamentApply, Long
 	TournamentApply findByTourId(long tourId);
 	
 	boolean existsByBirdCodeAndTourId(String birdCode, long tourId);
-	
+	boolean existsByBirdCodeAndRequesterIdAndStatusCodeNot(String birdCode, long requesterId, String statusCode);
 	boolean existsByTourIdAndRequesterId(long tourId, long requesterId);
 	
 	int countByTourIdAndRequesterId(long tourId, long requesterId);
@@ -57,4 +57,8 @@ public interface TournamentApplyRepo extends JpaRepository<TournamentApply, Long
 			+ " WHERE tour_id = :tourId AND requester_id = :requesterId"
 			+ " GROUP BY memo, tour_id, requester_id", nativeQuery = true)
 	String findMemoByTourIdAndRequesterId(@Param("tourId") long tourId, @Param("requesterId") long requesterId);
+
+	@Query(value = "SELECT bird_code FROM tournament_apply"
+			+ " WHERE tour_id = :tourId", nativeQuery = true)
+	List<String> findBirdCodeById(@Param("tourId") long tourId);
 }

@@ -4,6 +4,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,19 +14,25 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import com.hbc.constant.SessionConst;
+import com.hbc.constant.TourApplyStatusCodeConst;
 import com.hbc.dto.tourapply.TourApplyRequestDto;
 import com.hbc.dto.tourapply.TourApplyResponseDto;
 import com.hbc.dto.tourapply.admin.AdminTourApplyInfoDto;
-import com.hbc.dto.tourapply.admin.AdminTourApplyUpdateDto;
+import com.hbc.dto.tourapply.admin.AdminTourApplyApproveDto;
 import com.hbc.dto.user.UserResponseDto;
 import com.hbc.entity.TournamentApply;
+import com.hbc.entity.UserLocation;
 import com.hbc.exception.AuthenticationException;
 import com.hbc.exception.CustomException;
 import com.hbc.exception.tourapply.TourApplyException;
 import com.hbc.exception.tourapply.TourApplyNotFoundException;
+import com.hbc.exception.user.UserNotFoundException;
+import com.hbc.exception.userlocation.LocationNotFoundException;
 import com.hbc.repo.BirdRepo;
 import com.hbc.repo.TournamentApplyRepo;
+import com.hbc.repo.TournamentDetailRepo;
 import com.hbc.repo.TournamentRepo;
+import com.hbc.repo.UserLocationRepo;
 import com.hbc.repo.UserRepo;
 import com.hbc.service.TournamentApplyService;
 
@@ -34,24 +42,25 @@ import jakarta.servlet.http.HttpSession;
 
 @Service
 public class TournamentApplyServiceImpl implements TournamentApplyService {
-	
-	private static final String STATUS_CODE_REJECTED = "R";
-	private static final String STATUS_CODE_APPROVED = "A";
-	private static final String STATUS_CODE_WAITING = "W";
-	private static final List<String> LIST_STATUS_CODE = List.of(STATUS_CODE_REJECTED, STATUS_CODE_APPROVED, STATUS_CODE_WAITING);
 
 	@Autowired
 	TournamentApplyRepo tourApplyRepo;
-	
+
+	@Autowired
+	TournamentDetailRepo tourDetailRepo;
+
 	@Autowired
 	BirdRepo birdRepo;
-	
+
 	@Autowired
 	TournamentRepo tourRepo;
-	
+
 	@Autowired
 	UserRepo userRepo;
-	
+
+	@Autowired
+	UserLocationRepo userLocationRepo;
+
 	@PersistenceContext
     private EntityManager entityManager;
 
@@ -94,7 +103,8 @@ public class TournamentApplyServiceImpl implements TournamentApplyService {
 			Timestamp createdAt = new Timestamp(System.currentTimeMillis());
 
 			request.getBirdCode().forEach(birdCode -> {
-				tourApplyRepo.doRegister(birdCode, tourId, requesterId, createdAt, requesterId, STATUS_CODE_WAITING);
+				tourApplyRepo.doRegister(birdCode, tourId, requesterId, createdAt,
+						requesterId, TourApplyStatusCodeConst.STATUS_CODE_WAITING);
 			});
 			
 			entityManager.clear();
@@ -161,24 +171,61 @@ public class TournamentApplyServiceImpl implements TournamentApplyService {
 			throw ex;
 		}
 	}
-	
+
 	@Transactional(rollbackFor = Exception.class)
 	@Override
-	public void doApprove(AdminTourApplyUpdateDto dto) throws Exception {
+	public void doApprove(AdminTourApplyApproveDto dto) throws Exception {
 		if (!tourApplyRepo.existsByTourIdAndRequesterId(dto.getTourId(), dto.getRequesterId())) {
 			throw new TourApplyNotFoundException("404", "Dữ liệu đăng ký không tồn tại.");
 		}
-		
-		if(!LIST_STATUS_CODE.contains(dto.getStatusCode())) {
-			throw new TourApplyException("400", "Trạng thái phê duyệt chưa đúng.");
+
+		if (!userRepo.existsByIdAndIsDeleted(dto.getRequesterId(), false)) {
+			throw new UserNotFoundException("404", "Người dùng không tồn tại.");
 		}
-		
+
+		validateUserLocation(dto);
+
 		try {
-			tourApplyRepo.doUpdate(dto.getStatusCode(), dto.getMemo(), dto.getApproverId(), dto.getApproverId(),
-				new Timestamp(System.currentTimeMillis()), dto.getTourId(), dto.getRequesterId());
+			tourApplyRepo.doUpdate(TourApplyStatusCodeConst.STATUS_CODE_APPROVED, dto.getMemo(), dto.getApproverId(),
+					dto.getApproverId(), new Timestamp(System.currentTimeMillis()), dto.getTourId(), dto.getRequesterId());
+			doRegisterTourDetail(dto);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
+		}
+	}
+
+	private void doRegisterTourDetail(AdminTourApplyApproveDto dto) {
+		long requesterId = dto.getRequesterId();
+		long tourId = dto.getTourId();
+		long approverId = dto.getApproverId();
+		Timestamp createdAt = new Timestamp(System.currentTimeMillis());
+		
+		List<String> birdCodeList = tourApplyRepo.findBirdCodeById(tourId);
+		for (String birdCode : birdCodeList) {
+			tourDetailRepo.doRegister(requesterId, birdCode, tourId, dto.getStartPointCode(), dto.getStartPointCoor(),
+					dto.getPoint1Code(), dto.getPoint1Coor(), dto.getPoint1Dist(),
+					dto.getPoint2Code(), dto.getPoint2Coor(), dto.getPoint2Dist(),
+					dto.getPoint3Code(), dto.getPoint3Coor(), dto.getPoint3Dist(),
+					dto.getPoint4Code(), dto.getPoint4Coor(), dto.getPoint4Dist(),
+					dto.getPoint5Code(), dto.getPoint5Coor(), dto.getPoint5Dist(),
+					dto.getEndPointCode(), dto.getEndPointCoor(), dto.getEndPointDist(),
+					createdAt, approverId);
+		}
+	}
+
+	private void validateUserLocation(AdminTourApplyApproveDto dto) {
+		List<UserLocation> userLocationList = userLocationRepo
+				.findByUser_IdAndIsDeletedOrderByCreatedAtAsc(dto.getRequesterId(), false);
+		List<String> userLocationCodeList = userLocationList.stream().map(UserLocation::getCode).toList();
+
+		List<String> pointCodes = Stream.of(dto.getPoint1Code(), dto.getPoint2Code(), dto.getPoint3Code(),
+				dto.getPoint4Code(), dto.getPoint5Code()).filter(Objects::nonNull).toList();
+
+		for (String pointCode : pointCodes) {
+			if (!ObjectUtils.isEmpty(pointCode) && !userLocationCodeList.contains(pointCode)) {
+				throw new LocationNotFoundException("404", "Căn cứ không tồn tại: " + pointCode);
+			}
 		}
 	}
 
@@ -193,7 +240,7 @@ public class TournamentApplyServiceImpl implements TournamentApplyService {
 
 		String tourStatusCode = tourApplyRepo.findStatusCodeByTourIdAndRequesterId(tourId, requesterId);
 		
-		if (StringUtils.hasText(tourStatusCode) && !tourStatusCode.equals(STATUS_CODE_WAITING)) {
+		if (StringUtils.hasText(tourStatusCode) && !tourStatusCode.equals(TourApplyStatusCodeConst.STATUS_CODE_WAITING)) {
 			throw new TourApplyException("400", "Đơn đã được phê duyệt hoặc từ chối thì không được phép hủy.");
 		}
 		

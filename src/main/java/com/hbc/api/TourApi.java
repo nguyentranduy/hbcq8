@@ -30,6 +30,7 @@ public class TourApi {
 			List<TournamentInfoDto> response = tourInfoService.doGetList(currentUser.getId());
 			return ResponseEntity.ok(response);
 		} catch (Exception ex) {
+			ex.printStackTrace();
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex);
 		}
 	}
