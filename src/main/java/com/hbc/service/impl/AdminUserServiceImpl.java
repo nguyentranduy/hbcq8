@@ -69,11 +69,14 @@ public class AdminUserServiceImpl implements AdminUserService {
 	public UserResponseDto doUpdate(UserUpdateAdminRequestDto userUpdateRequestDto, HttpSession session)
 			throws DuplicatedUserException, UserNotFoundException {
 
-		if (!repo.existsByIdAndIsDeleted(userUpdateRequestDto.getUserId(), false)) {
+		Optional<User> currentUser = repo.findByIdAndIsDeleted(userUpdateRequestDto.getUserId(), false);
+
+		if (currentUser.isEmpty()) {
 			throw new UserNotFoundException("404", "Người dùng không tồn tại.");
 		}
-		
-		if (repo.existsByUsername(userUpdateRequestDto.getUsername())) {
+
+		if (!currentUser.get().getUsername().equals(userUpdateRequestDto.getUsername())
+				&& repo.existsByUsername(userUpdateRequestDto.getUsername())) {
 			throw new DuplicatedUserException("409", "Tên tài khoản đã tồn tại.");
 		}
 
