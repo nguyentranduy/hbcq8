@@ -59,4 +59,5 @@ public interface UserRepo extends JpaRepository<User, Long> {
 	String findUserNameById(@Param("userId") long userId);
 	
 	List<User> findByIsDeletedOrderByUsernameAsc(boolean isDeleted);
+	List<User> findByIdIn(List<Long> ids);
 }
