@@ -20,13 +20,6 @@ public interface TournamentRepo extends JpaRepository<Tournament, Long> {
 	boolean existsByIdAndIsDeleted(long id, boolean isDeleted);
 	boolean existsByNameAndIdNotAndIsDeleted(String tourName, long tourId, boolean isDeleted);
 	
-	@Query(value = "SELECT t.id, t.name, t.start_date, t.end_date, l.start_point_name,"
-			+ " l.end_point_name, t.birds_num, t.is_actived"
-			+ " FROM tournament t"
-			+ " LEFT JOIN tournament_location l ON t.id = l.tour_id"
-			+ " ORDER BY t.created_at ASC", nativeQuery = true)
-	List<Object[]> getTournamentInfo();
-	
 	@Modifying
 	@Query(value = "UPDATE Tournament t SET t.name = :name, t.birdsNum = :birdsNum, t.startDate = :startDate,"
 			+ " t.endDate = :endDate, t.restTimePerDay = :restTimePerDay,"

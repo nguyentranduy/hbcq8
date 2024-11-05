@@ -23,8 +23,8 @@ public class TournamentInfoDto implements Serializable {
 	private Timestamp startDate;
 	@JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
 	private Timestamp endDate;
-	private String startLocationName;
-	private String endLocationName;
+	private String startLocationCode;
+	private String endLocationCode;
 	private int birdsNum;
 	private String tourApplyStatusCode;
 	@JsonProperty("isActived")

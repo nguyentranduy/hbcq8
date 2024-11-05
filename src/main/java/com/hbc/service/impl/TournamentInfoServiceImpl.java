@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hbc.dto.tournament.TournamentInfoDto;
+import com.hbc.entity.Tournament;
 import com.hbc.repo.TournamentApplyRepo;
 import com.hbc.repo.TournamentRepo;
 import com.hbc.service.TournamentInfoService;
@@ -23,29 +24,26 @@ public class TournamentInfoServiceImpl implements TournamentInfoService {
 
 	@Override
 	public List<TournamentInfoDto> doGetList(long requesterId) {
-		List<Object[]> rawData = tourRepo.getTournamentInfo();
+		List<Tournament> rawData = tourRepo.findByIsDeletedOrderByCreatedAtDesc(false);
 		List<TournamentInfoDto> result = new ArrayList<>();
-		
+
 		rawData.forEach(item -> {
 			TournamentInfoDto dto = new TournamentInfoDto();
-			long tourId = (long) item[0];
-			Timestamp startDate = (Timestamp) item[2];
-			Timestamp endDate = (Timestamp) item[3];
-			boolean isRawActived = (boolean) item[7];
+			long tourId = item.getId();
 			String tourStatusCode = tourApplyRepo.findStatusCodeByTourIdAndRequesterId(tourId, requesterId);
 			String memo = tourApplyRepo.findMemoByTourIdAndRequesterId(tourId, requesterId);
 			Timestamp now = new Timestamp(System.currentTimeMillis());
 			
 			dto.setTourId(tourId);
-			dto.setTourName((String) item[1]);
-			dto.setStartDate(startDate);
-			dto.setEndDate(endDate);
-			dto.setStartLocationName((String) item[4]);
-			dto.setEndLocationName((String) item[5]);
-			dto.setBirdsNum((int) item[6]);
+			dto.setTourName(item.getName());
+			dto.setStartDate(item.getStartDate());
+			dto.setEndDate(item.getEndDate());
+			dto.setStartLocationCode(item.getStartPointCode());
+			dto.setEndLocationCode(item.getEndPointCode());
+			dto.setBirdsNum(item.getBirdsNum());
 			dto.setTourApplyStatusCode(tourStatusCode);
-			dto.setActived(getIsActived(isRawActived, startDate, endDate, now));
-			dto.setTourStatus(getStatus(isRawActived, startDate, endDate, now));
+			dto.setActived(getIsActived(item.getIsActived(), item.getStartDate(), item.getEndDate(), now));
+			dto.setTourStatus(getStatus(item.getIsActived(), item.getStartDate(), item.getEndDate(), now));
 			dto.setMemo(memo);
 			result.add(dto);
 		});
