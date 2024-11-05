@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.hbc.dto.post.AdminPostRequestDto;
-import com.hbc.dto.post.AdminPostResponseDto;
+import com.hbc.dto.post.PostResponseDto;
 import com.hbc.entity.Post;
 import com.hbc.entity.User;
 import com.hbc.exception.post.InvalidTitleException;
@@ -22,6 +22,8 @@ import com.hbc.service.AdminPostService;
 
 @Service
 public class AdminPostServiceImpl implements AdminPostService {
+	
+	private static final int MAX_SLUG_LENGTH = 250;
 
 	@Autowired
 	PostRepo postRepo;
@@ -30,15 +32,15 @@ public class AdminPostServiceImpl implements AdminPostService {
 	UserRepo userRepo;
 
 	@Override
-	public List<AdminPostResponseDto> findAllAvailable() {
+	public List<PostResponseDto> findAllAvailable() {
 		List<Post> posts = postRepo.findByIsDeletedOrderByCreatedAtDesc(false);
 		List<Long> authorIds = posts.stream().map(Post::getCreatedBy).toList();
 		List<User> users = userRepo.findByIdIn(authorIds);
 		Map<Long, String> mapAuthors = users.stream().collect(Collectors.toMap(User::getId, User::getUsername));
 
-		List<AdminPostResponseDto> result = new ArrayList<>();
+		List<PostResponseDto> result = new ArrayList<>();
 		posts.forEach(i -> {
-			result.add(AdminPostResponseDto.build(i, mapAuthors.get(i.getCreatedBy())));
+			result.add(PostResponseDto.build(i, mapAuthors.get(i.getCreatedBy())));
 		});
 		return result;
 	}
@@ -63,10 +65,17 @@ public class AdminPostServiceImpl implements AdminPostService {
 		slug = slug.replaceAll(":", "");
 		slug = slug.replaceAll("\\s+", "-");
 
+		if (slug.length() > MAX_SLUG_LENGTH) {
+			slug = slug.substring(0, MAX_SLUG_LENGTH);
+		}
+
 		int version = 1;
 		String baseSlug = slug;
 		while (postRepo.existsBySlug(slug)) {
 			slug = baseSlug + "-v" + version++;
+			if (slug.length() > MAX_SLUG_LENGTH) {
+				slug = slug.substring(0, MAX_SLUG_LENGTH);
+			}
 		}
 
 		return slug;

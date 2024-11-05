@@ -16,7 +16,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AdminPostResponseDto implements Serializable {
+public class PostResponseDto implements Serializable {
 
 	private static final long serialVersionUID = -1154214882512633534L;
 
@@ -36,8 +36,8 @@ public class AdminPostResponseDto implements Serializable {
 	private Timestamp updatedAt;
 	private Long updatedBy;
 	
-	public static AdminPostResponseDto build(Post post, String authorUserName) {
-		AdminPostResponseDto dto = new AdminPostResponseDto();
+	public static PostResponseDto build(Post post, String authorUserName) {
+		PostResponseDto dto = new PostResponseDto();
 		dto.id = post.getId();
 		dto.categoryId = post.getCategory().getId();
 		dto.imgUrl = post.getImgUrl();

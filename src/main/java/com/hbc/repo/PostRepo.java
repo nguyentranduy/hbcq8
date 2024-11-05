@@ -15,6 +15,7 @@ import com.hbc.entity.Post;
 public interface PostRepo extends JpaRepository<Post, Long> {
 
 	List<Post> findByIsDeletedOrderByCreatedAtDesc(boolean isDeleted);
+	Post findBySlugAndIsDeleted(String slug, boolean isDeleted);
 	boolean existsBySlug(String slug);
 
 	@Modifying
