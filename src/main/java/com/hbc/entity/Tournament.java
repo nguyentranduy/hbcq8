@@ -94,6 +94,7 @@ public class Tournament implements Serializable {
 		entity.setIsActived(tourRequestDto.getIsActived());
 		entity.setCreatedBy(createdBy);
 		entity.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+		entity.setIsDeleted(false);
 		
 		return entity;
 	}

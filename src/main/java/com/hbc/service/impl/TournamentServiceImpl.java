@@ -154,7 +154,7 @@ public class TournamentServiceImpl implements TournamentService {
 		}
 
 		try {
-			int countDeleted = tourRepo.deleteLogical(false, id);
+			int countDeleted = tourRepo.deleteLogical(true, true, id);
 			if (countDeleted < 1) {
 				throw new Exception();
 			}
