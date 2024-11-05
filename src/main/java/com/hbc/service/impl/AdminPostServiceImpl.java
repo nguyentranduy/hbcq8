@@ -19,6 +19,7 @@ import com.hbc.exception.post.InvalidTitleException;
 import com.hbc.repo.PostRepo;
 import com.hbc.repo.UserRepo;
 import com.hbc.service.AdminPostService;
+import com.hbc.util.VNCharUtil;
 
 @Service
 public class AdminPostServiceImpl implements AdminPostService {
@@ -64,6 +65,7 @@ public class AdminPostServiceImpl implements AdminPostService {
 		slug = slug.replaceAll("[^\\p{L}\\d\\s:]", "");
 		slug = slug.replaceAll(":", "");
 		slug = slug.replaceAll("\\s+", "-");
+		slug = VNCharUtil.removeAccent(slug);
 
 		if (slug.length() > MAX_SLUG_LENGTH) {
 			slug = slug.substring(0, MAX_SLUG_LENGTH);
