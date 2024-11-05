@@ -1,5 +1,6 @@
 package com.hbc.service.impl;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -7,7 +8,9 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.hbc.dto.post.AdminPostRequestDto;
 import com.hbc.dto.post.AdminPostResponseDto;
 import com.hbc.entity.Post;
 import com.hbc.entity.User;
@@ -36,5 +39,13 @@ public class AdminPostServiceImpl implements AdminPostService {
 			result.add(AdminPostResponseDto.build(i, mapAuthors.get(i.getCreatedBy())));
 		});
 		return result;
+	}
+
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public void insert(AdminPostRequestDto requestDto, long currentUserId) {
+		Timestamp createdAt = new Timestamp(System.currentTimeMillis());
+		postRepo.insert(requestDto.getCategoryId(), requestDto.getTitle(), requestDto.getContent(),
+				requestDto.getSlug(), requestDto.getImgUrl(), createdAt, currentUserId, false);
 	}
 }
