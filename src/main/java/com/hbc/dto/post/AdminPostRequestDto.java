@@ -18,6 +18,5 @@ public class AdminPostRequestDto implements Serializable {
 	private long categoryId;
 	private String title;
 	private String content;
-	private String slug;
 	private String imgUrl;
 }

@@ -14,7 +14,8 @@ import com.hbc.entity.Post;
 @Repository
 public interface PostRepo extends JpaRepository<Post, Long> {
 
-	List<Post> findByIsDeleted(boolean isDeleted);
+	List<Post> findByIsDeletedOrderByCreatedAtDesc(boolean isDeleted);
+	boolean existsBySlug(String slug);
 
 	@Modifying
 	@Query(value = "INSERT INTO post(category_id, title, content, slug, img_url, created_at, created_by, is_deleted) "

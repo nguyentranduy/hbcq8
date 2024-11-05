@@ -189,7 +189,7 @@ CREATE TABLE post (
 	`category_id` bigint NOT NULL,
 	`img_url` varchar(255),
 	`slug` varchar(255) NOT NULL,
-	`title` varchar(255) NOT NULL,
+	`title` varchar(255) DEFAULT NULL,
 	`content` text NOT NULL,
 	`is_deleted` bit NOT NULL DEFAULT 0,
 	`created_at` timestamp DEFAULT NOW(),

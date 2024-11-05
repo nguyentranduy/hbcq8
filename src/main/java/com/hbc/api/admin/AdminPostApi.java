@@ -13,6 +13,7 @@ import com.hbc.constant.SessionConst;
 import com.hbc.dto.ErrorResponse;
 import com.hbc.dto.post.AdminPostRequestDto;
 import com.hbc.dto.user.UserResponseDto;
+import com.hbc.exception.post.InvalidTitleException;
 import com.hbc.service.AdminPostService;
 
 import jakarta.servlet.http.HttpSession;
@@ -35,6 +36,9 @@ public class AdminPostApi {
 			UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
 			adminPostService.insert(requestDto, currentUser.getId());
 			return ResponseEntity.ok().build();
+		} catch (InvalidTitleException ex) {
+			ErrorResponse errorResponse = new ErrorResponse(ex.getErrorCode(), ex.getErrorMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			ErrorResponse errorResponse = new ErrorResponse("400", ex.getMessage());
