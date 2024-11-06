@@ -66,7 +66,7 @@ public class AdminTourApplyApi {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex);
 		}
 	}
-	
+
 	@PutMapping("/approve")
 	public ResponseEntity<?> doPutApprove(@RequestBody AdminTourApplyApproveDto dto) {
 		try {

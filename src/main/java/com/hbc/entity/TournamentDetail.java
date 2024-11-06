@@ -73,6 +73,9 @@ public class TournamentDetail implements Serializable {
 	@Column(name = "point1_speed")
 	private Float point1Speed;
 	
+	@Column(name = "point1_key")
+	private String point1Key;
+	
 	@Column(name = "point2_code")
 	private String point2Code;
 	
@@ -87,6 +90,9 @@ public class TournamentDetail implements Serializable {
 	
 	@Column(name = "point2_speed")
 	private Float point2Speed;
+
+	@Column(name = "point2_key")
+	private String point2Key;
 	
 	@Column(name = "point3_code")
 	private String point3Code;
@@ -102,6 +108,9 @@ public class TournamentDetail implements Serializable {
 	
 	@Column(name = "point3_speed")
 	private Float point3Speed;
+
+	@Column(name = "point3_key")
+	private String point3Key;
 	
 	@Column(name = "point4_code")
 	private String point4Code;
@@ -117,6 +126,9 @@ public class TournamentDetail implements Serializable {
 	
 	@Column(name = "point4_speed")
 	private Float point4Speed;
+
+	@Column(name = "point4_key")
+	private String point4Key;
 	
 	@Column(name = "point5_code")
 	private String point5Code;
@@ -132,6 +144,9 @@ public class TournamentDetail implements Serializable {
 	
 	@Column(name = "point5_speed")
 	private Float point5Speed;
+
+	@Column(name = "point5_key")
+	private String point5Key;
 	
 	@Column(name = "end_point_code")
 	private String endPointCode;
@@ -147,6 +162,12 @@ public class TournamentDetail implements Serializable {
 	
 	@Column(name = "end_point_speed")
 	private Float endPointSpeed;
+
+	@Column(name = "end_point_key")
+	private String endPointKey;
+	
+	@Column(name = "status")
+	private String status;
 	
 	@Column(name = "avg_speed")
 	private Float avgSpeed;

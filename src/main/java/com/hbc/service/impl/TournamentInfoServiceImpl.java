@@ -18,13 +18,13 @@ public class TournamentInfoServiceImpl implements TournamentInfoService {
 
 	@Autowired
 	TournamentRepo tourRepo;
-	
+
 	@Autowired
 	TournamentApplyRepo tourApplyRepo;
 
 	@Override
 	public List<TournamentInfoDto> doGetList(long requesterId) {
-		List<Tournament> rawData = tourRepo.findByIsDeletedOrderByCreatedAtDesc(false);
+		List<Tournament> rawData = tourRepo.findByIsDeletedAndIsActivedOrderByCreatedAtDesc(false, true);
 		List<TournamentInfoDto> result = new ArrayList<>();
 
 		rawData.forEach(item -> {
