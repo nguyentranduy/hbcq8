@@ -23,6 +23,11 @@ public interface TournamentApplyRepo extends JpaRepository<TournamentApply, Long
 	
 	TournamentApply findByTourId(long tourId);
 	
+	@Query(value = "SELECT DISTINCT tour_id"
+			+ " FROM tournament_apply"
+			+ " WHERE requester_id = :requesterId AND status_code = :statusCode", nativeQuery = true)
+	List<Long> findByRequesterIdAndStatusCode(long requesterId, String statusCode);
+	
 	boolean existsByBirdCodeAndTourId(String birdCode, long tourId);
 	boolean existsByBirdCodeAndRequesterIdAndStatusCodeNot(String birdCode, long requesterId, String statusCode);
 	boolean existsByTourIdAndRequesterId(long tourId, long requesterId);

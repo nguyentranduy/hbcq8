@@ -1,6 +1,7 @@
 package com.hbc.repo;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -12,6 +13,8 @@ import com.hbc.entity.TournamentDetail;
 
 @Repository
 public interface TournamentDetailRepo extends JpaRepository<TournamentDetail, Long> {
+	
+	List<TournamentDetail> findByTour_IdAndUser_Id(long tourId, long userId);
 
 	@Modifying
 	@Query(value = "INSERT INTO tournament_detail(user_id, bird_code, tour_id, "
