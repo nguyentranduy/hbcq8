@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hbc.dto.ErrorResponse;
 import com.hbc.dto.tourapply.admin.AdminTourApplyApproveDto;
 import com.hbc.dto.tourapply.admin.AdminTourApplyInfoDto;
+import com.hbc.dto.tourapply.admin.AdminTourApplyRejectDto;
 import com.hbc.dto.tourlocation.CalDistanceRequestDto;
 import com.hbc.dto.tourlocation.CalDistanceResponseDto;
 import com.hbc.exception.calculatedistance.InvalidCoorFormatException;
@@ -46,7 +47,7 @@ public class AdminTourApplyApi {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex);
 		}
 	}
 
@@ -62,7 +63,7 @@ public class AdminTourApplyApi {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex);
 		}
 	}
 	
@@ -82,27 +83,21 @@ public class AdminTourApplyApi {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
 		}  catch (Exception ex) {
 			ex.printStackTrace();
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex);
 		}
 	}
 
 	@PutMapping("/reject")
-	public ResponseEntity<?> doPutReject(@RequestBody AdminTourApplyApproveDto dto) {
+	public ResponseEntity<?> doPutReject(@RequestBody AdminTourApplyRejectDto dto) {
 		try {
-			tournamentApplyService.doApprove(dto);
+			tournamentApplyService.doReject(dto);
 			return ResponseEntity.ok().build();
-		} catch (UserNotFoundException ex) {
-			ErrorResponse errorResponse = new ErrorResponse(ex.getErrorCode(), ex.getErrorMessage());
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
 		} catch (TourApplyNotFoundException ex) {
-			ErrorResponse errorResponse = new ErrorResponse(ex.getErrorCode(), ex.getErrorMessage());
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
-		} catch (LocationNotFoundException ex) {
 			ErrorResponse errorResponse = new ErrorResponse(ex.getErrorCode(), ex.getErrorMessage());
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
 		}  catch (Exception ex) {
 			ex.printStackTrace();
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex);
 		}
 	}
 

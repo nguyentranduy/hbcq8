@@ -37,4 +37,8 @@ public interface TournamentDetailRepo extends JpaRepository<TournamentDetail, Lo
 			@Param("point5Code") String point5Code, @Param("point5Coor") String point5Coor, @Param("point5Dist") double point5Dist,
 			@Param("endPointCode") String endPointCode, @Param("endPointCoor") String endPointCoor, @Param("endPointDist") double endPointDist,
 			@Param("createdAt") Timestamp createdAt, @Param("createdBy") long createdBy);
+
+	@Modifying
+	@Query(value = "DELETE FROM tournament_detail WHERE tour_id = :tourId AND user_id = :userId", nativeQuery = true)
+	void doDeleteByTourIdAndUserId(@Param("tourId") long tourId, @Param("userId") long userId);
 }

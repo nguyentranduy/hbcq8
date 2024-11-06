@@ -4,8 +4,9 @@ import java.util.List;
 
 import com.hbc.dto.tourapply.TourApplyRequestDto;
 import com.hbc.dto.tourapply.TourApplyResponseDto;
-import com.hbc.dto.tourapply.admin.AdminTourApplyInfoDto;
 import com.hbc.dto.tourapply.admin.AdminTourApplyApproveDto;
+import com.hbc.dto.tourapply.admin.AdminTourApplyInfoDto;
+import com.hbc.dto.tourapply.admin.AdminTourApplyRejectDto;
 import com.hbc.exception.AuthenticationException;
 import com.hbc.exception.CustomException;
 import com.hbc.exception.tourapply.TourApplyException;
@@ -19,5 +20,6 @@ public interface TournamentApplyService {
 	List<AdminTourApplyInfoDto> findByTourId(long tourId) throws Exception;
 	List<AdminTourApplyInfoDto> findByTourIdAndRequesterId(long tourId, long requesterId) throws Exception;
 	void doApprove(AdminTourApplyApproveDto dto) throws Exception;
+	void doReject(AdminTourApplyRejectDto dto) throws Exception;
 	void doCancel(long tourId, long requesterId) throws Exception;
 }

@@ -17,8 +17,9 @@ import com.hbc.constant.SessionConst;
 import com.hbc.constant.TourApplyStatusCodeConst;
 import com.hbc.dto.tourapply.TourApplyRequestDto;
 import com.hbc.dto.tourapply.TourApplyResponseDto;
-import com.hbc.dto.tourapply.admin.AdminTourApplyInfoDto;
 import com.hbc.dto.tourapply.admin.AdminTourApplyApproveDto;
+import com.hbc.dto.tourapply.admin.AdminTourApplyInfoDto;
+import com.hbc.dto.tourapply.admin.AdminTourApplyRejectDto;
 import com.hbc.dto.user.UserResponseDto;
 import com.hbc.entity.TournamentApply;
 import com.hbc.entity.UserLocation;
@@ -189,6 +190,24 @@ public class TournamentApplyServiceImpl implements TournamentApplyService {
 			tourApplyRepo.doUpdate(TourApplyStatusCodeConst.STATUS_CODE_APPROVED, dto.getMemo(), dto.getApproverId(),
 					dto.getApproverId(), new Timestamp(System.currentTimeMillis()), dto.getTourId(), dto.getRequesterId());
 			doRegisterTourDetail(dto);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+	}
+
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public void doReject(AdminTourApplyRejectDto dto) throws Exception {
+		if (!tourApplyRepo.existsByTourIdAndRequesterId(dto.getTourId(), dto.getRequesterId())) {
+			throw new TourApplyNotFoundException("404", "Dữ liệu đăng ký không tồn tại.");
+		}
+
+		try {
+			tourApplyRepo.doUpdate(TourApplyStatusCodeConst.STATUS_CODE_REJECTED, dto.getMemo(), dto.getApproverId(),
+					dto.getApproverId(), new Timestamp(System.currentTimeMillis()), dto.getTourId(), dto.getRequesterId());
+
+			tourDetailRepo.doDeleteByTourIdAndUserId(dto.getTourId(), dto.getRequesterId());
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
