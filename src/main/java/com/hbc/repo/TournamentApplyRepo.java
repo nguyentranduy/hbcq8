@@ -38,6 +38,14 @@ public interface TournamentApplyRepo extends JpaRepository<TournamentApply, Long
 			+ " GROUP BY requester_id, approver_id, memo, created_at, status_code, tour_id", nativeQuery = true)
 	List<Object[]> findCustomByTourId(@Param("tourId") long tourId);
 	
+	@Query(value = "SELECT tour_id, GROUP_CONCAT(bird_code) AS birdCodes, requester_id, approver_id,"
+			+ " status_code, memo, created_at"
+			+ " FROM tournament_apply"
+			+ " WHERE tour_id = :tourId AND requester_id = :requesterId"
+			+ " GROUP BY requester_id, approver_id, memo, created_at, status_code, tour_id", nativeQuery = true)
+	List<Object[]> findCustomByTourIdAndRequesterId(@Param("tourId") long tourId,
+			@Param("requesterId") long requesterId);
+	
 	@Modifying
 	@Query(value = "UPDATE tournament_apply SET status_code = :statusCode, memo = :memo,"
 			+ " approver_id = :approverId, updated_by = :updatedBy, updated_at = :updatedAt"

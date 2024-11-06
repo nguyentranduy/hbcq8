@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hbc.dto.ErrorResponse;
@@ -49,8 +50,44 @@ public class AdminTourApplyApi {
 		}
 	}
 
+	// /api/v1/admin/tour-apply/detail?tourId={tourId}&requesterId={requesterId}
+	@GetMapping("/detail")
+	public ResponseEntity<?> doGetDetail(@RequestParam("tourId") long tourId,
+			@RequestParam("requesterId") long requesterId) {
+		try {
+			List<AdminTourApplyInfoDto> response = tournamentApplyService.findByTourIdAndRequesterId(tourId, requesterId);
+			return ResponseEntity.ok(response);
+		} catch (TourApplyNotFoundException ex) {
+			ErrorResponse errorResponse = new ErrorResponse("404", "Giải đua không tồn tại.");
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex);
+		}
+	}
+	
 	@PutMapping("/approve")
-	public ResponseEntity<?> doPostApprove(@RequestBody AdminTourApplyApproveDto dto) {
+	public ResponseEntity<?> doPutApprove(@RequestBody AdminTourApplyApproveDto dto) {
+		try {
+			tournamentApplyService.doApprove(dto);
+			return ResponseEntity.ok().build();
+		} catch (UserNotFoundException ex) {
+			ErrorResponse errorResponse = new ErrorResponse(ex.getErrorCode(), ex.getErrorMessage());
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+		} catch (TourApplyNotFoundException ex) {
+			ErrorResponse errorResponse = new ErrorResponse(ex.getErrorCode(), ex.getErrorMessage());
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+		} catch (LocationNotFoundException ex) {
+			ErrorResponse errorResponse = new ErrorResponse(ex.getErrorCode(), ex.getErrorMessage());
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+		}  catch (Exception ex) {
+			ex.printStackTrace();
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex);
+		}
+	}
+
+	@PutMapping("/reject")
+	public ResponseEntity<?> doPutReject(@RequestBody AdminTourApplyApproveDto dto) {
 		try {
 			tournamentApplyService.doApprove(dto);
 			return ResponseEntity.ok().build();

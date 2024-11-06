@@ -17,6 +17,7 @@ public interface TournamentApplyService {
 	TourApplyResponseDto doRegister(TourApplyRequestDto request, HttpSession session)
 			throws AuthenticationException, TourApplyException, CustomException;
 	List<AdminTourApplyInfoDto> findByTourId(long tourId) throws Exception;
+	List<AdminTourApplyInfoDto> findByTourIdAndRequesterId(long tourId, long requesterId) throws Exception;
 	void doApprove(AdminTourApplyApproveDto dto) throws Exception;
 	void doCancel(long tourId, long requesterId) throws Exception;
 }

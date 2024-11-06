@@ -251,4 +251,46 @@ public class TournamentApplyServiceImpl implements TournamentApplyService {
 			throw ex;
 		}
 	}
+
+	@Override
+	public List<AdminTourApplyInfoDto> findByTourIdAndRequesterId(long tourId, long requesterId) throws Exception {
+		if (!tourRepo.existsById(tourId)) {
+			throw new TourApplyNotFoundException("404", "Giải đua không tồn tại.");
+		}
+		
+		List<Object[]> tourApplyRawData = tourApplyRepo.findCustomByTourIdAndRequesterId(tourId, requesterId);
+
+		if (ObjectUtils.isEmpty(tourApplyRawData)) {
+			return List.of();
+		}
+
+		try {
+			List<AdminTourApplyInfoDto> result = new ArrayList<>();
+			
+			tourApplyRawData.forEach(item -> {
+				long dtoTourId = (long) item[0];
+				String birdCodesRaw = (String) item[1];
+				List<String> birdCodes = Arrays.asList(birdCodesRaw.split(","));
+				String requesterName = userRepo.findUserNameById(requesterId);
+				Long approverId = null;
+				String approverName = null;
+				if (!ObjectUtils.isEmpty(item[3])) {
+					approverId = (long) item[3];
+					approverName = userRepo.findUserNameById(approverId);
+				}
+				String statusCode = String.valueOf(item[4]);
+				String memo = (String) item[5];
+				Timestamp createdAt = (Timestamp) item[6];
+				int birdsNum = tourRepo.findBirdsNumById(dtoTourId);
+				
+				AdminTourApplyInfoDto dto = new AdminTourApplyInfoDto(dtoTourId, birdCodes, requesterId, requesterName,
+						approverId, approverName, statusCode, memo, createdAt, birdsNum);
+				result.add(dto);
+			});
+			return result;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw ex;
+		}
+	}
 }
