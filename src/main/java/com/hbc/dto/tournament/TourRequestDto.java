@@ -21,9 +21,11 @@ public class TourRequestDto implements Serializable {
 	@JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
 	private Timestamp startDate;
 	@JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
-	private Timestamp endDate;	
+	private Timestamp endDate;
 	private Float restTimePerDay;
 	private String startPointCode;
+	@JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
+	private Timestamp startPointTime;
 	private String endPointCode;
 	private Boolean isActived;
 	private TourLocationDto tourLocation;

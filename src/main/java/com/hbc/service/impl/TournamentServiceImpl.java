@@ -124,7 +124,7 @@ public class TournamentServiceImpl implements TournamentService {
 		try {
 			int tourUpdatedCount = tourRepo.update(tourEntity.getName(), tourEntity.getBirdsNum(), tourEntity.getStartDate(),
 					tourEntity.getEndDate(), tourEntity.getRestTimePerDay(),
-					tourEntity.getStartPointCode(), tourEntity.getStartPointCoor(),
+					tourEntity.getStartPointCode(), tourEntity.getStartPointCoor(), tourEntity.getStartPointTime(),
 					tourEntity.getEndPointCode(), tourEntity.getEndPointCoor(),
 					tourEntity.getIsActived(), tourEntity.getUpdatedAt(), tourEntity.getUpdatedBy(), tourEntity.getId());
 			if (tourUpdatedCount < 1) {
@@ -185,81 +185,4 @@ public class TournamentServiceImpl implements TournamentService {
 			throw new TourInfoFailedException("400", "Điểm kết thúc không được bỏ trống");
 		}
 	}
-	
-	
-//	private TournamentLocation convertToTourLocationEntity(TourLocationDto tourLocationDto, Tournament tour, UserResponseDto currentUser) {
-//		TournamentLocation entity = new TournamentLocation();
-//		
-//		entity.setStartPointCode(tourLocationDto.getStartPoint().getCode());
-//		entity.setStartPointCoor(tourLocationDto.getStartPoint().getCoor());
-//		
-//		entity.setEndPointCode(tourLocationDto.getEndPoint().getCode());
-//		entity.setEndPointCoor(tourLocationDto.getEndPoint().getCoor());
-//		entity.setEndPointDist(tourLocationDto.getEndPoint().getDist());
-//		
-//		entity.setTour(tour);
-//		entity.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-//		entity.setCreatedBy(currentUser.getId());
-//		
-//		boolean existsPoint1 = false;
-//		boolean existsPoint2 = false;
-//		boolean existsPoint3 = false;
-//		boolean existsPoint4 = false;
-//		
-//		if (tourLocationDto.getPoint1() != null) {
-//			entity.setPoint1Code(tourLocationDto.getPoint1().getCode());
-//			entity.setPoint1Coor(tourLocationDto.getPoint1().getCoor());
-//			entity.setPoint1Dist(tourLocationDto.getPoint1().getDist());
-//			existsPoint1 = true;
-//		} else {
-//			entity.setPoint1Code(null);
-//			entity.setPoint1Coor(null);
-//			entity.setPoint1Dist(0F);
-//		}
-//		
-//		if (existsPoint1 && tourLocationDto.getPoint2() != null) {
-//			entity.setPoint2Code(tourLocationDto.getPoint2().getCode());
-//			entity.setPoint2Coor(tourLocationDto.getPoint2().getCoor());
-//			entity.setPoint2Dist(tourLocationDto.getPoint2().getDist());
-//			existsPoint2 = true;
-//		} else {
-//			entity.setPoint2Code(null);
-//			entity.setPoint2Coor(null);
-//			entity.setPoint2Dist(0F);
-//		}
-//		
-//		if (existsPoint2 && tourLocationDto.getPoint3() != null) {
-//			entity.setPoint3Code(tourLocationDto.getPoint3().getCode());
-//			entity.setPoint3Coor(tourLocationDto.getPoint3().getCoor());
-//			entity.setPoint3Dist(tourLocationDto.getPoint3().getDist());
-//			existsPoint3 = true;
-//		} else {
-//			entity.setPoint3Code(null);
-//			entity.setPoint3Coor(null);
-//			entity.setPoint3Dist(0F);
-//		}
-//		
-//		if (existsPoint3 & tourLocationDto.getPoint4() != null) {
-//			entity.setPoint4Code(tourLocationDto.getPoint4().getCode());
-//			entity.setPoint4Coor(tourLocationDto.getPoint4().getCoor());
-//			entity.setPoint4Dist(tourLocationDto.getPoint4().getDist());
-//			existsPoint4 = true;
-//		} else {
-//			entity.setPoint4Code(null);
-//			entity.setPoint4Coor(null);
-//			entity.setPoint4Dist(0F);
-//		}
-//		
-//		if (existsPoint4 & tourLocationDto.getPoint5() != null) {
-//			entity.setPoint5Code(tourLocationDto.getPoint5().getCode());
-//			entity.setPoint5Coor(tourLocationDto.getPoint5().getCoor());
-//			entity.setPoint5Dist(tourLocationDto.getPoint5().getDist());
-//		} else {
-//			entity.setPoint5Code(null);
-//			entity.setPoint5Coor(null);
-//			entity.setPoint5Dist(0F);
-//		}
-//		
-//		return entity;
-//	}
 }

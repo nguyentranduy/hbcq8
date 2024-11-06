@@ -80,6 +80,7 @@ CREATE TABLE `tournament` (
   `is_actived` tinyint(1) NOT NULL,
   `start_point_code` varchar(5) NOT NULL,
   `start_point_coor` varchar(255) DEFAULT NULL,
+  `start_point_time` timestamp DEFAULT NULL,
   `end_point_code` varchar(5) NOT NULL,
   `end_point_coor` varchar(255) DEFAULT NULL,
   `is_deleted` tinyint(1) NOT NULL DEFAULT 0,

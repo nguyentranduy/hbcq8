@@ -23,13 +23,14 @@ public interface TournamentRepo extends JpaRepository<Tournament, Long> {
 	@Modifying
 	@Query(value = "UPDATE Tournament t SET t.name = :name, t.birdsNum = :birdsNum, t.startDate = :startDate,"
 			+ " t.endDate = :endDate, t.restTimePerDay = :restTimePerDay,"
-			+ " t.startPointCode = :startPointCode, t.startPointCoor = :startPointCoor,"
+			+ " t.startPointCode = :startPointCode, t.startPointCoor = :startPointCoor, t.startPointTime = :startPointTime,"
 			+ " t.endPointCode = :endPointCode, t.endPointCoor = :endPointCoor,"
 			+ " t.isActived = :isActived, t.updatedAt = :updatedAt, t.updatedBy = :updatedBy"
 			+ " WHERE t.id = :id")
 	int update(@Param("name") String name, @Param("birdsNum") int birdsNum, @Param("startDate") Timestamp startDate,
 			@Param("endDate") Timestamp endDate, @Param("restTimePerDay") float restTimePerDay,
 			@Param("startPointCode") String startPointCode, @Param("startPointCoor") String startPointCoor,
+			@Param("startPointTime") Timestamp startPointTime,
 			@Param("endPointCode") String endPointCode, @Param("endPointCoor") String endPointCoor,
 			@Param("isActived") boolean isActived, @Param("updatedAt") Timestamp updatedAt,
 			@Param("updatedBy") Long updatedBy, @Param("id") long id);

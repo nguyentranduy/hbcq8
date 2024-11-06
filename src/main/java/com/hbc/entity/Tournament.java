@@ -58,6 +58,9 @@ public class Tournament implements Serializable {
 	@Column(name = "start_point_coor")
 	private String startPointCoor;
 	
+	@Column(name = "start_point_time")
+	private Timestamp startPointTime;
+	
 	@Column(name = "end_point_code")
 	private String endPointCode;
 	
@@ -88,6 +91,7 @@ public class Tournament implements Serializable {
 		entity.setEndDate(tourRequestDto.getEndDate());
 		entity.setStartPointCode(tourRequestDto.getStartPointCode());
 		entity.setStartPointCoor(startPointCoor);
+		entity.setStartPointTime(tourRequestDto.getStartPointTime());
 		entity.setEndPointCode(tourRequestDto.getEndPointCode());
 		entity.setEndPointCoor(endPointCoor);
 		entity.setRestTimePerDay(tourRequestDto.getRestTimePerDay());
@@ -111,6 +115,7 @@ public class Tournament implements Serializable {
 		entity.setRestTimePerDay(tourRequestDto.getRestTimePerDay());
 		entity.setStartPointCode(tourRequestDto.getStartPointCode());
 		entity.setStartPointCoor(startPointCoor);
+		entity.setStartPointTime(tourRequestDto.getStartPointTime());
 		entity.setEndPointCode(tourRequestDto.getEndPointCode());
 		entity.setEndPointCoor(endPointCoor);
 		entity.setIsActived(tourRequestDto.getIsActived());
