@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hbc.constant.SessionConst;
 import com.hbc.dto.ErrorResponse;
+import com.hbc.dto.tournament.AdminTourApproveDto;
 import com.hbc.dto.tournament.TourRequestDto;
 import com.hbc.dto.tournament.TourResponseDto;
 import com.hbc.dto.user.UserResponseDto;
@@ -30,10 +31,10 @@ import jakarta.servlet.http.HttpSession;
 @RestController
 @RequestMapping("/api/v1/admin/tournament")
 public class AdminTourApi {
-	
+
 	@Autowired
 	TournamentService tournamentService;
-	
+
 	@Autowired
 	TournamentDetailService tourDetailService;
 
@@ -60,7 +61,18 @@ public class AdminTourApi {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
 	}
-
+	
+	@PostMapping("/approve-result")
+	public ResponseEntity<?> doPostApprove(@RequestBody AdminTourApproveDto dto, HttpSession session) {
+		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
+		try {
+			tourDetailService.doApprove(dto, currentUser.getId());
+			return ResponseEntity.ok().build();
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+	}
+	
 	@PostMapping
 	public ResponseEntity<?> doRegister(@RequestBody TourRequestDto requestDto, HttpSession session) {
 		try {

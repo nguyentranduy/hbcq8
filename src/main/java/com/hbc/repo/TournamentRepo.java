@@ -18,6 +18,10 @@ public interface TournamentRepo extends JpaRepository<Tournament, Long> {
 	List<Tournament> findByIdInAndIsDeletedAndIsActivedOrderByCreatedAtDesc(
 			List<Long> tourIds, boolean isDeleted, boolean isActived);
 	List<Tournament> findByIsDeletedOrderByCreatedAtDesc(boolean isDeleted);
+
+	@Query(value = "SELECT rest_time_per_day FROM tournament WHERE id = :tourId", nativeQuery = true)
+	String findRestTimePerDayByTourId(@Param("tourId") long tourId);
+
 	boolean existsByIdAndIsActived(long id, boolean isActived);
 	boolean existsByNameAndIsDeleted(String tourName, boolean isDeleted);
 	boolean existsByIdAndIsDeleted(long id, boolean isDeleted);
