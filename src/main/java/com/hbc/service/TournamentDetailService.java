@@ -13,4 +13,5 @@ public interface TournamentDetailService {
 	PdfInputDto doSubmitTime(TourSubmitTimeRequestDto requestDto, long userId) throws Exception;
 	List<TourDetailResponseDto> findByTourIdForApprove(long tourId);
 	void doApprove(AdminTourApproveDto dto, long approverId);
+	void doSortRankByTourId(long tourId);
 }

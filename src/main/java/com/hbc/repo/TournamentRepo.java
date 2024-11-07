@@ -49,4 +49,9 @@ public interface TournamentRepo extends JpaRepository<Tournament, Long> {
 	@Query(value = "UPDATE Tournament t SET t.isDeleted = :isDeleted, t.isActived = :isActived"
 			+ " WHERE t.id = :id")
 	int deleteLogical(@Param("isDeleted") boolean isDeleted, @Param("isActived") boolean isActived, @Param("id") long id);
+	
+	@Modifying
+	@Query(value = "UPDATE tournament SET is_actived = :isActived, is_finished = :isFinished"
+			+ " WHERE id = :id", nativeQuery = true)
+	void doFinishedTour(@Param("isActived") boolean isActived, @Param("isFinished") boolean isFinished, @Param("id") long id);
 }

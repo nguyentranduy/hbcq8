@@ -108,5 +108,9 @@ public interface TournamentDetailRepo extends JpaRepository<TournamentDetail, Lo
 			@Param("point5Speed") double point5Speed, @Param("endPointSpeed") double endPointSpeed,
 			@Param("avgSpeed") double avgSpeed, @Param("updatedAt") Timestamp updatedAt,
 			@Param("updatedBy") long updatedBy,
-			@Param("tourId") long tourId,@Param("birdCode") String birdCode);
+			@Param("tourId") long tourId, @Param("birdCode") String birdCode);
+
+	@Modifying
+	@Query(value = "UPDATE tournament_detail SET rank_of_bird = :rank WHERE tour_id = :tourId AND bird_code = :birdCode", nativeQuery = true)
+	void sortRankByTourId(@Param("rank") int rank, @Param("tourId") long tourId, @Param("birdCode") String birdCode);
 }

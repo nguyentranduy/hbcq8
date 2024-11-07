@@ -4,16 +4,22 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
+import com.hbc.constant.TourApplyStatusCodeConst;
 import com.hbc.constant.TourDetailStatusCodeConst;
 import com.hbc.dto.pdf.PdfInputDto;
 import com.hbc.dto.tourdetail.TourDetailResponseDto;
@@ -219,9 +225,30 @@ public class TournamentDetailServiceImpl implements TournamentDetailService {
 		}
 
 		long daysBetween = ChronoUnit.DAYS.between(startDateTime, endDateTime);
-
 		return endDateTime.toLocalDate().equals(startDateTime.toLocalDate())
 				|| endDateTime.toLocalDate().equals(startDateTime.toLocalDate().plusDays(1)) ? daysBetween
 						: daysBetween - 1;
+	}
+
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public void doSortRankByTourId(long tourId) {
+		try {
+			List<TournamentDetail> tourDetails = tourDetailRepo.findByTour_IdAndStatus(tourId,
+					TourApplyStatusCodeConst.STATUS_CODE_APPROVED);
+			LinkedHashMap<String, Float> result = tourDetails.stream()
+					.sorted(Comparator.comparingDouble(TournamentDetail::getAvgSpeed).reversed())
+					.collect(Collectors.toMap(tourDetail -> tourDetail.getBird().getCode(), TournamentDetail::getAvgSpeed,
+							(oldValue, newValue) -> oldValue, LinkedHashMap::new));
+			List<Map.Entry<String, Float>> entryList = new ArrayList<>(result.entrySet());
+	
+			for (int i = 0; i < entryList.size(); i++) {
+				String code = entryList.get(i).getKey();
+				tourDetailRepo.sortRankByTourId(i + 1, tourId, code);
+			}
+			tourRepo.doFinishedTour(false, true, tourId);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
 }

@@ -115,6 +115,18 @@ public class AdminTourApi {
 		}
 	}
 	
+	@GetMapping("/sort")
+	public ResponseEntity<?> doGetSort(@RequestParam("tourId") long tourId) {
+		try {
+			tourDetailService.doSortRankByTourId(tourId);
+			return ResponseEntity.ok().build();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			ErrorResponse errorResponse = new ErrorResponse("400", ex.getMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+		}
+	}
+
 	@DeleteMapping("/{tourId}")
 	public ResponseEntity<?> doDelete(@PathVariable("tourId") long tourId, HttpSession session) {
 		try {
