@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hbc.constant.SessionConst;
 import com.hbc.dto.ErrorResponse;
 import com.hbc.dto.tournament.AdminTourApproveDto;
+import com.hbc.dto.tournament.AdminTourRejectDto;
 import com.hbc.dto.tournament.TourRequestDto;
 import com.hbc.dto.tournament.TourResponseDto;
 import com.hbc.dto.user.UserResponseDto;
@@ -72,7 +73,18 @@ public class AdminTourApi {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
 	}
-	
+
+	@PostMapping("/reject-result")
+	public ResponseEntity<?> doPostReject(@RequestBody AdminTourRejectDto dto, HttpSession session) {
+		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
+		try {
+			tourDetailService.doReject(dto, currentUser.getId());
+			return ResponseEntity.ok().build();
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+	}
+
 	@PostMapping
 	public ResponseEntity<?> doRegister(@RequestBody TourRequestDto requestDto, HttpSession session) {
 		try {

@@ -9,9 +9,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AdminTourApproveDto implements Serializable {
+public class AdminTourRejectDto implements Serializable {
 
-	private static final long serialVersionUID = -4474677550099304848L;
+	private static final long serialVersionUID = -8022873554056512634L;
+
 	private long tourId;
 	private String birdCode;
 }

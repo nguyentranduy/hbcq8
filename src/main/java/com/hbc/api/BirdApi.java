@@ -68,7 +68,7 @@ public class BirdApi {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex);
 		}
 	}
-	
+
 	@PutMapping
 	public ResponseEntity<?> doUpdate(@RequestBody BirdUpdateRequestDto requestDto, HttpSession session) {
 		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
@@ -89,7 +89,7 @@ public class BirdApi {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e);
 		}
 	}
-	
+
 	@DeleteMapping("/{code}")
 	public ResponseEntity<?> doDelete(@PathVariable("code") String code, HttpSession session) {
 		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);

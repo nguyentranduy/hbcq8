@@ -24,6 +24,7 @@ import com.hbc.constant.TourDetailStatusCodeConst;
 import com.hbc.dto.pdf.PdfInputDto;
 import com.hbc.dto.tourdetail.TourDetailResponseDto;
 import com.hbc.dto.tournament.AdminTourApproveDto;
+import com.hbc.dto.tournament.AdminTourRejectDto;
 import com.hbc.dto.tournament.TourSubmitTimeRequestDto;
 import com.hbc.dto.tournament.ViewRankDto;
 import com.hbc.entity.TournamentDetail;
@@ -209,7 +210,7 @@ public class TournamentDetailServiceImpl implements TournamentDetailService {
 			ex.printStackTrace();
 		}
 	}
-	
+
 	private double calculateTimeDifferenceInHours(Timestamp startTime, Timestamp endTime, double restTimePerDay) {
 		double restTime = countNights(startTime, endTime) * restTimePerDay;
 		System.out.println("resttimeeeeeeeeee: " + restTime);
@@ -229,6 +230,13 @@ public class TournamentDetailServiceImpl implements TournamentDetailService {
 		return endDateTime.toLocalDate().equals(startDateTime.toLocalDate())
 				|| endDateTime.toLocalDate().equals(startDateTime.toLocalDate().plusDays(1)) ? daysBetween
 						: daysBetween - 1;
+	}
+
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public void doReject(AdminTourRejectDto dto, long approverId) {
+		tourDetailRepo.doRejectResult(new Timestamp(System.currentTimeMillis()), approverId,
+				dto.getTourId(), dto.getBirdCode());
 	}
 
 	@Transactional(rollbackFor = Exception.class)
