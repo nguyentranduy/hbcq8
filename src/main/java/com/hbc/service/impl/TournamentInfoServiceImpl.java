@@ -78,6 +78,7 @@ public class TournamentInfoServiceImpl implements TournamentInfoService {
 			dto.setActived(getIsActived(item.getIsActived(), item.getStartDate(), item.getEndDate(), now));
 			dto.setTourStatus(getStatus(item.getIsActived(), item.getStartDate(), item.getEndDate(), now));
 			dto.setMemo(memo);
+			dto.setFinished(item.getIsFinished());
 			result.add(dto);
 		});
 		
