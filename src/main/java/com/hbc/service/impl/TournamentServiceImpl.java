@@ -162,7 +162,7 @@ public class TournamentServiceImpl implements TournamentService {
 			throw ex;
 		}
 	}
-	
+
 	private void validateDto(TourRequestDto dto) {
 		if (!StringUtils.hasText(dto.getName())) {
 			throw new TourInfoFailedException("400", "Tên giải đua không được bỏ trống.");

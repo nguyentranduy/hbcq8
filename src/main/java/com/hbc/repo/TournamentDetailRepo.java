@@ -44,4 +44,54 @@ public interface TournamentDetailRepo extends JpaRepository<TournamentDetail, Lo
 	@Modifying
 	@Query(value = "DELETE FROM tournament_detail WHERE tour_id = :tourId AND user_id = :userId", nativeQuery = true)
 	void doDeleteByTourIdAndUserId(@Param("tourId") long tourId, @Param("userId") long userId);
+
+	TournamentDetail findByTourIdAndUserIdAndBirdCode(long tourId, long userId, String birdCode);
+
+	@Modifying
+	@Query(value = "UPDATE tournament_detail SET point1_key = :point1Key, point1_time = :point1Time,"
+			+ " point1_submit_time = :point1SubmitTime, status = 'W'"
+			+ " WHERE tour_id = :tourId AND user_id = :userId AND bird_code = :birdCode", nativeQuery = true)
+	void doUpdatePoint1(@Param("point1Key") String point1Key, @Param("point1Time") Timestamp point1Time,
+			@Param("point1SubmitTime") Timestamp point1SubmitTime,
+			@Param("tourId") long tourId, @Param("userId") long userId, @Param("birdCode") String birdCode);
+
+	@Modifying
+	@Query(value = "UPDATE tournament_detail SET point2_key = :point2Key, point2_time = :point2Time,"
+			+ " point2_submit_time = :point2SubmitTime, status = 'W'"
+			+ " WHERE tour_id = :tourId AND user_id = :userId AND bird_code = :birdCode", nativeQuery = true)
+	void doUpdatePoint2(@Param("point2Key") String point2Key, @Param("point2Time") Timestamp point2Time,
+			@Param("point2SubmitTime") Timestamp point2SubmitTime,
+			@Param("tourId") long tourId, @Param("userId") long userId, @Param("birdCode") String birdCode);
+
+	@Modifying
+	@Query(value = "UPDATE tournament_detail SET point3_key = :point3Key, point3_time = :point3Time,"
+			+ "point3_submit_time = :point3SubmitTime, status = 'W'"
+			+ " WHERE tour_id = :tourId AND user_id = :userId AND bird_code = :birdCode", nativeQuery = true)
+	void doUpdatePoint3(@Param("point3Key") String point3Key, @Param("point3Time") Timestamp point3Time,
+			@Param("point3SubmitTime") Timestamp point3SubmitTime,
+			@Param("tourId") long tourId, @Param("userId") long userId, @Param("birdCode") String birdCode);
+
+	@Modifying
+	@Query(value = "UPDATE tournament_detail SET point4_key = :point4Key, point4_time = :point4Time,"
+			+ "point4_submit_time = :point4SubmitTime, status = 'W'"
+			+ " WHERE tour_id = :tourId AND user_id = :userId AND bird_code = :birdCode", nativeQuery = true)
+	void doUpdatePoint4(@Param("point4Key") String point4Key, @Param("point4Time") Timestamp point4Time,
+			@Param("point4SubmitTime") Timestamp point4SubmitTime,
+			@Param("tourId") long tourId, @Param("userId") long userId, @Param("birdCode") String birdCode);
+
+	@Modifying
+	@Query(value = "UPDATE tournament_detail SET point5_key = :point5Key, point5_time = :point5Time,"
+			+ "point5_submit_time = :point5SubmitTime, status = 'W'"
+			+ " WHERE tour_id = :tourId AND user_id = :userId AND bird_code = :birdCode", nativeQuery = true)
+	void doUpdatePoint5(@Param("point5Key") String point5Key, @Param("point5Time") Timestamp point5Time,
+			@Param("point5SubmitTime") Timestamp point5SubmitTime,
+			@Param("tourId") long tourId, @Param("userId") long userId, @Param("birdCode") String birdCode);
+
+	@Modifying
+	@Query(value = "UPDATE tournament_detail SET end_point_key = :endPointKey, end_point_time = :endPointTime,"
+			+ "end_point_submit_time = :endPointSubmitTime, status = 'W'"
+			+ " WHERE tour_id = :tourId AND user_id = :userId AND bird_code = :birdCode", nativeQuery = true)
+	void doUpdateEndPoint(@Param("endPointKey") String endPointKey, @Param("endPointTime") Timestamp endPointTime,
+			@Param("endPointSubmitTime") Timestamp endPointSubmitTime,
+			@Param("tourId") long tourId, @Param("userId") long userId, @Param("birdCode") String birdCode);
 }
