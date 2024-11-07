@@ -25,6 +25,7 @@ import com.hbc.dto.pdf.PdfInputDto;
 import com.hbc.dto.tourdetail.TourDetailResponseDto;
 import com.hbc.dto.tournament.AdminTourApproveDto;
 import com.hbc.dto.tournament.TourSubmitTimeRequestDto;
+import com.hbc.dto.tournament.ViewRankDto;
 import com.hbc.entity.TournamentDetail;
 import com.hbc.exception.tournament.submit.InvalidSubmitInfoException;
 import com.hbc.exception.tournament.submit.InvalidSubmitPointKeyException;
@@ -250,5 +251,15 @@ public class TournamentDetailServiceImpl implements TournamentDetailService {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
+	}
+
+	@Override
+	public List<ViewRankDto> viewRankByTourId(long tourId) {
+		List<Object[]> rawData = tourDetailRepo.viewRankByTourId(tourId);
+		List<ViewRankDto> result = new ArrayList<>();
+		rawData.forEach(i -> {
+			result.add(new ViewRankDto((long) i[0], (String) i[1], (float) i[2]));
+		});
+		return result;
 	}
 }

@@ -115,4 +115,15 @@ public class TourApi {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex);
 		}
 	}
+
+	@GetMapping("/view-rank")
+	public ResponseEntity<?> doGetRank(@RequestParam("tourId") long tourId) {
+		try {
+			return ResponseEntity.ok(tourDetailService.viewRankByTourId(tourId));
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex);
+		}
+	}
+			
 }

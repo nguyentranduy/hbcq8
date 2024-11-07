@@ -113,4 +113,8 @@ public interface TournamentDetailRepo extends JpaRepository<TournamentDetail, Lo
 	@Modifying
 	@Query(value = "UPDATE tournament_detail SET rank_of_bird = :rank WHERE tour_id = :tourId AND bird_code = :birdCode", nativeQuery = true)
 	void sortRankByTourId(@Param("rank") int rank, @Param("tourId") long tourId, @Param("birdCode") String birdCode);
+	
+	@Query(value = "SELECT rank_of_bird, bird_code, avg_speed FROM tournament_detail WHERE tour_id = :tourId AND status = 'A'"
+			+ " ORDER BY rank_of_bird ASC", nativeQuery = true)
+	List<Object[]> viewRankByTourId(@Param("tourId") long tourId);
 }

@@ -6,6 +6,7 @@ import com.hbc.dto.pdf.PdfInputDto;
 import com.hbc.dto.tourdetail.TourDetailResponseDto;
 import com.hbc.dto.tournament.AdminTourApproveDto;
 import com.hbc.dto.tournament.TourSubmitTimeRequestDto;
+import com.hbc.dto.tournament.ViewRankDto;
 
 public interface TournamentDetailService {
 
@@ -14,4 +15,5 @@ public interface TournamentDetailService {
 	List<TourDetailResponseDto> findByTourIdForApprove(long tourId);
 	void doApprove(AdminTourApproveDto dto, long approverId);
 	void doSortRankByTourId(long tourId);
+	List<ViewRankDto> viewRankByTourId(long tourId);
 }
