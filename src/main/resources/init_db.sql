@@ -84,6 +84,7 @@ CREATE TABLE `tournament` (
   `end_point_code` varchar(5) NOT NULL,
   `end_point_coor` varchar(255) DEFAULT NULL,
   `is_deleted` tinyint(1) NOT NULL DEFAULT 0,
+  `is_finished` tinyint(1) NOT NULL DEFAULT 0,
   `created_at` timestamp DEFAULT NOW(),
   `created_by` bigint NOT NULL,
   `updated_at` timestamp DEFAULT NULL,

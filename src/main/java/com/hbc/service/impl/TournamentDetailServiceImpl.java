@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
+import com.hbc.constant.TourDetailStatusCodeConst;
 import com.hbc.dto.pdf.PdfInputDto;
 import com.hbc.dto.tourdetail.TourDetailResponseDto;
 import com.hbc.dto.tournament.TourSubmitTimeRequestDto;
@@ -21,6 +22,7 @@ import com.hbc.exception.tournament.submit.InvalidSubmitPointKeyException;
 import com.hbc.exception.tournament.submit.OutOfTimeException;
 import com.hbc.exception.tournament.submit.SubmitInfoNotFoundException;
 import com.hbc.repo.TournamentDetailRepo;
+import com.hbc.repo.TournamentRepo;
 import com.hbc.service.TournamentDetailService;
 
 @Service
@@ -28,6 +30,9 @@ public class TournamentDetailServiceImpl implements TournamentDetailService {
 
 	@Autowired
 	TournamentDetailRepo tourDetailRepo;
+	
+	@Autowired
+	TournamentRepo tourRepo;
 
 	@Override
 	public List<TourDetailResponseDto> findByTourIdAndUserId(long tourId, long userId) {
@@ -124,5 +129,11 @@ public class TournamentDetailServiceImpl implements TournamentDetailService {
         if (!matcher.matches()) {
             throw new InvalidSubmitPointKeyException("400", "Mã bí mật không đúng định dạng.");
         }
+	}
+
+	@Override
+	public List<TourDetailResponseDto> findByTourIdForApprove(long tourId) {
+		List<TournamentDetail> tourDetails = tourDetailRepo.findByTour_IdAndStatus(tourId, TourDetailStatusCodeConst.STATUS_CODE_WAITING);
+		return tourDetails.stream().map(TourDetailResponseDto::build).toList();
 	}
 }

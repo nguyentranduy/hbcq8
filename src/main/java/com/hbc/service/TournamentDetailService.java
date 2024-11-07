@@ -10,4 +10,5 @@ public interface TournamentDetailService {
 
 	List<TourDetailResponseDto> findByTourIdAndUserId(long tourId, long userId);
 	PdfInputDto doSubmitTime(TourSubmitTimeRequestDto requestDto, long userId) throws Exception;
+	List<TourDetailResponseDto> findByTourIdForApprove(long tourId);
 }

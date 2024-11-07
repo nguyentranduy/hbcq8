@@ -15,6 +15,7 @@ import com.hbc.entity.TournamentDetail;
 public interface TournamentDetailRepo extends JpaRepository<TournamentDetail, Long> {
 	
 	List<TournamentDetail> findByTour_IdAndUser_Id(long tourId, long userId);
+	List<TournamentDetail> findByTour_IdAndStatus(long tourId, String status);
 
 	@Modifying
 	@Query(value = "INSERT INTO tournament_detail(user_id, bird_code, tour_id, "

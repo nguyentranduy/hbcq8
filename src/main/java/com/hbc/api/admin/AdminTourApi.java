@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hbc.constant.SessionConst;
@@ -21,6 +22,7 @@ import com.hbc.exception.AuthenticationException;
 import com.hbc.exception.tournament.CannotDeleteTourActivedException;
 import com.hbc.exception.tournament.TourInfoFailedException;
 import com.hbc.exception.tournament.TourNotFoundException;
+import com.hbc.service.TournamentDetailService;
 import com.hbc.service.TournamentService;
 
 import jakarta.servlet.http.HttpSession;
@@ -31,12 +33,15 @@ public class AdminTourApi {
 	
 	@Autowired
 	TournamentService tournamentService;
+	
+	@Autowired
+	TournamentDetailService tourDetailService;
 
 	@GetMapping
 	public ResponseEntity<?> doGetList() {
 		return ResponseEntity.ok(tournamentService.findAllAvailable());
 	}
-	
+
 	@GetMapping("/{tourId}")
 	public ResponseEntity<?> doGetByTourId(@PathVariable("tourId") long tourId) {
 		try {
@@ -46,7 +51,16 @@ public class AdminTourApi {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 		}
 	}
-	
+
+	@GetMapping("/approve")
+	public ResponseEntity<?> doGetApproveByTourId(@RequestParam("tourId") long tourId) {
+		try {
+			return ResponseEntity.ok(tourDetailService.findByTourIdForApprove(tourId));
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+	}
+
 	@PostMapping
 	public ResponseEntity<?> doRegister(@RequestBody TourRequestDto requestDto, HttpSession session) {
 		try {

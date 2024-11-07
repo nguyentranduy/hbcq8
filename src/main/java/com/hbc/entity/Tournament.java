@@ -70,6 +70,9 @@ public class Tournament implements Serializable {
 	@Column(name = "is_deleted")
 	private Boolean isDeleted;
 	
+	@Column(name = "is_finished")
+	private Boolean isFinished;
+	
 	@Column(name = "created_at")
 	private Timestamp createdAt;
 	
@@ -99,7 +102,7 @@ public class Tournament implements Serializable {
 		entity.setCreatedBy(createdBy);
 		entity.setCreatedAt(new Timestamp(System.currentTimeMillis()));
 		entity.setIsDeleted(false);
-		
+		entity.setIsFinished(false);
 		return entity;
 	}
 	
