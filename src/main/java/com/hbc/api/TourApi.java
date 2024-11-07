@@ -1,5 +1,8 @@
 package com.hbc.api;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hbc.constant.SessionConst;
 import com.hbc.dto.ErrorResponse;
+import com.hbc.dto.pdf.PdfInputDto;
 import com.hbc.dto.tourdetail.TourDetailResponseDto;
 import com.hbc.dto.tournament.TourSubmitTimeRequestDto;
 import com.hbc.dto.tournament.TournamentInfoDto;
@@ -22,9 +26,11 @@ import com.hbc.exception.tournament.submit.InvalidSubmitInfoException;
 import com.hbc.exception.tournament.submit.InvalidSubmitPointKeyException;
 import com.hbc.exception.tournament.submit.OutOfTimeException;
 import com.hbc.exception.tournament.submit.SubmitInfoNotFoundException;
+import com.hbc.service.PdfExporterService;
 import com.hbc.service.TournamentDetailService;
 import com.hbc.service.TournamentInfoService;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 @RestController
@@ -36,6 +42,9 @@ public class TourApi {
 
 	@Autowired
 	TournamentDetailService tourDetailService;
+	
+	@Autowired
+	PdfExporterService pdfExporterService;
 
 	@GetMapping("/list")
 	public ResponseEntity<?> doGetList(HttpSession session) {
@@ -75,10 +84,19 @@ public class TourApi {
 	}
 
 	@PostMapping("/submit")
-	public ResponseEntity<?> doGetDetail(@RequestBody TourSubmitTimeRequestDto requestDto, HttpSession session) {
+	public ResponseEntity<?> doGetDetail(@RequestBody TourSubmitTimeRequestDto requestDto, HttpSession session,
+			HttpServletResponse response) {
 		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
 		try {
-			tourDetailService.doSubmitTime(requestDto, currentUser.getId());
+			PdfInputDto pdfInputDto = tourDetailService.doSubmitTime(requestDto, currentUser.getId());
+
+			response.setContentType("application/pdf");
+	        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+	        String currentDateTime = dateFormatter.format(new Date());
+	        String headerKey = "Content-Disposition";
+	        String headerValue = "attachment; filename=users_" + currentDateTime + ".pdf";
+	        response.setHeader(headerKey, headerValue);
+	        pdfExporterService.exportPdf(response, pdfInputDto);
 			return ResponseEntity.ok().build();
 		} catch (SubmitInfoNotFoundException ex) {
 			ErrorResponse errorResponse = new ErrorResponse(ex.getErrorCode(), ex.getErrorMessage());
