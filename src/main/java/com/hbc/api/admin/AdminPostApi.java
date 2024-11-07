@@ -24,12 +24,12 @@ public class AdminPostApi {
 
 	@Autowired
 	AdminPostService adminPostService;
-	
+
 	@GetMapping
 	public ResponseEntity<?> doGetAll() {
 		return ResponseEntity.ok(adminPostService.findAllAvailable());
 	}
-	
+
 	@PostMapping
 	public ResponseEntity<?> doPost(@RequestBody AdminPostRequestDto requestDto, HttpSession session) {
 		try {

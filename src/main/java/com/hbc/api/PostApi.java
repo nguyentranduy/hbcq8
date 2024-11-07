@@ -18,7 +18,12 @@ public class PostApi {
 
 	@Autowired
 	PostService postService;
-	
+
+	@GetMapping
+	public ResponseEntity<?> doGetAll() {
+		return ResponseEntity.ok(postService.findAllAvailable());
+	}
+
 	@GetMapping("/{slug}")
 	public ResponseEntity<?> doGetBySlug(@PathVariable("slug") String slug) {
 		try {
@@ -29,6 +34,6 @@ public class PostApi {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-		} 
+		}
 	}
 }
