@@ -72,6 +72,6 @@ public interface TournamentApplyRepo extends JpaRepository<TournamentApply, Long
 	String findMemoByTourIdAndRequesterId(@Param("tourId") long tourId, @Param("requesterId") long requesterId);
 
 	@Query(value = "SELECT bird_code FROM tournament_apply"
-			+ " WHERE tour_id = :tourId", nativeQuery = true)
-	List<String> findBirdCodeById(@Param("tourId") long tourId);
+			+ " WHERE tour_id = :tourId AND requester_id = :requesterId", nativeQuery = true)
+	List<String> findBirdCodeByTourIdAndRequesterId(@Param("tourId") long tourId, @Param("requesterId") long requesterId);
 }

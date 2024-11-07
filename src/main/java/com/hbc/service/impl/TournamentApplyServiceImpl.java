@@ -220,7 +220,7 @@ public class TournamentApplyServiceImpl implements TournamentApplyService {
 		long approverId = dto.getApproverId();
 		Timestamp createdAt = new Timestamp(System.currentTimeMillis());
 		
-		List<String> birdCodeList = tourApplyRepo.findBirdCodeById(tourId);
+		List<String> birdCodeList = tourApplyRepo.findBirdCodeByTourIdAndRequesterId(tourId, requesterId);
 		for (String birdCode : birdCodeList) {
 			tourDetailRepo.doRegister(requesterId, birdCode, tourId, dto.getStartPointCode(), dto.getStartPointCoor(),
 					dto.getPoint1Code(), dto.getPoint1Coor(), dto.getPoint1Dist(),

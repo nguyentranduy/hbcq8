@@ -56,7 +56,7 @@ public class TournamentInfoServiceImpl implements TournamentInfoService {
 	public List<TournamentInfoDto> doGetListMe(long requesterId) {
 		List<Long> tourIds = tourApplyRepo.findByRequesterIdAndStatusCode(requesterId,
 				TourApplyStatusCodeConst.STATUS_CODE_APPROVED);
-		List<Tournament> rawData = tourRepo.findByIdInAndIsDeletedAndIsActivedOrderByCreatedAtDesc(tourIds, false, true);
+		List<Tournament> rawData = tourRepo.findByIdInAndIsDeletedOrderByCreatedAtDesc(tourIds, false);
 		
 		List<TournamentInfoDto> result = new ArrayList<>();
 
