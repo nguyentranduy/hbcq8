@@ -74,7 +74,7 @@ public class TournamentDetailServiceImpl implements TournamentDetailService {
 		if (pointNo == 1) {
 			Timestamp point1SubmitTime = tourDetail.getPoint1SubmitTime();
 			if (!ObjectUtils.isEmpty(point1SubmitTime) && !checkSubmitTime(point1SubmitTime, submitTimeNow)) {
-				throw new OutOfTimeException("400", "Quá thời hạn chỉnh sửa lại.");
+				throw new OutOfTimeException("408", "Quá thời hạn chỉnh sửa lại.");
 			}
 			pointCode = tourDetail.getPoint1Code();
 			tourDetailRepo.doUpdatePoint1(pointKey, submitTimeNow, submitTimeNow, tourId, userId, birdCode);

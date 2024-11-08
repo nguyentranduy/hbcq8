@@ -103,7 +103,7 @@ public class TourApi {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
 		} catch (OutOfTimeException ex) {
 			ErrorResponse errorResponse = new ErrorResponse(ex.getErrorCode(), ex.getErrorMessage());
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+			return ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT).body(errorResponse);
 		} catch (InvalidSubmitPointKeyException ex) {
 			ErrorResponse errorResponse = new ErrorResponse(ex.getErrorCode(), ex.getErrorMessage());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
