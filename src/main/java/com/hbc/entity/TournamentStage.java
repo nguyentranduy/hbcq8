@@ -19,50 +19,60 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Table(name="bird")
+@Table(name="tournament_stage")
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Bird implements Serializable {
+public class TournamentStage implements Serializable {
 
-	private static final long serialVersionUID = -6150517181586432342L;
-	
+	private static final long serialVersionUID = 9026782047543648042L;
+
 	@Id
 	@Column
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
-	@Column
-	private String name;
-	
-	@Column
-	private String code;
-	
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
+	@JoinColumn(name = "tour_id", referencedColumnName = "id")
+	private Tournament tour;
+
+	@Column(name = "order_no")
+	private Integer orderNo;
+
 	@Column
 	private String description;
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-	@JoinColumn(name = "user_id", referencedColumnName = "id")
-	private User user;
-	
-	@Column(name = "img_url")
-	private String imgUrl;
-	
+
+	@Column(name = "rest_time_per_day")
+	private Float restTimePerDay;
+
+	@Column(name = "start_point_code")
+	private String startPointCode;
+
+	@Column(name = "start_point_name")
+	private String startPointName;
+
+	@Column(name = "start_point_coor")
+	private String startPointCoor;
+
+	@Column(name = "start_time")
+	private Timestamp startTime;
+
+	@Column(name = "is_actived")
+	private Boolean isActived;
+
 	@Column(name = "created_at")
 	private Timestamp createdAt;
-	
+
 	@Column(name = "created_by")
 	private Long createdBy;
-	
+
 	@Column(name = "updated_at")
 	private Timestamp updatedAt;
-	
+
 	@Column(name = "updated_by")
 	private Long updatedBy;
-	
-	@Column(name = "is_deleted")
-	private Boolean isDeleted;
 }
+
