@@ -36,6 +36,9 @@ public class UserLocation implements Serializable {
 
 	@Column
 	private String code;
+	
+	@Column
+	private String name;
 
 	@Column(name = "point_coor")
 	private String pointCoor;

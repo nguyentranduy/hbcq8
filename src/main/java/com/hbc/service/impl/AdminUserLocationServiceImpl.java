@@ -64,7 +64,8 @@ public class AdminUserLocationServiceImpl implements AdminUserLocationService {
 			throw new DuplicatedLocationCodeException("409", "Tên căn cứ đã tồn tại.");
 		}
 		Timestamp createdAt = new Timestamp(System.currentTimeMillis());
-		repo.doRegister(requestDto.getCode(), requestDto.getUserId(), requestDto.getPointCoor(), createdAt, currentUserId);
+		repo.doRegister(requestDto.getCode(), requestDto.getName(), requestDto.getUserId(),
+				requestDto.getPointCoor(), createdAt, currentUserId);
 	}
 
 	@Transactional(rollbackFor = Exception.class)
@@ -96,7 +97,8 @@ public class AdminUserLocationServiceImpl implements AdminUserLocationService {
 		}
 
 		Timestamp updatedAt = new Timestamp(System.currentTimeMillis());
-		repo.doUpdate(requestDto.getCode(), requestDto.getPointCoor(), updatedAt, currentUserId, requestDto.getUserId());
+		repo.doUpdate(requestDto.getCode(), requestDto.getName(), requestDto.getPointCoor(),
+				updatedAt, currentUserId, userLocationId);
 	}
 
 	@Transactional(rollbackFor = Exception.class)

@@ -23,17 +23,17 @@ public interface UserLocationRepo extends JpaRepository<UserLocation, Long> {
 	String findPointCoorByCode(String code);
 
 	@Modifying
-	@Query(value = "INSERT INTO user_location(code, user_id, point_coor, created_at, created_by) "
-			+ "VALUE (:code, :userId, :pointCoor, :createdAt, :createdBy)", nativeQuery = true)
-	void doRegister(@Param("code") String name, @Param("userId") long userId,
+	@Query(value = "INSERT INTO user_location(code, name, user_id, point_coor, created_at, created_by) "
+			+ "VALUE (:code, :name, :userId, :pointCoor, :createdAt, :createdBy)", nativeQuery = true)
+	void doRegister(@Param("code") String code, @Param("name") String name, @Param("userId") long userId,
 			@Param("pointCoor") String pointCoor, @Param("createdAt") Timestamp createdAt,
 			@Param("createdBy") long createdBy);
 
 	@Modifying
-	@Query(value = "UPDATE user_location SET code = :code, point_coor = :pointCoor, "
+	@Query(value = "UPDATE user_location SET code = :code, name = :name, point_coor = :pointCoor, "
 			+ "updated_at = :updatedAt, updated_by = :updatedBy "
 			+ "WHERE id = :id", nativeQuery = true)
-	void doUpdate(@Param("code") String code, @Param("pointCoor") String pointCoor,
+	void doUpdate(@Param("code") String code, @Param("name") String name, @Param("pointCoor") String pointCoor,
 			@Param("updatedAt") Timestamp updatedAt, @Param("updatedBy") long updatedBy,
 			@Param("id") long id);
 

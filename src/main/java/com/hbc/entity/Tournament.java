@@ -3,8 +3,6 @@ package com.hbc.entity;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-import com.hbc.dto.tournament.TourRequestDto;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -40,33 +38,18 @@ public class Tournament implements Serializable {
 	@Column(name = "img_url")
 	private String imgUrl;
 	
-	@Column(name = "start_date")
-	private Timestamp startDate;
+	@Column(name = "start_date_info")
+	private Timestamp startDateInfo;
 	
-	@Column(name = "end_date")
-	private Timestamp endDate;
+	@Column(name = "end_date_info")
+	private Timestamp endDateInfo;
 	
-	@Column(name = "rest_time_per_day")
-	private Float restTimePerDay;
+	@Column(name = "start_date_receive")
+	private Timestamp startDateReceive;
 	
-	@Column(name = "is_actived")
-	private Boolean isActived;
+	@Column(name = "end_date_receive")
+	private Timestamp endDateReceive;
 	
-	@Column(name = "start_point_code")
-	private String startPointCode;
-	
-	@Column(name = "start_point_coor")
-	private String startPointCoor;
-	
-	@Column(name = "start_point_time")
-	private Timestamp startPointTime;
-	
-	@Column(name = "end_point_code")
-	private String endPointCode;
-	
-	@Column(name = "end_point_coor")
-	private String endPointCoor;
-
 	@Column(name = "is_deleted")
 	private Boolean isDeleted;
 	
@@ -85,47 +68,47 @@ public class Tournament implements Serializable {
 	@Column(name = "updated_by")
 	private Long updatedBy;
 	
-	public static Tournament build(TourRequestDto tourRequestDto, String startPointCoor, String endPointCoor, long createdBy) {
-		Tournament entity = new Tournament();
-		entity.setName(tourRequestDto.getName());
-		entity.setBirdsNum(tourRequestDto.getBirdsNum());
-		entity.setImgUrl(tourRequestDto.getImgUrl());
-		entity.setStartDate(tourRequestDto.getStartDate());
-		entity.setEndDate(tourRequestDto.getEndDate());
-		entity.setStartPointCode(tourRequestDto.getStartPointCode());
-		entity.setStartPointCoor(startPointCoor);
-		entity.setStartPointTime(tourRequestDto.getStartPointTime());
-		entity.setEndPointCode(tourRequestDto.getEndPointCode());
-		entity.setEndPointCoor(endPointCoor);
-		entity.setRestTimePerDay(tourRequestDto.getRestTimePerDay());
-		entity.setIsActived(tourRequestDto.getIsActived());
-		entity.setCreatedBy(createdBy);
-		entity.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-		entity.setIsDeleted(false);
-		entity.setIsFinished(false);
-		return entity;
-	}
-	
-	public static Tournament buildForUpdate(long tourId, TourRequestDto tourRequestDto,
-			String startPointCoor, String endPointCoor, long updatedBy) {
-		Tournament entity = new Tournament();
-		entity.setId(tourId);
-		entity.setName(tourRequestDto.getName());
-		entity.setBirdsNum(tourRequestDto.getBirdsNum());
-		entity.setImgUrl(tourRequestDto.getImgUrl());
-		entity.setStartDate(tourRequestDto.getStartDate());
-		entity.setEndDate(tourRequestDto.getEndDate());
-		entity.setRestTimePerDay(tourRequestDto.getRestTimePerDay());
-		entity.setStartPointCode(tourRequestDto.getStartPointCode());
-		entity.setStartPointCoor(startPointCoor);
-		entity.setStartPointTime(tourRequestDto.getStartPointTime());
-		entity.setEndPointCode(tourRequestDto.getEndPointCode());
-		entity.setEndPointCoor(endPointCoor);
-		entity.setIsActived(tourRequestDto.getIsActived());
-		entity.setUpdatedBy(updatedBy);
-		entity.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
-
-		return entity;
-	}
+//	public static Tournament build(TourRequestDto tourRequestDto, String startPointCoor, String endPointCoor, long createdBy) {
+//		Tournament entity = new Tournament();
+//		entity.setName(tourRequestDto.getName());
+//		entity.setBirdsNum(tourRequestDto.getBirdsNum());
+//		entity.setImgUrl(tourRequestDto.getImgUrl());
+//		entity.setStartDate(tourRequestDto.getStartDate());
+//		entity.setEndDate(tourRequestDto.getEndDate());
+//		entity.setStartPointCode(tourRequestDto.getStartPointCode());
+//		entity.setStartPointCoor(startPointCoor);
+//		entity.setStartPointTime(tourRequestDto.getStartPointTime());
+//		entity.setEndPointCode(tourRequestDto.getEndPointCode());
+//		entity.setEndPointCoor(endPointCoor);
+//		entity.setRestTimePerDay(tourRequestDto.getRestTimePerDay());
+//		entity.setIsActived(tourRequestDto.getIsActived());
+//		entity.setCreatedBy(createdBy);
+//		entity.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+//		entity.setIsDeleted(false);
+//		entity.setIsFinished(false);
+//		return entity;
+//	}
+//	
+//	public static Tournament buildForUpdate(long tourId, TourRequestDto tourRequestDto,
+//			String startPointCoor, String endPointCoor, long updatedBy) {
+//		Tournament entity = new Tournament();
+//		entity.setId(tourId);
+//		entity.setName(tourRequestDto.getName());
+//		entity.setBirdsNum(tourRequestDto.getBirdsNum());
+//		entity.setImgUrl(tourRequestDto.getImgUrl());
+//		entity.setStartDate(tourRequestDto.getStartDate());
+//		entity.setEndDate(tourRequestDto.getEndDate());
+//		entity.setRestTimePerDay(tourRequestDto.getRestTimePerDay());
+//		entity.setStartPointCode(tourRequestDto.getStartPointCode());
+//		entity.setStartPointCoor(startPointCoor);
+//		entity.setStartPointTime(tourRequestDto.getStartPointTime());
+//		entity.setEndPointCode(tourRequestDto.getEndPointCode());
+//		entity.setEndPointCoor(endPointCoor);
+//		entity.setIsActived(tourRequestDto.getIsActived());
+//		entity.setUpdatedBy(updatedBy);
+//		entity.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+//
+//		return entity;
+//	}
 }
 

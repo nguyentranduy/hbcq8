@@ -48,22 +48,22 @@ public class TourResponseDto implements Serializable {
      */
     public static TourResponseDto build(Tournament tour) {
         TourResponseDto dto = new TourResponseDto();
-        dto.setId(tour.getId());
-        dto.setName(tour.getName());
-        dto.setBirdsNum(tour.getBirdsNum());
-        dto.setImgUrl(tour.getImgUrl());
-        dto.setStartDate(tour.getStartDate());
-        dto.setEndDate(tour.getEndDate());
-        dto.setRestTimePerDay(tour.getRestTimePerDay());
-        dto.setStartPointCode(tour.getStartPointCode());
-        dto.setStartPointCoor(tour.getStartPointCoor());
-        dto.setEndPointCode(tour.getEndPointCode());
-        dto.setEndPointCoor(tour.getEndPointCoor());
-        dto.setIsActived(tour.getIsActived());
-        dto.setCreatedAt(tour.getCreatedAt());
-        dto.setCreatedBy(tour.getCreatedBy());
-        dto.setUpdatedAt(tour.getUpdatedAt());
-        dto.setUpdatedBy(tour.getUpdatedBy());
+//        dto.setId(tour.getId());
+//        dto.setName(tour.getName());
+//        dto.setBirdsNum(tour.getBirdsNum());
+//        dto.setImgUrl(tour.getImgUrl());
+//        dto.setStartDate(tour.getStartDate());
+//        dto.setEndDate(tour.getEndDate());
+//        dto.setRestTimePerDay(tour.getRestTimePerDay());
+//        dto.setStartPointCode(tour.getStartPointCode());
+//        dto.setStartPointCoor(tour.getStartPointCoor());
+//        dto.setEndPointCode(tour.getEndPointCode());
+//        dto.setEndPointCoor(tour.getEndPointCoor());
+//        dto.setIsActived(tour.getIsActived());
+//        dto.setCreatedAt(tour.getCreatedAt());
+//        dto.setCreatedBy(tour.getCreatedBy());
+//        dto.setUpdatedAt(tour.getUpdatedAt());
+//        dto.setUpdatedBy(tour.getUpdatedBy());
         
         return dto;
     }

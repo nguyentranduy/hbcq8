@@ -69,108 +69,110 @@ public class TournamentApplyServiceImpl implements TournamentApplyService {
 	@Override
 	public TourApplyResponseDto doRegister(TourApplyRequestDto request, HttpSession session)
 			throws AuthenticationException, TourApplyException, CustomException {
-		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
-
-		if (currentUser == null || currentUser.getId() != request.getRequesterId()) {
-			throw new AuthenticationException("401", "Không có quyền thao tác.");
-		}
-
-		if (!userRepo.existsByIdAndIsDeleted(request.getRequesterId(), false)) {
-			session.removeAttribute(SessionConst.CURRENT_USER);
-			throw new AuthenticationException("401", "Không có quyền thao tác.");
-		}
-		
-		if (ObjectUtils.isEmpty(request.getBirdCode())) {
-			throw new TourApplyException("400", "Phải chọn chim đua.");
-		}
-
-		if (!tourRepo.existsById(request.getTourId())) {
-			throw new TourApplyException("400", "Giải đua không tồn tại.");
-		}
-
-		request.getBirdCode().forEach(birdCode -> {
-			if (!birdRepo.existsByCode(birdCode)) {
-				throw new TourApplyException("400", "Chim đua không hợp lệ, mã kiềng: " + birdCode);
-			}
-			
-			if (tourApplyRepo.existsByBirdCodeAndTourId(birdCode, request.getTourId())) {
-				throw new TourApplyException("400", "Chim đã được đăng ký, mã kiềng: " + birdCode);
-			}
-		});
-		
-		try {
-			long tourId = request.getTourId();
-			long requesterId = request.getRequesterId();
-			Timestamp createdAt = new Timestamp(System.currentTimeMillis());
-
-			request.getBirdCode().forEach(birdCode -> {
-				tourApplyRepo.doRegister(birdCode, tourId, requesterId, createdAt,
-						requesterId, TourApplyStatusCodeConst.STATUS_CODE_WAITING);
-			});
-			
-			entityManager.clear();
-			
-			List<TournamentApply> responseEntities = tourApplyRepo.findByTourIdAndRequesterIdAndBirdCodeIn(tourId,
-					requesterId, request.getBirdCode());
-			
-			if (request.getBirdCode().size() != responseEntities.size()) {
-				throw new IllegalStateException();
-			}
-
-			List<String> birdCodesInserted = responseEntities.stream()
-					.map(i -> i.getBird().getCode()).toList();
-			
-			return new TourApplyResponseDto(responseEntities.get(0).getId(), birdCodesInserted,
-					responseEntities.get(0).getTour().getId(), responseEntities.get(0).getTour().getName(),
-					responseEntities.get(0).getTour().getStartDate(), responseEntities.get(0).getTour().getEndDate(),
-					responseEntities.get(0).getRequesterId(), responseEntities.get(0).getCreatedBy(),
-					responseEntities.get(0).getCreatedAt());
-		} catch (Exception ex) {
-			throw new CustomException("400", ex.getMessage());
-		}
+//		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
+//
+//		if (currentUser == null || currentUser.getId() != request.getRequesterId()) {
+//			throw new AuthenticationException("401", "Không có quyền thao tác.");
+//		}
+//
+//		if (!userRepo.existsByIdAndIsDeleted(request.getRequesterId(), false)) {
+//			session.removeAttribute(SessionConst.CURRENT_USER);
+//			throw new AuthenticationException("401", "Không có quyền thao tác.");
+//		}
+//		
+//		if (ObjectUtils.isEmpty(request.getBirdCode())) {
+//			throw new TourApplyException("400", "Phải chọn chim đua.");
+//		}
+//
+//		if (!tourRepo.existsById(request.getTourId())) {
+//			throw new TourApplyException("400", "Giải đua không tồn tại.");
+//		}
+//
+//		request.getBirdCode().forEach(birdCode -> {
+//			if (!birdRepo.existsByCode(birdCode)) {
+//				throw new TourApplyException("400", "Chim đua không hợp lệ, mã kiềng: " + birdCode);
+//			}
+//			
+//			if (tourApplyRepo.existsByBirdCodeAndTourId(birdCode, request.getTourId())) {
+//				throw new TourApplyException("400", "Chim đã được đăng ký, mã kiềng: " + birdCode);
+//			}
+//		});
+//		
+//		try {
+//			long tourId = request.getTourId();
+//			long requesterId = request.getRequesterId();
+//			Timestamp createdAt = new Timestamp(System.currentTimeMillis());
+//
+//			request.getBirdCode().forEach(birdCode -> {
+//				tourApplyRepo.doRegister(birdCode, tourId, requesterId, createdAt,
+//						requesterId, TourApplyStatusCodeConst.STATUS_CODE_WAITING);
+//			});
+//			
+//			entityManager.clear();
+//			
+//			List<TournamentApply> responseEntities = tourApplyRepo.findByTourIdAndRequesterIdAndBirdCodeIn(tourId,
+//					requesterId, request.getBirdCode());
+//			
+//			if (request.getBirdCode().size() != responseEntities.size()) {
+//				throw new IllegalStateException();
+//			}
+//
+//			List<String> birdCodesInserted = responseEntities.stream()
+//					.map(i -> i.getBird().getCode()).toList();
+//			
+//			return new TourApplyResponseDto(responseEntities.get(0).getId(), birdCodesInserted,
+//					responseEntities.get(0).getTour().getId(), responseEntities.get(0).getTour().getName(),
+//					responseEntities.get(0).getTour().getStartDate(), responseEntities.get(0).getTour().getEndDate(),
+//					responseEntities.get(0).getRequesterId(), responseEntities.get(0).getCreatedBy(),
+//					responseEntities.get(0).getCreatedAt());
+//		} catch (Exception ex) {
+//			throw new CustomException("400", ex.getMessage());
+//		}
+		return null;
 	}
 
 	@Override
 	public List<AdminTourApplyInfoDto> findByTourId(long tourId) throws Exception {
-		if (!tourRepo.existsById(tourId)) {
-			throw new TourApplyNotFoundException("404", "Giải đua không tồn tại.");
-		}
-		
-		List<Object[]> tourApplyRawData = tourApplyRepo.findCustomByTourId(tourId);
-
-		if (ObjectUtils.isEmpty(tourApplyRawData)) {
-			return List.of();
-		}
-
-		try {
-			List<AdminTourApplyInfoDto> result = new ArrayList<>();
-			
-			tourApplyRawData.forEach(item -> {
-				long dtoTourId = (long) item[0];
-				String birdCodesRaw = (String) item[1];
-				List<String> birdCodes = Arrays.asList(birdCodesRaw.split(","));
-				long requesterId = (long) item[2];
-				String requesterName = userRepo.findUserNameById(requesterId);
-				Long approverId = null;
-				String approverName = null;
-				if (!ObjectUtils.isEmpty(item[3])) {
-					approverId = (long) item[3];
-					approverName = userRepo.findUserNameById(approverId);
-				}
-				String statusCode = String.valueOf(item[4]);
-				String memo = (String) item[5];
-				Timestamp createdAt = (Timestamp) item[6];
-				int birdsNum = tourRepo.findBirdsNumById(dtoTourId);
-				
-				AdminTourApplyInfoDto dto = new AdminTourApplyInfoDto(dtoTourId, birdCodes, requesterId, requesterName,
-						approverId, approverName, statusCode, memo, createdAt, birdsNum);
-				result.add(dto);
-			});
-			return result;
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw ex;
-		}
+//		if (!tourRepo.existsById(tourId)) {
+//			throw new TourApplyNotFoundException("404", "Giải đua không tồn tại.");
+//		}
+//		
+//		List<Object[]> tourApplyRawData = tourApplyRepo.findCustomByTourId(tourId);
+//
+//		if (ObjectUtils.isEmpty(tourApplyRawData)) {
+//			return List.of();
+//		}
+//
+//		try {
+//			List<AdminTourApplyInfoDto> result = new ArrayList<>();
+//			
+//			tourApplyRawData.forEach(item -> {
+//				long dtoTourId = (long) item[0];
+//				String birdCodesRaw = (String) item[1];
+//				List<String> birdCodes = Arrays.asList(birdCodesRaw.split(","));
+//				long requesterId = (long) item[2];
+//				String requesterName = userRepo.findUserNameById(requesterId);
+//				Long approverId = null;
+//				String approverName = null;
+//				if (!ObjectUtils.isEmpty(item[3])) {
+//					approverId = (long) item[3];
+//					approverName = userRepo.findUserNameById(approverId);
+//				}
+//				String statusCode = String.valueOf(item[4]);
+//				String memo = (String) item[5];
+//				Timestamp createdAt = (Timestamp) item[6];
+//				int birdsNum = tourRepo.findBirdsNumById(dtoTourId);
+//				
+//				AdminTourApplyInfoDto dto = new AdminTourApplyInfoDto(dtoTourId, birdCodes, requesterId, requesterName,
+//						approverId, approverName, statusCode, memo, createdAt, birdsNum);
+//				result.add(dto);
+//			});
+//			return result;
+//		} catch (Exception ex) {
+//			ex.printStackTrace();
+//			throw ex;
+//		}
+		return null;
 	}
 
 	@Transactional(rollbackFor = Exception.class)
@@ -273,43 +275,44 @@ public class TournamentApplyServiceImpl implements TournamentApplyService {
 
 	@Override
 	public List<AdminTourApplyInfoDto> findByTourIdAndRequesterId(long tourId, long requesterId) throws Exception {
-		if (!tourRepo.existsById(tourId)) {
-			throw new TourApplyNotFoundException("404", "Giải đua không tồn tại.");
-		}
-		
-		List<Object[]> tourApplyRawData = tourApplyRepo.findCustomByTourIdAndRequesterId(tourId, requesterId);
-
-		if (ObjectUtils.isEmpty(tourApplyRawData)) {
-			return List.of();
-		}
-
-		try {
-			List<AdminTourApplyInfoDto> result = new ArrayList<>();
-			
-			tourApplyRawData.forEach(item -> {
-				long dtoTourId = (long) item[0];
-				String birdCodesRaw = (String) item[1];
-				List<String> birdCodes = Arrays.asList(birdCodesRaw.split(","));
-				String requesterName = userRepo.findUserNameById(requesterId);
-				Long approverId = null;
-				String approverName = null;
-				if (!ObjectUtils.isEmpty(item[3])) {
-					approverId = (long) item[3];
-					approverName = userRepo.findUserNameById(approverId);
-				}
-				String statusCode = String.valueOf(item[4]);
-				String memo = (String) item[5];
-				Timestamp createdAt = (Timestamp) item[6];
-				int birdsNum = tourRepo.findBirdsNumById(dtoTourId);
-				
-				AdminTourApplyInfoDto dto = new AdminTourApplyInfoDto(dtoTourId, birdCodes, requesterId, requesterName,
-						approverId, approverName, statusCode, memo, createdAt, birdsNum);
-				result.add(dto);
-			});
-			return result;
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			throw ex;
-		}
+//		if (!tourRepo.existsById(tourId)) {
+//			throw new TourApplyNotFoundException("404", "Giải đua không tồn tại.");
+//		}
+//		
+//		List<Object[]> tourApplyRawData = tourApplyRepo.findCustomByTourIdAndRequesterId(tourId, requesterId);
+//
+//		if (ObjectUtils.isEmpty(tourApplyRawData)) {
+//			return List.of();
+//		}
+//
+//		try {
+//			List<AdminTourApplyInfoDto> result = new ArrayList<>();
+//			
+//			tourApplyRawData.forEach(item -> {
+//				long dtoTourId = (long) item[0];
+//				String birdCodesRaw = (String) item[1];
+//				List<String> birdCodes = Arrays.asList(birdCodesRaw.split(","));
+//				String requesterName = userRepo.findUserNameById(requesterId);
+//				Long approverId = null;
+//				String approverName = null;
+//				if (!ObjectUtils.isEmpty(item[3])) {
+//					approverId = (long) item[3];
+//					approverName = userRepo.findUserNameById(approverId);
+//				}
+//				String statusCode = String.valueOf(item[4]);
+//				String memo = (String) item[5];
+//				Timestamp createdAt = (Timestamp) item[6];
+//				int birdsNum = tourRepo.findBirdsNumById(dtoTourId);
+//				
+//				AdminTourApplyInfoDto dto = new AdminTourApplyInfoDto(dtoTourId, birdCodes, requesterId, requesterName,
+//						approverId, approverName, statusCode, memo, createdAt, birdsNum);
+//				result.add(dto);
+//			});
+//			return result;
+//		} catch (Exception ex) {
+//			ex.printStackTrace();
+//			throw ex;
+//		}
+		return null;
 	}
 }

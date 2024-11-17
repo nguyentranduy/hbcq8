@@ -17,5 +17,6 @@ public class UserLocationAdminRequestDto implements Serializable {
 
 	private long userId;
 	private String code;
+	private String name;
 	private String pointCoor;
 }
