@@ -2,9 +2,15 @@ package com.hbc.dto.tournament;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hbc.entity.Tournament;
+import com.hbc.entity.TournamentStage;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,50 +27,79 @@ public class TourResponseDto implements Serializable {
 
 	private Long id;
 	private String name;
+	private String description;
 	private Integer birdsNum;
 	private String imgUrl;
 	@JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
-	private Timestamp startDate;
+	private Timestamp startDateInfo;
 	@JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
-	private Timestamp endDate;
-	private Float restTimePerDay;
-	private String startPointCode;
-	private String startPointCoor;
-	private String endPointCode;
-	private String endPointCoor;
-	private Boolean isActived;
+	private Timestamp endDateInfo;
+	@JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
+	private Timestamp startDateReceive;
+	@JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
+	private Timestamp endDateReceive;
+	private Boolean isDeleted;
+	private Boolean isFinished;
 	@JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss.SSS", timezone = "Asia/Ho_Chi_Minh")
 	private Timestamp createdAt;
 	private Long createdBy;
 	@JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss.SSS", timezone = "Asia/Ho_Chi_Minh")
 	private Timestamp updatedAt;
 	private Long updatedBy;
+	private List<TourStageResponse> tourStages;
 
+	@Getter
+	@Setter
+	@NoArgsConstructor
+	@AllArgsConstructor
+	private static class TourStageResponse {
+		private int orderNo;
+		private float restTimePerDay;
+		private String startPointCode;
+		private String startPointName;
+		private String startPointCoor;
+		@JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
+		private Timestamp startTime;
+	}
+	
     /**
      * Build TourResponseDto from Tournament entity.
      * 
      * @param entity Tournament entity.
      * @return a response dto.
      */
-    public static TourResponseDto build(Tournament tour) {
+    public static TourResponseDto build(Tournament tour, List<TournamentStage> tourStagesRaw) {
         TourResponseDto dto = new TourResponseDto();
-//        dto.setId(tour.getId());
-//        dto.setName(tour.getName());
-//        dto.setBirdsNum(tour.getBirdsNum());
-//        dto.setImgUrl(tour.getImgUrl());
-//        dto.setStartDate(tour.getStartDate());
-//        dto.setEndDate(tour.getEndDate());
-//        dto.setRestTimePerDay(tour.getRestTimePerDay());
-//        dto.setStartPointCode(tour.getStartPointCode());
-//        dto.setStartPointCoor(tour.getStartPointCoor());
-//        dto.setEndPointCode(tour.getEndPointCode());
-//        dto.setEndPointCoor(tour.getEndPointCoor());
-//        dto.setIsActived(tour.getIsActived());
-//        dto.setCreatedAt(tour.getCreatedAt());
-//        dto.setCreatedBy(tour.getCreatedBy());
-//        dto.setUpdatedAt(tour.getUpdatedAt());
-//        dto.setUpdatedBy(tour.getUpdatedBy());
+        dto.setId(tour.getId());
+        dto.setName(tour.getName());
+        dto.setDescription(tour.getDescription());
+        dto.setBirdsNum(tour.getBirdsNum());
+        dto.setImgUrl(tour.getImgUrl());
+        dto.setStartDateInfo(tour.getStartDateInfo());
+        dto.setEndDateInfo(tour.getEndDateInfo());
+        dto.setStartDateReceive(tour.getStartDateReceive());
+        dto.setEndDateReceive(tour.getEndDateReceive());
+        dto.setIsDeleted(tour.getIsDeleted());
+        dto.setIsFinished(tour.getIsFinished());
+        dto.setCreatedAt(tour.getCreatedAt());
+        dto.setCreatedBy(tour.getCreatedBy());
+        dto.setUpdatedAt(tour.getUpdatedAt());
+        dto.setUpdatedBy(tour.getUpdatedBy());
         
-        return dto;
+		LinkedHashMap<Integer, TournamentStage> sortedtourStages = tourStagesRaw.stream()
+				.sorted(Comparator.comparingInt(TournamentStage::getOrderNo))
+				.collect(Collectors.toMap(TournamentStage::getOrderNo, stage -> stage,
+						(existing, replacement) -> existing, LinkedHashMap::new));
+
+		List<TourStageResponse> tourStagesOrdered = new ArrayList<>();
+
+		sortedtourStages.forEach((key, value) -> {
+			TourStageResponse response = new TourStageResponse(value.getOrderNo(), value.getRestTimePerDay(),
+					value.getStartPointCode(), value.getStartPointName(), value.getStartPointCoor(),
+					value.getStartTime());
+			tourStagesOrdered.add(response);
+		});
+		dto.setTourStages(tourStagesOrdered);
+		return dto;
     }
 }
