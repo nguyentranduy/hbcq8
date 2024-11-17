@@ -42,7 +42,7 @@ public class TournamentInfoServiceImpl implements TournamentInfoService {
 			dto.setMemo(memo);
 			result.add(dto);
 		});
-		
+
 		return result;
 	}
 
