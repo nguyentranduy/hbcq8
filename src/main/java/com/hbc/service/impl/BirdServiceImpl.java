@@ -64,7 +64,7 @@ public class BirdServiceImpl implements BirdService {
 		}
 
 		try {
-			birdRepo.doUpdate(birdDto.getName(), birdDto.getDescription(), birdDto.getImgUrl(), currentUserId,
+			birdRepo.doUserUpdate(birdDto.getName(), birdDto.getDescription(), birdDto.getImgUrl(), currentUserId,
 					new Timestamp(System.currentTimeMillis()), birdDto.getId());
 			entityManager.clear();
 			Bird birdUpdated = birdRepo.findById(birdDto.getId()).get();

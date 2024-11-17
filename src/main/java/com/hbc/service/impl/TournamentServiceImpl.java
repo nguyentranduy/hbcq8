@@ -1,5 +1,6 @@
 package com.hbc.service.impl;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -7,17 +8,25 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
+import com.hbc.constant.RoleConst;
 import com.hbc.dto.tournament.TourRequestDto;
 import com.hbc.dto.tournament.TourResponseDto;
+import com.hbc.dto.tourstage.TourStageRequestDto;
 import com.hbc.dto.user.UserResponseDto;
 import com.hbc.entity.Tournament;
 import com.hbc.entity.TournamentStage;
+import com.hbc.exception.AuthenticationException;
+import com.hbc.exception.CustomException;
+import com.hbc.exception.tournament.TourInfoFailedException;
 import com.hbc.exception.tournament.TourNotFoundException;
 import com.hbc.repo.TournamentRepo;
 import com.hbc.repo.TournamentStageRepo;
 import com.hbc.repo.UserLocationRepo;
 import com.hbc.service.TournamentService;
+import com.hbc.validator.DateValidator;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -61,35 +70,27 @@ public class TournamentServiceImpl implements TournamentService {
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public TourResponseDto doRegister(TourRequestDto dto, UserResponseDto currentUser) {
-//		if (currentUser == null || currentUser.getRoleId() != RoleConst.ROLE_ADMIN) {
-//			throw new AuthenticationException("401", "Người dùng không có quyền này.");
-//		}
-//
-//		validateDto(dto);
-//		
-//		if (!userLocationRepo.existsByCodeAndUserIdAndIsDeleted(dto.getStartPointCode(), ADMIN_ID, false)) {
-//			throw new TourInfoFailedException("400", "Mã căn cứ bắt đầu không phù hợp.");
-//		}
-//
-//		if (!userLocationRepo.existsByCodeAndUserIdAndIsDeleted(dto.getEndPointCode(), ADMIN_ID, false)) {
-//			throw new TourInfoFailedException("400", "Mã căn cứ kết thúc không phù hợp.");
-//		}
-//
-//		if (tourRepo.existsByNameAndIsDeleted(dto.getName(), false)) {
-//			throw new TourInfoFailedException("400", "Tên giải đua đã tồn tại.");
-//		}
-//
-//		String startPointCoor = userLocationRepo.findPointCoorByCode(dto.getStartPointCode());
-//		String endPointCoor = userLocationRepo.findPointCoorByCode(dto.getEndPointCode());
-//		Tournament tourEntity = Tournament.build(dto, startPointCoor, endPointCoor, currentUser.getId());
-//
-//		try {
-//			Tournament tourResponse = tourRepo.save(tourEntity);
-//			return TourResponseDto.build(tourResponse);
-//		} catch (Exception ex) {
-//			throw new CustomException("400", ex.getMessage());
-//		}
-		return null;
+		if (currentUser == null || currentUser.getRoleId() != RoleConst.ROLE_ADMIN) {
+			throw new AuthenticationException("401", "Người dùng không có quyền này.");
+		}
+
+		validateDto(dto);
+		if (tourRepo.existsByNameAndIsDeleted(dto.getName(), false)) {
+			throw new TourInfoFailedException("400", "Tên giải đua đã tồn tại.");
+		}
+
+		try {
+			Tournament tourResponse = tourRepo.saveAndFlush(Tournament.build(dto, currentUser.getId()));
+			dto.getTourStages().forEach(tourStage -> {
+				tourStageRepo.insert(tourResponse.getId(), tourStage.getOrderNo(), tourStage.getRestTimePerDay(),
+						tourStage.getStartPointCode(), tourStage.getStartPointName(), tourStage.getStartPointCoor(),
+						new Timestamp(System.currentTimeMillis()), currentUser.getId());
+			});
+			List<TournamentStage> tourStageInserted = tourStageRepo.findByTourId(tourResponse.getId());
+			return TourResponseDto.build(tourResponse, tourStageInserted);
+		} catch (Exception ex) {
+			throw new CustomException("400", ex.getMessage());
+		}
 	}
 
 	@Override
@@ -165,25 +166,17 @@ public class TournamentServiceImpl implements TournamentService {
 	}
 
 	private void validateDto(TourRequestDto dto) {
-//		if (!StringUtils.hasText(dto.getName())) {
-//			throw new TourInfoFailedException("400", "Tên giải đua không được bỏ trống.");
-//		}
-//		
-//		if (!DateValidator.isValidPeriod(dto.getStartDate(), dto.getEndDate())) {
-//			throw new TourInfoFailedException("400", "Ngày bắt đầu phải nhỏ hơn hoặc bằng ngày kết thúc.");
-//		}
-//		
-//		if ((ObjectUtils.isEmpty(dto.getStartDate()) || ObjectUtils.isEmpty(dto.getEndDate())) 
-//				&& dto.getIsActived()) {
-//			throw new TourInfoFailedException("400", "Không thể bắt đầu giải đua khi chưa chọn ngày bắt đầu & ngày kết thúc.");
-//		}
-//		
-//		if (ObjectUtils.isEmpty(dto.getStartPointCode())) {
-//			throw new TourInfoFailedException("400", "Điểm bắt đầu không được bỏ trống.");
-//		}
-//		
-//		if (ObjectUtils.isEmpty(dto.getEndPointCode())) {
-//			throw new TourInfoFailedException("400", "Điểm kết thúc không được bỏ trống");
-//		}
+		if (!StringUtils.hasText(dto.getName())) {
+			throw new TourInfoFailedException("400", "Tên giải đua không được bỏ trống.");
+		}
+		
+		if (!DateValidator.isValidPeriod(dto.getStartDateReceive(), dto.getEndDateReceive())) {
+			throw new TourInfoFailedException("400", "Ngày bắt đầu nhận đơn phải nhỏ hơn ngày kết thúc.");
+		}
+		
+		List<TourStageRequestDto> tourStages = dto.getTourStages();
+		if (ObjectUtils.isEmpty(tourStages)) {
+			throw new TourInfoFailedException("400", "Chặng đua không được bỏ trống.");
+		}
 	}
 }

@@ -73,7 +73,7 @@ public class Tournament implements Serializable {
 	@Column(name = "updated_by")
 	private Long updatedBy;
 	
-	public static Tournament build(TourRequestDto tourRequestDto, String startPointCoor, String endPointCoor, long createdBy) {
+	public static Tournament build(TourRequestDto tourRequestDto, long createdBy) {
 		Tournament entity = new Tournament();
 		entity.setName(tourRequestDto.getName());
 		entity.setDescription(tourRequestDto.getDescription());

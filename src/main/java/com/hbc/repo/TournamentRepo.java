@@ -1,12 +1,8 @@
 package com.hbc.repo;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.hbc.entity.Tournament;
@@ -23,10 +19,10 @@ public interface TournamentRepo extends JpaRepository<Tournament, Long> {
 //	String findRestTimePerDayByTourId(@Param("tourId") long tourId);
 //
 //	boolean existsByIdAndIsActived(long id, boolean isActived);
-//	boolean existsByNameAndIsDeleted(String tourName, boolean isDeleted);
+	boolean existsByNameAndIsDeleted(String tourName, boolean isDeleted);
 //	boolean existsByIdAndIsDeleted(long id, boolean isDeleted);
 //	boolean existsByNameAndIdNotAndIsDeleted(String tourName, long tourId, boolean isDeleted);
-//	
+	
 //	@Modifying
 //	@Query(value = "UPDATE Tournament t SET t.name = :name, t.birdsNum = :birdsNum, t.startDate = :startDate,"
 //			+ " t.endDate = :endDate, t.restTimePerDay = :restTimePerDay,"
