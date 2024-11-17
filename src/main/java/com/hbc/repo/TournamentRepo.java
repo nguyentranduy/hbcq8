@@ -37,9 +37,9 @@ public interface TournamentRepo extends JpaRepository<Tournament, Long> {
 			@Param("startDateInfo") Timestamp startDateInfo, @Param("endDateInfo") Timestamp endDateInfo,
 			@Param("startDateReceive") Timestamp startDateReceive, @Param("endDateReceive") Timestamp endDateReceive,
 			@Param("updatedAt") Timestamp updatedAt, @Param("updatedBy") Long updatedBy, @Param("id") long id);
-//
-//	@Query(value = "SELECT birds_num FROM tournament WHERE id = :tourId", nativeQuery = true)
-//	int findBirdsNumById(@Param("tourId") long tourId);
+
+	@Query(value = "SELECT birds_num FROM tournament WHERE id = :tourId", nativeQuery = true)
+	int findBirdsNumById(@Param("tourId") long tourId);
 //	
 	@Modifying
 	@Query(value = "UPDATE Tournament t SET t.isDeleted = :isDeleted WHERE t.id = :id")
