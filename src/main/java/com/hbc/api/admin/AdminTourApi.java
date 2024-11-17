@@ -54,37 +54,6 @@ public class AdminTourApi {
 		}
 	}
 
-	@GetMapping("/approve")
-	public ResponseEntity<?> doGetApproveByTourId(@RequestParam("tourId") long tourId) {
-		try {
-			return ResponseEntity.ok(tourDetailService.findByTourIdForApprove(tourId));
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-		}
-	}
-	
-	@PostMapping("/approve-result")
-	public ResponseEntity<?> doPostApprove(@RequestBody AdminTourApproveDto dto, HttpSession session) {
-		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
-		try {
-			tourDetailService.doApprove(dto, currentUser.getId());
-			return ResponseEntity.ok().build();
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-		}
-	}
-
-	@PostMapping("/reject-result")
-	public ResponseEntity<?> doPostReject(@RequestBody AdminTourRejectDto dto, HttpSession session) {
-		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
-		try {
-			tourDetailService.doReject(dto, currentUser.getId());
-			return ResponseEntity.ok().build();
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-		}
-	}
-
 	@PostMapping
 	public ResponseEntity<?> doRegister(@RequestBody TourRequestDto requestDto, HttpSession session) {
 		try {
@@ -126,18 +95,6 @@ public class AdminTourApi {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 		}
 	}
-	
-	@GetMapping("/sort")
-	public ResponseEntity<?> doGetSort(@RequestParam("tourId") long tourId) {
-		try {
-			tourDetailService.doSortRankByTourId(tourId);
-			return ResponseEntity.ok().build();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			ErrorResponse errorResponse = new ErrorResponse("400", ex.getMessage());
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-		}
-	}
 
 	@DeleteMapping("/{tourId}")
 	public ResponseEntity<?> doDelete(@PathVariable("tourId") long tourId, HttpSession session) {
@@ -153,6 +110,51 @@ public class AdminTourApi {
 		} catch (CannotDeleteTourActivedException ex) {
 			ErrorResponse errorResponse = new ErrorResponse(ex.getErrorCode(), ex.getErrorMessage());
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			ErrorResponse errorResponse = new ErrorResponse("400", ex.getMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+		}
+	}
+	
+	@GetMapping("/approve")
+	public ResponseEntity<?> doGetApproveByTourId(@RequestParam("tourId") long tourId) {
+		try {
+			return ResponseEntity.ok(tourDetailService.findByTourIdForApprove(tourId));
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+	}
+	
+	@PostMapping("/approve-result")
+	public ResponseEntity<?> doPostApprove(@RequestBody AdminTourApproveDto dto, HttpSession session) {
+		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
+		try {
+			tourDetailService.doApprove(dto, currentUser.getId());
+			return ResponseEntity.ok().build();
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+	}
+
+	@PostMapping("/reject-result")
+	public ResponseEntity<?> doPostReject(@RequestBody AdminTourRejectDto dto, HttpSession session) {
+		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
+		try {
+			tourDetailService.doReject(dto, currentUser.getId());
+			return ResponseEntity.ok().build();
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+	}
+
+	
+	
+	@GetMapping("/sort")
+	public ResponseEntity<?> doGetSort(@RequestParam("tourId") long tourId) {
+		try {
+			tourDetailService.doSortRankByTourId(tourId);
+			return ResponseEntity.ok().build();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			ErrorResponse errorResponse = new ErrorResponse("400", ex.getMessage());

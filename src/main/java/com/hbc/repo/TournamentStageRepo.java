@@ -15,6 +15,7 @@ import com.hbc.entity.TournamentStage;
 public interface TournamentStageRepo extends JpaRepository<TournamentStage, Long> {
 
 	List<TournamentStage> findByTourId(long tourId);
+	boolean existsByTourIdAndIsActived(long tourId, boolean isActive);
 	
 	@Modifying
 	@Query(value = "INSERT INTO tournament_stage(tour_id, order_no, description, rest_time_per_day,"

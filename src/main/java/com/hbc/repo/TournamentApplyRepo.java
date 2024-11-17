@@ -31,6 +31,7 @@ public interface TournamentApplyRepo extends JpaRepository<TournamentApply, Long
 	boolean existsByBirdCodeAndTourId(String birdCode, long tourId);
 	boolean existsByBirdCodeAndRequesterIdAndStatusCodeNot(String birdCode, long requesterId, String statusCode);
 	boolean existsByTourIdAndRequesterId(long tourId, long requesterId);
+	boolean existsByTourIdAndStatusCodeNot(long tourId, String statusCode);
 	
 	int countByTourIdAndRequesterId(long tourId, long requesterId);
 	

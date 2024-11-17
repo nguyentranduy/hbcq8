@@ -12,6 +12,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import com.hbc.constant.RoleConst;
+import com.hbc.constant.TourApplyStatusCodeConst;
 import com.hbc.dto.tournament.TourRequestDto;
 import com.hbc.dto.tournament.TourResponseDto;
 import com.hbc.dto.tourstage.TourStageRequestDto;
@@ -20,8 +21,10 @@ import com.hbc.entity.Tournament;
 import com.hbc.entity.TournamentStage;
 import com.hbc.exception.AuthenticationException;
 import com.hbc.exception.CustomException;
+import com.hbc.exception.tournament.CannotDeleteTourActivedException;
 import com.hbc.exception.tournament.TourInfoFailedException;
 import com.hbc.exception.tournament.TourNotFoundException;
+import com.hbc.repo.TournamentApplyRepo;
 import com.hbc.repo.TournamentRepo;
 import com.hbc.repo.TournamentStageRepo;
 import com.hbc.repo.UserLocationRepo;
@@ -39,6 +42,9 @@ public class TournamentServiceImpl implements TournamentService {
 	
 	@Autowired
 	TournamentStageRepo tourStageRepo;
+	
+	@Autowired
+	TournamentApplyRepo tourApplyRepo;
 	
 	@Autowired
 	UserLocationRepo userLocationRepo;
@@ -138,26 +144,30 @@ public class TournamentServiceImpl implements TournamentService {
 	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public void doDelete(long id, UserResponseDto currentUser) throws Exception {
-//		if (currentUser == null || currentUser.getRoleId() != RoleConst.ROLE_ADMIN) {
-//			throw new AuthenticationException("401", "Người dùng không có quyền này.");
-//		}
-//		
-//		if (!tourRepo.existsByIdAndIsDeleted(id, false)) {
-//			throw new TourNotFoundException("404", "Giải đua không tồn tại.");
-//		}
-//		
-//		if (tourRepo.existsByIdAndIsActived(id, true)) {
-//			throw new CannotDeleteTourActivedException("400", "Không thể xóa giải đua đang mở.");
-//		}
-//
-//		try {
-//			int countDeleted = tourRepo.deleteLogical(true, false, id);
-//			if (countDeleted < 1) {
-//				throw new Exception();
-//			}
-//		} catch (Exception ex) {
-//			throw ex;
-//		}
+		if (currentUser == null || currentUser.getRoleId() != RoleConst.ROLE_ADMIN) {
+			throw new AuthenticationException("401", "Người dùng không có quyền này.");
+		}
+		
+		if (!tourRepo.existsByIdAndIsDeleted(id, false)) {
+			throw new TourNotFoundException("404", "Giải đua không tồn tại.");
+		}
+		
+		if (tourStageRepo.existsByTourIdAndIsActived(id, true)) {
+			throw new CannotDeleteTourActivedException("400", "Không thể xóa giải đua đang mở.");
+		}
+		
+		if (tourApplyRepo.existsByTourIdAndStatusCodeNot(id, TourApplyStatusCodeConst.STATUS_CODE_WAITING)) {
+			throw new CannotDeleteTourActivedException("400", "Không thể xóa giải đua đang có đơn chờ phê duyệt.");
+		}
+
+		try {
+			int countDeleted = tourRepo.deleteLogical(true, id);
+			if (countDeleted < 1) {
+				throw new Exception();
+			}
+		} catch (Exception ex) {
+			throw ex;
+		}
 	}
 
 	private void validateDto(TourRequestDto dto) {
