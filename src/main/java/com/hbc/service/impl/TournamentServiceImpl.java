@@ -82,9 +82,9 @@ public class TournamentServiceImpl implements TournamentService {
 		try {
 			Tournament tourResponse = tourRepo.saveAndFlush(Tournament.build(dto, currentUser.getId()));
 			dto.getTourStages().forEach(tourStage -> {
-				tourStageRepo.insert(tourResponse.getId(), tourStage.getOrderNo(), tourStage.getRestTimePerDay(),
+				tourStageRepo.insert(tourResponse.getId(), tourStage.getOrderNo(), tourStage.getDescription(), tourStage.getRestTimePerDay(),
 						tourStage.getStartPointCode(), tourStage.getStartPointName(), tourStage.getStartPointCoor(),
-						new Timestamp(System.currentTimeMillis()), currentUser.getId());
+						tourStage.getStartTime(), new Timestamp(System.currentTimeMillis()), currentUser.getId());
 			});
 			List<TournamentStage> tourStageInserted = tourStageRepo.findByTourId(tourResponse.getId());
 			return TourResponseDto.build(tourResponse, tourStageInserted);

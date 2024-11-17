@@ -54,6 +54,7 @@ public class TourResponseDto implements Serializable {
 	@AllArgsConstructor
 	private static class TourStageResponse {
 		private int orderNo;
+		private String description;
 		private float restTimePerDay;
 		private String startPointCode;
 		private String startPointName;
@@ -94,7 +95,7 @@ public class TourResponseDto implements Serializable {
 		List<TourStageResponse> tourStagesOrdered = new ArrayList<>();
 
 		sortedtourStages.forEach((key, value) -> {
-			TourStageResponse response = new TourStageResponse(value.getOrderNo(), value.getRestTimePerDay(),
+			TourStageResponse response = new TourStageResponse(value.getOrderNo(), value.getDescription(), value.getRestTimePerDay(),
 					value.getStartPointCode(), value.getStartPointName(), value.getStartPointCoor(),
 					value.getStartTime());
 			tourStagesOrdered.add(response);

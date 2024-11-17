@@ -17,6 +17,7 @@ public class TourStageRequestDto implements Serializable {
 	private static final long serialVersionUID = -1469443880846296728L;
 
 	private int orderNo;
+	private String description;
 	private float restTimePerDay;
 	private String startPointCode;
 	private String startPointName;

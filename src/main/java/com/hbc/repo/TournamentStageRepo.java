@@ -17,12 +17,12 @@ public interface TournamentStageRepo extends JpaRepository<TournamentStage, Long
 	List<TournamentStage> findByTourId(long tourId);
 	
 	@Modifying
-	@Query(value = "INSERT INTO tournament_stage(tour_id, order_no, rest_time_per_day,"
+	@Query(value = "INSERT INTO tournament_stage(tour_id, order_no, description, rest_time_per_day,"
 			+ " start_point_code, start_point_name, start_point_coor, start_time, created_at, created_by)"
 			+ " VALUE (:tourId, :orderNo, :description, :restTimePerDay, :startPointCode,"
-			+ " :startPointName, :startPointCoor, :createdAt, :createdBy)", nativeQuery = true)
-	void insert(@Param("tourId") long tourId, @Param("orderNo") int orderNo,
+			+ " :startPointName, :startPointCoor, :startTime, :createdAt, :createdBy)", nativeQuery = true)
+	void insert(@Param("tourId") long tourId, @Param("orderNo") int orderNo, @Param("description") String description,
 			@Param("restTimePerDay") float restTimePerDay, @Param("startPointCode") String startPointCode,
 			@Param("startPointName") String startPointName, @Param("startPointCoor") String startPointCoor,
-			@Param("createdAt") Timestamp createdAt, @Param("createdBy") long createdBy);
+			@Param("startTime") Timestamp startTime, @Param("createdAt") Timestamp createdAt, @Param("createdBy") long createdBy);
 }
