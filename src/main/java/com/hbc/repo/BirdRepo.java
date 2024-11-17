@@ -28,11 +28,12 @@ public interface BirdRepo extends JpaRepository<Bird, Long> {
 			@Param("userId") long userId, @Param("createdBy") long createdBy);
 	
 	@Modifying
-	@Query(value = "UPDATE bird SET name = :name, description = :description, img_url = :imgUrl,"
+	@Query(value = "UPDATE bird SET code = :code, name = :name, description = :description, img_url = :imgUrl,"
 			+ " updated_by = :updatedBy, updated_at = :updatedAt"
 			+ " WHERE id = :id", nativeQuery = true)
-	void doUpdate(@Param("name") String name, @Param("description") String description, @Param("imgUrl") String imgUrl,
-			@Param("updatedBy") long updatedBy, @Param("updatedAt") Timestamp updatedAt, @Param("id") long id);
+	void doUpdate(@Param("code") String code, @Param("name") String name, @Param("description") String description,
+			@Param("imgUrl") String imgUrl, @Param("updatedBy") long updatedBy,
+			@Param("updatedAt") Timestamp updatedAt, @Param("id") long id);
 
 	@Modifying
 	@Query(value = "UPDATE bird SET is_deleted = 1, updated_by = :updatedBy, updated_at = :updatedAt"

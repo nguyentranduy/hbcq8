@@ -100,7 +100,7 @@ public class AdminBirdServiceImpl implements AdminBirdService {
 		}
 
 		try {
-			birdRepo.doUpdate(birdDto.getName(), birdDto.getDescription(), birdDto.getImgUrl(), currentUserId,
+			birdRepo.doUpdate(birdDto.getCode(), birdDto.getName(), birdDto.getDescription(), birdDto.getImgUrl(), currentUserId,
 					new Timestamp(System.currentTimeMillis()), birdDto.getId());
 			entityManager.clear();
 			Bird birdUpdated = birdRepo.findById(birdDto.getId()).get();
