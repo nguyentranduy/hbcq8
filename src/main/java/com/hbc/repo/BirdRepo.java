@@ -22,10 +22,10 @@ public interface BirdRepo extends JpaRepository<Bird, Long> {
 	Bird findByCode(String birdCode);
 	
 	@Modifying
-	@Query(value = "INSERT INTO bird(name, code, user_id, img_url, created_by)"
-			+ " VALUE (:name, :code, :userId, :imgUrl, :createdBy)", nativeQuery = true)
+	@Query(value = "INSERT INTO bird(name, code, user_id, created_by)"
+			+ " VALUE (:name, :code, :userId, :createdBy)", nativeQuery = true)
 	void doRegister(@Param("name") String name, @Param("code") String code,
-			@Param("userId") long userId, @Param("imgUrl") String imgUrl, @Param("createdBy") long createdBy);
+			@Param("userId") long userId, @Param("createdBy") long createdBy);
 	
 	@Modifying
 	@Query(value = "UPDATE bird SET name = :name, description = :description, img_url = :imgUrl,"

@@ -1,4 +1,4 @@
-package com.hbc.dto.bird;
+package com.hbc.dto.bird.admin;
 
 import java.io.Serializable;
 
@@ -9,12 +9,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BirdRequestDto implements Serializable {
+public class AdminBirdRequestDto implements Serializable {
 
 	private static final long serialVersionUID = 8075065438234302050L;
 	
 	private String name;
 	private String code;
-	private String imgUrl;
 	private long userId;
 }
