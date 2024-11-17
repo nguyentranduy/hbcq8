@@ -34,8 +34,6 @@ import jakarta.persistence.PersistenceContext;
 @Service
 public class TournamentServiceImpl implements TournamentService {
 
-	private static final int ADMIN_ID = 1;
-
 	@Autowired
 	TournamentRepo tourRepo;
 	
@@ -96,48 +94,45 @@ public class TournamentServiceImpl implements TournamentService {
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public TourResponseDto doUpdate(long tourId, TourRequestDto dto, UserResponseDto currentUser) {
-//		if (currentUser == null || currentUser.getRoleId() != RoleConst.ROLE_ADMIN) {
-//			throw new AuthenticationException("401", "Người dùng không có quyền này.");
-//		}
-//		
-//		if (!tourRepo.existsByIdAndIsDeleted(tourId, false)) {
-//			throw new TourNotFoundException("404", "Giải đua không tồn tại.");
-//		}
-//
-//		validateDto(dto);
-//
-//		if (tourRepo.existsByNameAndIdNotAndIsDeleted(dto.getName(), tourId, false)) {
-//			throw new TourInfoFailedException("400", "Tên giải đua đã tồn tại.");
-//		}
-//
-//		if (!userLocationRepo.existsByCodeAndUserIdAndIsDeleted(dto.getStartPointCode(), ADMIN_ID, false)) {
-//			throw new TourInfoFailedException("400", "Mã căn cứ bắt đầu không phù hợp.");
-//		}
-//
-//		if (!userLocationRepo.existsByCodeAndUserIdAndIsDeleted(dto.getEndPointCode(), ADMIN_ID, false)) {
-//			throw new TourInfoFailedException("400", "Mã căn cứ kết thúc không phù hợp.");
-//		}
-//
-//		String startPointCoor = userLocationRepo.findPointCoorByCode(dto.getStartPointCode());
-//		String endPointCoor = userLocationRepo.findPointCoorByCode(dto.getEndPointCode());
-//		Tournament tourEntity = Tournament.buildForUpdate(tourId, dto, startPointCoor, endPointCoor, currentUser.getId());
-//
-//		try {
-//			int tourUpdatedCount = tourRepo.update(tourEntity.getName(), tourEntity.getBirdsNum(), tourEntity.getStartDate(),
-//					tourEntity.getEndDate(), tourEntity.getRestTimePerDay(),
-//					tourEntity.getStartPointCode(), tourEntity.getStartPointCoor(), tourEntity.getStartPointTime(),
-//					tourEntity.getEndPointCode(), tourEntity.getEndPointCoor(),
-//					tourEntity.getIsActived(), tourEntity.getUpdatedAt(), tourEntity.getUpdatedBy(), tourEntity.getId());
-//			if (tourUpdatedCount < 1) {
-//				throw new IllegalStateException();
-//			}
-//			entityManager.clear();
-//			Tournament tourEntityUpdated = tourRepo.findById(tourEntity.getId()).get();
-//			return TourResponseDto.build(tourEntityUpdated);
-//		} catch (Exception ex) {
-//			throw new CustomException("400", ex.getMessage());
-//		}
-		return null;
+		if (currentUser == null || currentUser.getRoleId() != RoleConst.ROLE_ADMIN) {
+			throw new AuthenticationException("401", "Người dùng không có quyền này.");
+		}
+		
+		Optional<Tournament> tourEntityCurrent = tourRepo.findById(tourId);
+		if (tourEntityCurrent.isEmpty()) {
+			throw new TourNotFoundException("404", "Giải đua không tồn tại.");
+		}
+
+		validateDto(dto);
+		
+		if (!tourEntityCurrent.get().getName().equalsIgnoreCase(dto.getName())
+				&& tourRepo.existsByNameAndIsDeleted(dto.getName(), false)) {
+			throw new TourInfoFailedException("400", "Tên giải đua đã tồn tại.");
+		}
+		
+		try {
+			int tourUpdatedCount = tourRepo.update(dto.getName(), dto.getDescription(), dto.getBirdsNum(),
+					dto.getStartDateInfo(), dto.getEndDateInfo(), dto.getStartDateReceive(), dto.getEndDateReceive(),
+					new Timestamp(System.currentTimeMillis()), currentUser.getId(), tourId);
+
+			if (tourUpdatedCount < 1) {
+				throw new IllegalStateException();
+			}
+
+			tourStageRepo.deleteByTourId(tourId);
+			
+			dto.getTourStages().forEach(tourStage -> {
+				tourStageRepo.insert(tourId, tourStage.getOrderNo(), tourStage.getDescription(), tourStage.getRestTimePerDay(),
+						tourStage.getStartPointCode(), tourStage.getStartPointName(), tourStage.getStartPointCoor(),
+						tourStage.getStartTime(), new Timestamp(System.currentTimeMillis()), currentUser.getId());
+			});
+			entityManager.clear();
+			Tournament tourEntityUpdated = tourRepo.findById(tourId).get();
+			List<TournamentStage> tourStageInserted = tourStageRepo.findByTourId(tourId);
+			return TourResponseDto.build(tourEntityUpdated, tourStageInserted);
+		} catch (Exception ex) {
+			throw new CustomException("400", ex.getMessage());
+		}
 	}
 
 	@Transactional(rollbackFor = Exception.class)

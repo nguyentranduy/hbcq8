@@ -25,4 +25,8 @@ public interface TournamentStageRepo extends JpaRepository<TournamentStage, Long
 			@Param("restTimePerDay") float restTimePerDay, @Param("startPointCode") String startPointCode,
 			@Param("startPointName") String startPointName, @Param("startPointCoor") String startPointCoor,
 			@Param("startTime") Timestamp startTime, @Param("createdAt") Timestamp createdAt, @Param("createdBy") long createdBy);
+	
+	@Modifying
+	@Query(value = "DELETE FROM tournament_stage WHERE tour_id = :tourId", nativeQuery = true)
+	void deleteByTourId(@Param("tourId") long tourId);
 }
