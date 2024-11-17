@@ -90,7 +90,7 @@ public class AdminBirdServiceImpl implements AdminBirdService {
 			throw new BirdNotFoundException("404", "Chim không tồn tại.");
 		}
 		
-		if (requestChangeBird.get().getCode() != birdDto.getCode()
+		if (!requestChangeBird.get().getCode().equalsIgnoreCase(birdDto.getCode())
 				&& birdRepo.existsByCodeAndIsDeleted(birdDto.getCode(), false)) {
 			throw new DuplicatedBirdInfoException("400", "Mã kiềng đã tồn tại.");
 		}
