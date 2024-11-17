@@ -14,7 +14,6 @@ import com.hbc.entity.Tournament;
 @Repository
 public interface TournamentRepo extends JpaRepository<Tournament, Long> {
 
-//	List<Tournament> findByIsDeletedAndIsActivedOrderByCreatedAtDesc(boolean isDeleted, boolean isActived);
 //	List<Tournament> findByIdInAndIsDeletedOrderByCreatedAtDesc(
 //			List<Long> tourIds, boolean isDeleted);
 	List<Tournament> findByIsDeletedOrderByCreatedAtDesc(boolean isDeleted);
