@@ -1,26 +1,23 @@
 package com.hbc.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 
 import com.hbc.dto.tournament.TourRequestDto;
 import com.hbc.dto.tournament.TourResponseDto;
 import com.hbc.dto.user.UserResponseDto;
 import com.hbc.entity.Tournament;
 import com.hbc.entity.TournamentStage;
-import com.hbc.exception.tournament.TourInfoFailedException;
 import com.hbc.exception.tournament.TourNotFoundException;
 import com.hbc.repo.TournamentRepo;
 import com.hbc.repo.TournamentStageRepo;
 import com.hbc.repo.UserLocationRepo;
 import com.hbc.service.TournamentService;
-import com.hbc.validator.DateValidator;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -44,11 +41,10 @@ public class TournamentServiceImpl implements TournamentService {
 
 	@Override
 	public List<TourResponseDto> findAllAvailable() {
-//		List<Tournament> tournaments = tourRepo.findByIsDeletedOrderByCreatedAtDesc(false);
-//		List<TourResponseDto> response = new ArrayList<>();
-//		tournaments.forEach(tour -> response.add(TourResponseDto.build(tour)));
-//		return response;
-		return null;
+		List<Tournament> tournaments = tourRepo.findByIsDeletedOrderByCreatedAtDesc(false);
+		List<TourResponseDto> response = new ArrayList<>();
+		tournaments.forEach(tour -> response.add(TourResponseDto.build(tour, List.of())));
+		return response;
 	}
 
 	@Override
