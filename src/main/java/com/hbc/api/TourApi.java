@@ -28,6 +28,7 @@ import com.hbc.exception.tournament.submit.SubmitInfoNotFoundException;
 import com.hbc.service.PdfExporterService;
 import com.hbc.service.TournamentDetailService;
 import com.hbc.service.TournamentInfoService;
+import com.hbc.service.TournamentStageService;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -44,6 +45,9 @@ public class TourApi {
 	
 	@Autowired
 	PdfExporterService pdfExporterService;
+	
+	@Autowired
+	TournamentStageService tourStageService;
 
 	@GetMapping("/list")
 	public ResponseEntity<?> doGetList(HttpSession session) {
@@ -118,6 +122,16 @@ public class TourApi {
 	public ResponseEntity<?> doGetRank(@RequestParam("tourId") long tourId, @RequestParam("stageId") long stageId) {
 		try {
 			return ResponseEntity.ok(tourDetailService.viewRankByTourIdAndStageId(tourId, stageId));
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex);
+		}
+	}
+	
+	@GetMapping("/stage")
+	public ResponseEntity<?> doGetByTourId(@RequestParam("tourId") long tourId) {
+		try {
+			return ResponseEntity.ok(tourStageService.getStageIdsByTour(tourId));
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex);

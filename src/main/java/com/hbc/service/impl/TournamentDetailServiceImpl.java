@@ -95,7 +95,7 @@ public class TournamentDetailServiceImpl implements TournamentDetailService {
 		}
 		
 		if (!tourStage.get().getIsActived()) {
-			throw new OutOfTimeException("408", "Quá thời hạn chỉnh sửa lại.");
+			throw new OutOfTimeException("408", "Chặng đua không cho phép báo cáo.");
 		}
 		
 		double time = calculateTimeDifferenceInHours(tourStage.get().getStartTime(), submitTimeNow, tourStage.get().getRestTimePerDay());

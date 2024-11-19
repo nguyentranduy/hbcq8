@@ -1,11 +1,13 @@
 package com.hbc.service.impl;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.hbc.entity.TournamentStage;
 import com.hbc.repo.TournamentStageRepo;
 import com.hbc.service.TournamentStageService;
 
@@ -19,5 +21,11 @@ public class TournamentStageServiceImpl implements TournamentStageService {
 	@Override
 	public void updateStatus(long id, boolean isActive, long currentUserId) {
 		repo.updateStatus(isActive, new Timestamp(System.currentTimeMillis()), currentUserId, id);
+	}
+
+	@Override
+	public List<Long> getStageIdsByTour(long tourId) {
+		List<TournamentStage> stages = repo.findByTourId(tourId);
+		return stages.stream().map(TournamentStage::getId).toList();
 	}
 }
