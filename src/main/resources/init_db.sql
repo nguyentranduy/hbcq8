@@ -141,7 +141,6 @@ CREATE TABLE `tournament_detail` (
   `end_point_speed` float DEFAULT NULL,
   `end_point_key` varchar(10) DEFAULT NULL,
   `end_point_submit_time` timestamp DEFAULT NULL,
-  `avg_speed` float DEFAULT NULL,
   `memo` text,
   `status` varchar(1) DEFAULT NULL,
   `created_at` timestamp DEFAULT NOW(),

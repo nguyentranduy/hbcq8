@@ -17,8 +17,7 @@ public class TourSubmitTimeRequestDto implements Serializable {
 
 	private long tourId;
 	private long requesterId;
-	private int pointNo;
+	private long stageId;
 	private String birdCode;
-	private String pointCode;
 	private String pointKey;
 }

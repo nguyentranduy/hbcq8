@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,6 +14,7 @@ import java.util.regex.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import com.hbc.dto.pdf.PdfInputDto;
 import com.hbc.dto.tourdetail.TourDetailResponseDto;
@@ -25,6 +27,8 @@ import com.hbc.entity.Bird;
 import com.hbc.entity.TournamentDetail;
 import com.hbc.entity.TournamentStage;
 import com.hbc.exception.tournament.submit.InvalidSubmitPointKeyException;
+import com.hbc.exception.tournament.submit.OutOfTimeException;
+import com.hbc.exception.tournament.submit.SubmitInfoNotFoundException;
 import com.hbc.repo.TournamentDetailRepo;
 import com.hbc.repo.TournamentRepo;
 import com.hbc.repo.TournamentStageRepo;
@@ -61,71 +65,41 @@ public class TournamentDetailServiceImpl implements TournamentDetailService {
 	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public PdfInputDto doSubmitTime(TourSubmitTimeRequestDto requestDto, long userId) throws Exception {
-		return null;
-//		Timestamp submitTimeNow = new Timestamp(System.currentTimeMillis());
-//
-//		String pointKey = requestDto.getPointKey();
-//
-//		validatePointKey(pointKey);
-//		
-//		TournamentDetail tourDetail = tourDetailRepo.findByTourIdAndUserIdAndBirdCode(requestDto.getTourId(),
-//				requestDto.getRequesterId(), requestDto.getBirdCode());
-//		
-//		if (ObjectUtils.isEmpty(tourDetail)) {
-//			throw new SubmitInfoNotFoundException("404", "Thông tin giải đua không tồn tại.");
-//		}
-//		
-//		long tourId = requestDto.getTourId();
-//		String birdCode = requestDto.getBirdCode();
-//		int pointNo = requestDto.getPointNo();
-//		String pointCode;
-//		if (pointNo == 1) {
-//			Timestamp point1SubmitTime = tourDetail.getPoint1SubmitTime();
-//			if (!ObjectUtils.isEmpty(point1SubmitTime) && !checkSubmitTime(point1SubmitTime, submitTimeNow)) {
-//				throw new OutOfTimeException("408", "Quá thời hạn chỉnh sửa lại.");
-//			}
-//			pointCode = tourDetail.getPoint1Code();
-//			tourDetailRepo.doUpdatePoint1(pointKey, submitTimeNow, submitTimeNow, tourId, userId, birdCode);
-//		} else if (pointNo == 2) {
-//			Timestamp point2SubmitTime = tourDetail.getPoint2SubmitTime();
-//			if (!ObjectUtils.isEmpty(point2SubmitTime) && !checkSubmitTime(point2SubmitTime, submitTimeNow)) {
-//				throw new OutOfTimeException("400", "Quá thời hạn chỉnh sửa lại.");
-//			}
-//			pointCode = tourDetail.getPoint2Code();
-//			tourDetailRepo.doUpdatePoint2(pointKey, submitTimeNow, submitTimeNow, tourId, userId, birdCode);
-//		} else if (pointNo == 3) {
-//			Timestamp point3SubmitTime = tourDetail.getPoint3SubmitTime();
-//			if (!ObjectUtils.isEmpty(point3SubmitTime) && !checkSubmitTime(point3SubmitTime, submitTimeNow)) {
-//				throw new OutOfTimeException("400", "Quá thời hạn chỉnh sửa lại.");
-//			}
-//			pointCode = tourDetail.getPoint3Code();
-//			tourDetailRepo.doUpdatePoint3(pointKey, submitTimeNow, submitTimeNow, tourId, userId, birdCode);
-//		} else if (pointNo == 4) {
-//			Timestamp point4SubmitTime = tourDetail.getPoint4SubmitTime();
-//			if (!ObjectUtils.isEmpty(point4SubmitTime) && !checkSubmitTime(point4SubmitTime, submitTimeNow)) {
-//				throw new OutOfTimeException("400", "Quá thời hạn chỉnh sửa lại.");
-//			}
-//			pointCode = tourDetail.getPoint4Code();
-//			tourDetailRepo.doUpdatePoint4(pointKey, submitTimeNow, submitTimeNow, tourId, userId, birdCode);
-//		} else if (pointNo == 5) {
-//			Timestamp point5SubmitTime = tourDetail.getPoint5SubmitTime();
-//			if (!ObjectUtils.isEmpty(point5SubmitTime) && !checkSubmitTime(point5SubmitTime, submitTimeNow)) {
-//				throw new OutOfTimeException("400", "Quá thời hạn chỉnh sửa lại.");
-//			}
-//			pointCode = tourDetail.getPoint5Code();
-//			tourDetailRepo.doUpdatePoint5(pointKey, submitTimeNow, submitTimeNow, tourId, userId, birdCode);
-//		} else if (pointNo == 0) {
-//			Timestamp endPointSubmitTime = tourDetail.getEndPointSubmitTime();
-//			if (!ObjectUtils.isEmpty(endPointSubmitTime) && !checkSubmitTime(endPointSubmitTime, submitTimeNow)) {
-//				throw new OutOfTimeException("400", "Quá thời hạn chỉnh sửa lại.");
-//			}
-//			pointCode = tourDetail.getEndPointCode();
-//			tourDetailRepo.doUpdateEndPoint(pointKey, submitTimeNow, submitTimeNow, tourId, userId, birdCode);
-//		} else {
-//			throw new InvalidSubmitInfoException("400", "Dữ liệu chưa đúng.");
-//		}
-//
-//		return new PdfInputDto(tourId, pointCode, birdCode, pointKey, timestampToString(submitTimeNow));
+		validatePointKey(requestDto.getPointKey());
+		
+		Timestamp submitTimeNow = new Timestamp(System.currentTimeMillis());
+
+		TournamentDetail tourDetail = tourDetailRepo.findByTourIdAndUserIdAndBirdCodeAndTourStage_Id(requestDto.getTourId(),
+				requestDto.getRequesterId(), requestDto.getBirdCode(), requestDto.getStageId());
+		
+		if (ObjectUtils.isEmpty(tourDetail)) {
+			throw new SubmitInfoNotFoundException("404", "Thông tin chặng đua không tồn tại.");
+		}
+		
+		if (!ObjectUtils.isEmpty(tourDetail.getEndPointSubmitTime())
+				&& !checkSubmitTime(tourDetail.getEndPointSubmitTime(), submitTimeNow)) {
+			throw new OutOfTimeException("408", "Quá thời hạn chỉnh sửa lại.");
+		}
+		
+		Optional<TournamentStage> tourStage = tourStageRepo.findById(requestDto.getStageId());
+		
+		if (tourStage.isEmpty()) {
+			throw new IllegalArgumentException();
+		}
+		
+		if (!tourStage.get().getIsActived()) {
+			throw new OutOfTimeException("408", "Quá thời hạn chỉnh sửa lại.");
+		}
+		
+		double time = calculateTimeDifferenceInHours(tourStage.get().getStartTime(), submitTimeNow, tourStage.get().getRestTimePerDay());
+		double speed = tourDetail.getEndPointDist()/time;
+		
+		tourDetailRepo.doUpdateEndPoint(requestDto.getPointKey(), submitTimeNow, submitTimeNow, speed,
+				requestDto.getTourId(), userId, requestDto.getBirdCode(), requestDto.getStageId());
+
+
+		return new PdfInputDto(requestDto.getTourId(), tourDetail.getEndPointCode(),
+				requestDto.getBirdCode(), requestDto.getPointKey(), timestampToString(submitTimeNow));
 	}
 
 	private String timestampToString(Timestamp timestamp) {
@@ -140,7 +114,7 @@ public class TournamentDetailServiceImpl implements TournamentDetailService {
 	}
 
 	private void validatePointKey(String pointKey) {
-		String regex = "^\\d{5}$";
+		String regex = "^\\d{1-10}$";
 
 		Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(pointKey);
@@ -222,7 +196,6 @@ public class TournamentDetailServiceImpl implements TournamentDetailService {
 
 	private double calculateTimeDifferenceInHours(Timestamp startTime, Timestamp endTime, double restTimePerDay) {
 		double restTime = countNights(startTime, endTime) * restTimePerDay;
-		System.out.println("resttimeeeeeeeeee: " + restTime);
         long diffInMillis = (long) (endTime.getTime() - startTime.getTime() - restTime*3600000);
         return (double) diffInMillis / (60 * 60 * 1000);
     }

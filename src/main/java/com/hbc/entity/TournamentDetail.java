@@ -78,9 +78,6 @@ public class TournamentDetail implements Serializable {
 	@Column(name = "status")
 	private String status;
 
-	@Column(name = "avg_speed")
-	private Float avgSpeed;
-
 	@Column(name = "memo")
 	private String memo;
 

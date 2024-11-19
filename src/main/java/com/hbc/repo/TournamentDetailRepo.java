@@ -33,6 +33,7 @@ public interface TournamentDetailRepo extends JpaRepository<TournamentDetail, Lo
 	void doDeleteByTourIdAndUserId(@Param("tourId") long tourId, @Param("userId") long userId);
 
 	TournamentDetail findByTourIdAndUserIdAndBirdCode(long tourId, long userId, String birdCode);
+	TournamentDetail findByTourIdAndUserIdAndBirdCodeAndTourStage_Id(long tourId, long userId, String birdCode, long stageId);
 
 	@Modifying
 	@Query(value = "UPDATE tournament_detail SET point1_key = :point1Key, point1_time = :point1Time,"
@@ -76,11 +77,13 @@ public interface TournamentDetailRepo extends JpaRepository<TournamentDetail, Lo
 
 	@Modifying
 	@Query(value = "UPDATE tournament_detail SET end_point_key = :endPointKey, end_point_time = :endPointTime,"
-			+ "end_point_submit_time = :endPointSubmitTime, status = 'W'"
-			+ " WHERE tour_id = :tourId AND user_id = :userId AND bird_code = :birdCode", nativeQuery = true)
+			+ " end_point_submit_time = :endPointSubmitTime, end_point_speed = :endPointSpeed, status = 'W'"
+			+ " WHERE tour_id = :tourId AND user_id = :userId AND bird_code = :birdCode"
+			+ " AND stage_id = :stageId", nativeQuery = true)
 	void doUpdateEndPoint(@Param("endPointKey") String endPointKey, @Param("endPointTime") Timestamp endPointTime,
-			@Param("endPointSubmitTime") Timestamp endPointSubmitTime,
-			@Param("tourId") long tourId, @Param("userId") long userId, @Param("birdCode") String birdCode);
+			@Param("endPointSubmitTime") Timestamp endPointSubmitTime, @Param("endPointSpeed") double endPointSpeed,
+			@Param("tourId") long tourId, @Param("userId") long userId, @Param("birdCode") String birdCode,
+			@Param("stageId") long stageId);
 
 	@Modifying
 	@Query(value = "UPDATE tournament_detail SET point1_speed = :point1Speed, point2_speed = :point2Speed, "
