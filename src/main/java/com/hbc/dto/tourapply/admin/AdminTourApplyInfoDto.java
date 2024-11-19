@@ -40,6 +40,7 @@ public class AdminTourApplyInfoDto implements Serializable {
 		private int orderNo;
 		private String startPointCode;
 		private String startPointCoor;
+		private String startPointName;
 	}
 	
 	public static AdminTourApplyInfoDto build (long tourId, List<String> birdCodes, long requesterId,
@@ -59,7 +60,8 @@ public class AdminTourApplyInfoDto implements Serializable {
 		
 		List<TourStageInfo> tourStagesInfo = new ArrayList<>();
 		tourStagesRaw.forEach(i -> {
-			TourStageInfo stageInfo = new TourStageInfo(i.getOrderNo(), i.getStartPointCode(), i.getStartPointCoor());
+			TourStageInfo stageInfo = new TourStageInfo(i.getOrderNo(), i.getStartPointCode(),
+					i.getStartPointCoor(), i.getStartPointName());
 			tourStagesInfo.add(stageInfo);
 		});
 		
