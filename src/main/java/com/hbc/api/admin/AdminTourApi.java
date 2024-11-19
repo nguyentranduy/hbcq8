@@ -147,8 +147,6 @@ public class AdminTourApi {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
 	}
-
-	
 	
 	@GetMapping("/sort")
 	public ResponseEntity<?> doGetSort(@RequestParam("tourId") long tourId) {

@@ -30,4 +30,10 @@ public interface TournamentStageRepo extends JpaRepository<TournamentStage, Long
 	@Modifying
 	@Query(value = "DELETE FROM tournament_stage WHERE tour_id = :tourId", nativeQuery = true)
 	void deleteByTourId(@Param("tourId") long tourId);
+	
+	@Modifying
+	@Query(value = "UPDATE tournament_stage SET is_actived = :isActived, updated_at = :updatedAt,"
+			+ " updated_by = :updatedBy WHERE id = :stageId", nativeQuery = true)
+	void updateStatus(@Param("isActived") boolean isActived, @Param("updatedAt") Timestamp updatedAt,
+			@Param("updatedBy") long updatedBy, @Param("stageId") long stageId);
 }

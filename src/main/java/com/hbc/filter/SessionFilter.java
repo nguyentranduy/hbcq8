@@ -36,7 +36,8 @@ public class SessionFilter implements Filter {
 			"/api/v1/admin/user-location",
 			"/api/v1/admin/system-location",
 			"/api/v1/admin/post",
-			"/api/v1/admin/bird");
+			"/api/v1/admin/bird",
+			"/api/v1/admin/tour-stage");
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
