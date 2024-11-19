@@ -54,15 +54,6 @@ public class TournamentDetail implements Serializable {
 	@JoinColumn(name = "stage_id", referencedColumnName = "id")
 	private TournamentStage tourStage;
 
-	@Column(name = "start_point_code")
-	private String startPointCode;
-
-	@Column(name = "start_point_coor")
-	private String startPointCoor;
-
-	@Column(name = "start_point_time")
-	private Timestamp startPointTime;
-
 	@Column(name = "end_point_code")
 	private String endPointCode;
 

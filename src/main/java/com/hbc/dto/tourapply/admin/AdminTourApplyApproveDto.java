@@ -1,10 +1,13 @@
 package com.hbc.dto.tourapply.admin;
 
 import java.io.Serializable;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Data
 @NoArgsConstructor
@@ -16,9 +19,17 @@ public class AdminTourApplyApproveDto implements Serializable {
 	private long tourId;
 	private long requesterId;
 	private long approverId;
-	private long tourStageId;
-	private String endPointCode;
-	private String endPointCoor;
-	private double endPointDist;
+	private List<TourStageApply> tourStages;
 	private String memo;
+	
+	@Getter
+	@Setter
+	@NoArgsConstructor
+	@AllArgsConstructor
+	public static class TourStageApply {
+		private long stageId;
+		private String endPointCode;
+		private String endPointCoor;
+		private double endPointDist;
+	}
 }

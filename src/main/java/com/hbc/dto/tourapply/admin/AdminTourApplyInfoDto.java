@@ -9,9 +9,7 @@ import com.hbc.entity.TournamentStage;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Data
 @NoArgsConstructor
@@ -32,11 +30,11 @@ public class AdminTourApplyInfoDto implements Serializable {
 	private int birdsNum;
 	private List<TourStageInfo> tourStages;
 
-	@Getter
-	@Setter
+	@Data
 	@NoArgsConstructor
 	@AllArgsConstructor
 	private static class TourStageInfo {
+		private long stageId;
 		private int orderNo;
 		private String startPointCode;
 		private String startPointCoor;
@@ -60,7 +58,7 @@ public class AdminTourApplyInfoDto implements Serializable {
 		
 		List<TourStageInfo> tourStagesInfo = new ArrayList<>();
 		tourStagesRaw.forEach(i -> {
-			TourStageInfo stageInfo = new TourStageInfo(i.getOrderNo(), i.getStartPointCode(),
+			TourStageInfo stageInfo = new TourStageInfo(i.getId(), i.getOrderNo(), i.getStartPointCode(),
 					i.getStartPointCoor(), i.getStartPointName());
 			tourStagesInfo.add(stageInfo);
 		});
