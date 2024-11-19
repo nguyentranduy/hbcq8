@@ -14,8 +14,8 @@ import com.hbc.entity.Tournament;
 @Repository
 public interface TournamentRepo extends JpaRepository<Tournament, Long> {
 
-//	List<Tournament> findByIdInAndIsDeletedOrderByCreatedAtDesc(
-//			List<Long> tourIds, boolean isDeleted);
+	List<Tournament> findByIdInAndIsDeletedOrderByCreatedAtDesc(
+			List<Long> tourIds, boolean isDeleted);
 	List<Tournament> findByIsDeletedOrderByCreatedAtDesc(boolean isDeleted);
 //
 //	@Query(value = "SELECT rest_time_per_day FROM tournament WHERE id = :tourId", nativeQuery = true)
