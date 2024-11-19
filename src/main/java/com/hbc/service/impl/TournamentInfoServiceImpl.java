@@ -9,8 +9,10 @@ import org.springframework.stereotype.Service;
 import com.hbc.constant.TourApplyStatusCodeConst;
 import com.hbc.dto.tournament.TournamentInfoDto;
 import com.hbc.entity.Tournament;
+import com.hbc.entity.TournamentStage;
 import com.hbc.repo.TournamentApplyRepo;
 import com.hbc.repo.TournamentRepo;
+import com.hbc.repo.TournamentStageRepo;
 import com.hbc.service.TournamentInfoService;
 
 @Service
@@ -21,6 +23,9 @@ public class TournamentInfoServiceImpl implements TournamentInfoService {
 
 	@Autowired
 	TournamentApplyRepo tourApplyRepo;
+	
+	@Autowired
+	TournamentStageRepo tourStageRepo;
 
 	@Override
 	public List<TournamentInfoDto> doGetList(long requesterId) {
@@ -62,6 +67,8 @@ public class TournamentInfoServiceImpl implements TournamentInfoService {
 			
 			dto.setTourId(tourId);
 			dto.setTourName(item.getName());
+			List<TournamentStage> stages = tourStageRepo.findByTourId(tourId);
+			dto.setStageIds(stages.stream().map(TournamentStage::getId).toList());
 			dto.setStartDateInfo(item.getStartDateInfo());
 			dto.setEndDateInfo(item.getEndDateInfo());
 			dto.setBirdsNum(item.getBirdsNum());

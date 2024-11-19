@@ -2,6 +2,7 @@ package com.hbc.dto.tournament;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -18,6 +19,7 @@ public class TournamentInfoDto implements Serializable {
 
 	private long tourId;
 	private String tourName;
+	private List<Long> stageIds;
 	@JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
 	private Timestamp startDateInfo;
 	@JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
