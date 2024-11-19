@@ -24,8 +24,7 @@ public class TournamentStageServiceImpl implements TournamentStageService {
 	}
 
 	@Override
-	public List<Long> getStageIdsByTour(long tourId) {
-		List<TournamentStage> stages = repo.findByTourId(tourId);
-		return stages.stream().map(TournamentStage::getId).toList();
+	public List<TournamentStage> getStageIdsByTour(long tourId) {
+		return repo.findByTourId(tourId);
 	}
 }
