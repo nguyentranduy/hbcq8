@@ -62,6 +62,7 @@ public class TourResponseDto implements Serializable {
 		private String startPointCoor;
 		@JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
 		private Timestamp startTime;
+		private boolean isActived;
 	}
 	
     /**
@@ -98,7 +99,7 @@ public class TourResponseDto implements Serializable {
 		sortedtourStages.forEach((key, value) -> {
 			TourStageResponse response = new TourStageResponse(value.getId(), value.getOrderNo(), value.getDescription(),
 					value.getRestTimePerDay(), value.getStartPointCode(), value.getStartPointName(),
-					value.getStartPointCoor(), value.getStartTime());
+					value.getStartPointCoor(), value.getStartTime(), value.getIsActived());
 			tourStagesOrdered.add(response);
 		});
 		dto.setTourStages(tourStagesOrdered);
