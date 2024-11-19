@@ -6,10 +6,12 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,12 +28,14 @@ import com.hbc.dto.tournament.ViewRankDto;
 import com.hbc.entity.Bird;
 import com.hbc.entity.TournamentDetail;
 import com.hbc.entity.TournamentStage;
+import com.hbc.entity.UserLocation;
 import com.hbc.exception.tournament.submit.InvalidSubmitPointKeyException;
 import com.hbc.exception.tournament.submit.OutOfTimeException;
 import com.hbc.exception.tournament.submit.SubmitInfoNotFoundException;
 import com.hbc.repo.TournamentDetailRepo;
 import com.hbc.repo.TournamentRepo;
 import com.hbc.repo.TournamentStageRepo;
+import com.hbc.repo.UserLocationRepo;
 import com.hbc.service.TournamentDetailService;
 
 @Service
@@ -45,6 +49,9 @@ public class TournamentDetailServiceImpl implements TournamentDetailService {
 	
 	@Autowired
 	TournamentStageRepo tourStageRepo;
+	
+	@Autowired
+	UserLocationRepo userLocationRepo;
 
 	@Override
 	public TourDetailResponseDto findByTourIdAndUserId(long tourId, long userId) {
@@ -114,7 +121,7 @@ public class TournamentDetailServiceImpl implements TournamentDetailService {
 	}
 
 	private void validatePointKey(String pointKey) {
-		String regex = "^\\d{1-10}$";
+		String regex = "^\\d{5}$";
 
 		Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(pointKey);
@@ -244,12 +251,16 @@ public class TournamentDetailServiceImpl implements TournamentDetailService {
 	}
 
 	@Override
-	public List<ViewRankDto> viewRankByTourId(long tourId) {
-		List<Object[]> rawData = tourDetailRepo.viewRankByTourId(tourId);
-		List<ViewRankDto> result = new ArrayList<>();
-		rawData.forEach(i -> {
-			result.add(new ViewRankDto((long) i[0], (String) i[1], (float) i[2]));
-		});
-		return result;
+	public List<ViewRankDto> viewRankByTourIdAndStageId(long tourId, long stageId) {
+		List<TournamentDetail> tourDetails = tourDetailRepo.findByTourStage_IdAndTour_IdAndStatusNotNullOrderByEndPointSpeedDesc(stageId, tourId);
+		List<String> userLocationCodes = tourDetails.stream().map(TournamentDetail::getEndPointCode).toList();
+		List<UserLocation> userLocations = userLocationRepo.findByCodeIn(userLocationCodes);
+		Map<String, String> userLocationMap = userLocations.stream()
+				.collect(Collectors.toMap(UserLocation::getCode, UserLocation::getName));
+		int i = 1;
+//		for (TournamentDetail item : tourDetails) {
+//			
+//		}
+		return null;
 	}
 }

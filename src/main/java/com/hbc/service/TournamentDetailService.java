@@ -17,5 +17,5 @@ public interface TournamentDetailService {
 	void doApprove(AdminTourApproveDto dto, long approverId);
 	void doReject(AdminTourRejectDto dto, long approverId);
 	void doSortRankByTourId(long tourId);
-	List<ViewRankDto> viewRankByTourId(long tourId);
+	List<ViewRankDto> viewRankByTourIdAndStageId(long tourId, long stageId);
 }

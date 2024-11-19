@@ -112,4 +112,6 @@ public interface TournamentDetailRepo extends JpaRepository<TournamentDetail, Lo
 	@Query(value = "SELECT rank_of_bird, bird_code, avg_speed FROM tournament_detail WHERE tour_id = :tourId AND status = 'A'"
 			+ " ORDER BY rank_of_bird ASC", nativeQuery = true)
 	List<Object[]> viewRankByTourId(@Param("tourId") long tourId);
+
+	List<TournamentDetail> findByTourStage_IdAndTour_IdAndStatusNotNullOrderByEndPointSpeedDesc(long stageId, long tourId);
 }

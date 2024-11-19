@@ -15,6 +15,7 @@ import com.hbc.entity.UserLocation;
 public interface UserLocationRepo extends JpaRepository<UserLocation, Long> {
 
 	List<UserLocation> findByUser_IdAndIsDeletedOrderByCreatedAtAsc(long userId, boolean isDeleted);
+	List<UserLocation> findByCodeIn(List<String> codes);
 	UserLocation findByIdAndUser_IdAndIsDeleted(long id, long userId, boolean isDeleted);
 	UserLocation findByIdAndIsDeleted(long userLocationId, boolean isDeleted);
 	UserLocation findByCodeAndIsDeleted(String code, boolean isDeleted);
