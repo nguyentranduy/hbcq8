@@ -18,9 +18,7 @@ import com.hbc.dto.ErrorResponse;
 import com.hbc.dto.tourapply.admin.AdminTourApplyApproveDto;
 import com.hbc.dto.tourapply.admin.AdminTourApplyInfoDto;
 import com.hbc.dto.tourapply.admin.AdminTourApplyRejectDto;
-import com.hbc.dto.tourlocation.CalDistanceRequestDto;
-import com.hbc.dto.tourlocation.CalDistanceResponseDto;
-import com.hbc.exception.calculatedistance.InvalidCoorFormatException;
+import com.hbc.dto.tourlocation.CalDistanceTwoPointRequestDto;
 import com.hbc.exception.tourapply.TourApplyNotFoundException;
 import com.hbc.exception.user.UserNotFoundException;
 import com.hbc.exception.userlocation.LocationNotFoundException;
@@ -101,12 +99,22 @@ public class AdminTourApplyApi {
 		}
 	}
 
-	@PostMapping("/calculate-distance")
-	public ResponseEntity<?> calculateDistance(@RequestBody CalDistanceRequestDto calDistanceRequestDto) {
+//	@PostMapping("/calculate-distance")
+//	public ResponseEntity<?> calculateDistance(@RequestBody CalDistanceRequestDto calDistanceRequestDto) {
+//		try {
+//			CalDistanceResponseDto response = calculateDistanceService.calculateDistance(calDistanceRequestDto);
+//			return ResponseEntity.ok(response);
+//		} catch (InvalidCoorFormatException ex) {
+//			ErrorResponse errorResponse = new ErrorResponse("400", ex.getMessage());
+//			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+//		}
+//	}
+	
+	@PostMapping("/cal-distance")
+	public ResponseEntity<?> calculateDistanceTwoPoint(@RequestBody CalDistanceTwoPointRequestDto calDistanceRequestDto) {
 		try {
-			CalDistanceResponseDto response = calculateDistanceService.calculateDistance(calDistanceRequestDto);
-			return ResponseEntity.ok(response);
-		} catch (InvalidCoorFormatException ex) {
+			return ResponseEntity.ok(calculateDistanceService.calculateDistanceTwoPoint(calDistanceRequestDto));
+		} catch (Exception ex) {
 			ErrorResponse errorResponse = new ErrorResponse("400", ex.getMessage());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 		}
