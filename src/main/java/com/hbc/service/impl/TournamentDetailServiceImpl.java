@@ -60,7 +60,17 @@ public class TournamentDetailServiceImpl implements TournamentDetailService {
 		
 		List<TourStageDetail> tourStages = new ArrayList<>();
 		tourStageRaw.forEach(i -> {
-			TourStageDetail detail = new TourStageDetail(i.getId(), i.getOrderNo(), i.getDescription(), i.getIsActived());
+			String endPointCode = "";
+			for (TournamentDetail detail : tourDetails) {
+				TournamentStage stage = detail.getTourStage();
+				if (stage.getId().equals(i.getId())) {
+					endPointCode = detail.getEndPointCode();
+					return;
+				}
+			}
+
+			TourStageDetail detail = new TourStageDetail(i.getId(), i.getOrderNo(), endPointCode,
+					i.getDescription(), i.getIsActived());
 			tourStages.add(detail);
 		});
 		

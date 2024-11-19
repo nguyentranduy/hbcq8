@@ -26,6 +26,7 @@ public class TourDetailResponseDto implements Serializable {
 	public static class TourStageDetail {
 		private long stageId;
 		private int orderNo;
+		private String endPointCode;
 		private String description;
 		@JsonProperty("isActived")
 		private boolean isActived;
