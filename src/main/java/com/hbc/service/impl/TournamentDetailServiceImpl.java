@@ -65,7 +65,7 @@ public class TournamentDetailServiceImpl implements TournamentDetailService {
 				TournamentStage stage = detail.getTourStage();
 				if (stage.getId().equals(i.getId())) {
 					endPointCode = detail.getEndPointCode();
-					return;
+					break;
 				}
 			}
 
