@@ -5,35 +5,29 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ObjectUtils;
 
-import com.hbc.constant.TourApplyStatusCodeConst;
-import com.hbc.constant.TourDetailStatusCodeConst;
 import com.hbc.dto.pdf.PdfInputDto;
 import com.hbc.dto.tourdetail.TourDetailResponseDto;
+import com.hbc.dto.tourdetail.TourDetailResponseDto.TourStageDetail;
 import com.hbc.dto.tournament.AdminTourApproveDto;
 import com.hbc.dto.tournament.AdminTourRejectDto;
 import com.hbc.dto.tournament.TourSubmitTimeRequestDto;
 import com.hbc.dto.tournament.ViewRankDto;
+import com.hbc.entity.Bird;
 import com.hbc.entity.TournamentDetail;
-import com.hbc.exception.tournament.submit.InvalidSubmitInfoException;
+import com.hbc.entity.TournamentStage;
 import com.hbc.exception.tournament.submit.InvalidSubmitPointKeyException;
-import com.hbc.exception.tournament.submit.OutOfTimeException;
-import com.hbc.exception.tournament.submit.SubmitInfoNotFoundException;
 import com.hbc.repo.TournamentDetailRepo;
 import com.hbc.repo.TournamentRepo;
+import com.hbc.repo.TournamentStageRepo;
 import com.hbc.service.TournamentDetailService;
 
 @Service
@@ -44,11 +38,24 @@ public class TournamentDetailServiceImpl implements TournamentDetailService {
 
 	@Autowired
 	TournamentRepo tourRepo;
+	
+	@Autowired
+	TournamentStageRepo tourStageRepo;
 
 	@Override
-	public List<TourDetailResponseDto> findByTourIdAndUserId(long tourId, long userId) {
+	public TourDetailResponseDto findByTourIdAndUserId(long tourId, long userId) {
 		List<TournamentDetail> tourDetails = tourDetailRepo.findByTour_IdAndUser_Id(tourId, userId);
-		return tourDetails.stream().map(TourDetailResponseDto::build).toList();
+		List<TournamentStage> tourStageRaw = tourStageRepo.findByTourId(tourId);
+		
+		List<TourStageDetail> tourStages = new ArrayList<>();
+		tourStageRaw.forEach(i -> {
+			TourStageDetail detail = new TourStageDetail(i.getId(), i.getOrderNo(), i.getDescription(), i.getIsActived());
+			tourStages.add(detail);
+		});
+		
+		List<String> birdCodes = tourDetails.stream().map(TournamentDetail::getBird).map(Bird::getCode).distinct().toList();
+		
+		return new TourDetailResponseDto(tourId, tourStages, birdCodes);
 	}
 
 	@Transactional(rollbackFor = Exception.class)
@@ -145,8 +152,9 @@ public class TournamentDetailServiceImpl implements TournamentDetailService {
 
 	@Override
 	public List<TourDetailResponseDto> findByTourIdForApprove(long tourId) {
-		List<TournamentDetail> tourDetails = tourDetailRepo.findByTour_IdAndStatus(tourId, TourDetailStatusCodeConst.STATUS_CODE_WAITING);
-		return tourDetails.stream().map(TourDetailResponseDto::build).toList();
+//		List<TournamentDetail> tourDetails = tourDetailRepo.findByTour_IdAndStatus(tourId, TourDetailStatusCodeConst.STATUS_CODE_WAITING);
+//		return tourDetails.stream().map(TourDetailResponseDto::build).toList();
+		return null;
 	}
 
 	@Transactional(rollbackFor = Exception.class)

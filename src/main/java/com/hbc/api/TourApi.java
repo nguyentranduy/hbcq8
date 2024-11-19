@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hbc.constant.SessionConst;
 import com.hbc.dto.ErrorResponse;
 import com.hbc.dto.pdf.PdfInputDto;
-import com.hbc.dto.tourdetail.TourDetailResponseDto;
 import com.hbc.dto.tournament.TourSubmitTimeRequestDto;
 import com.hbc.dto.tournament.TournamentInfoDto;
 import com.hbc.dto.user.UserResponseDto;
@@ -75,8 +74,7 @@ public class TourApi {
 	public ResponseEntity<?> doGetDetail(@RequestParam("tourId") long tourId, HttpSession session) {
 		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
 		try {
-			List<TourDetailResponseDto> response = tourDetailService.findByTourIdAndUserId(tourId, currentUser.getId());
-			return ResponseEntity.ok(response);
+			return ResponseEntity.ok(tourDetailService.findByTourIdAndUserId(tourId, currentUser.getId()));
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex);
@@ -125,5 +123,4 @@ public class TourApi {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex);
 		}
 	}
-			
 }
