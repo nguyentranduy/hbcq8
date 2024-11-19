@@ -26,6 +26,6 @@ public class ViewRankDto implements Serializable {
 	private Timestamp endTime;
 	@JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
 	private Timestamp startTime;
-	private double totalTime;
+	private String totalTime;
 	private float speed;
 }

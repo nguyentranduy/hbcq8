@@ -258,9 +258,28 @@ public class TournamentDetailServiceImpl implements TournamentDetailService {
 		Map<String, String> userLocationMap = userLocations.stream()
 				.collect(Collectors.toMap(UserLocation::getCode, UserLocation::getName));
 		int i = 1;
-//		for (TournamentDetail item : tourDetails) {
-//			
-//		}
-		return null;
+		
+		List<ViewRankDto> result = new ArrayList<>();
+		for (TournamentDetail item : tourDetails) {
+			String userLocationName = userLocationMap.get(item.getEndPointCode());
+			double totalTime = calculateTimeDifferenceInHours(item.getTourStage().getStartTime(), item.getEndPointTime(),
+					item.getTourStage().getRestTimePerDay());
+			ViewRankDto dto = new ViewRankDto(i++, item.getEndPointCode(), userLocationName,
+					item.getBird().getCode(), item.getEndPointCoor(), item.getEndPointDist(),
+					item.getEndPointTime(), item.getTourStage().getStartTime(),
+					doubleToHHMMSS(totalTime), item.getEndPointSpeed());
+			result.add(dto);
+		}
+		return result;
+	}
+	
+	private String doubleToHHMMSS(double time) {
+	    long totalSeconds = (long) (time * 3600);
+
+	    int hours = (int) (totalSeconds / 3600);
+	    int minutes = (int) ((totalSeconds % 3600) / 60);
+	    int seconds = (int) (totalSeconds % 60);
+
+	    return String.format("%02d:%02d:%02d", hours, minutes, seconds);
 	}
 }
