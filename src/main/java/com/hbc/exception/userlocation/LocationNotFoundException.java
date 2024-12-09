@@ -1,13 +1,13 @@
-package com.hbc.exception.tourlocation;
+package com.hbc.exception.userlocation;
 
-public class CreateTourLocationException extends RuntimeException {
+public class LocationNotFoundException extends RuntimeException {
 
 	private static final long serialVersionUID = 4601014586415545195L;
 	
 	private final String errorCode;
 	private final String errorMessage;
 
-	public CreateTourLocationException(String errorCode, String errorMessage) {
+	public LocationNotFoundException(String errorCode, String errorMessage) {
 		super(errorMessage);
 		this.errorCode = errorCode;
 		this.errorMessage = errorMessage;

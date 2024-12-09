@@ -14,28 +14,38 @@ import com.hbc.entity.Tournament;
 @Repository
 public interface TournamentRepo extends JpaRepository<Tournament, Long> {
 
-	List<Tournament> findByIsActivedOrderByCreatedAtDesc(boolean isActived);
-	Tournament findByIdAndIsActived(long tourId, boolean isActived);
-	boolean existsByName(String tourName);
-	boolean existsByNameAndIdNot(String tourName, long tourId);
-	
-	@Query(value = "SELECT t.id, t.name, t.start_date, t.end_date, l.start_point_name,"
-			+ " l.end_point_name, t.birds_num, t.is_actived"
-			+ " FROM tournament t"
-			+ " LEFT JOIN tournament_location l ON t.id = l.tour_id"
-			+ " ORDER BY t.created_at ASC", nativeQuery = true)
-	List<Object[]> getTournamentInfo();
+	List<Tournament> findByIdInAndIsDeletedOrderByCreatedAtDesc(
+			List<Long> tourIds, boolean isDeleted);
+	List<Tournament> findByIsDeletedOrderByCreatedAtDesc(boolean isDeleted);
+//
+//	@Query(value = "SELECT rest_time_per_day FROM tournament WHERE id = :tourId", nativeQuery = true)
+//	String findRestTimePerDayByTourId(@Param("tourId") long tourId);
+//
+//	boolean existsByIdAndIsActived(long id, boolean isActived);
+	boolean existsByNameAndIsDeleted(String tourName, boolean isDeleted);
+	boolean existsByIdAndIsDeleted(long id, boolean isDeleted);
+//	boolean existsByNameAndIdNotAndIsDeleted(String tourName, long tourId, boolean isDeleted);
 	
 	@Modifying
-	@Query(value = "UPDATE Tournament t SET t.name = :name, t.birdsNum = :birdsNum, t.startDate = :startDate,"
-			+ " t.endDate = :endDate, t.restTimePerDay = :restTimePerDay, t.isActived = :isActived,"
+	@Query(value = "UPDATE Tournament t SET t.name = :name, t.description = :description, t.birdsNum = :birdsNum,"
+			+ " t.startDateInfo = :startDateInfo, t.endDateInfo = :endDateInfo,"
+			+ " t.startDateReceive = :startDateReceive, t.endDateReceive = :endDateReceive,"
 			+ " t.updatedAt = :updatedAt, t.updatedBy = :updatedBy"
 			+ " WHERE t.id = :id")
-	int update(@Param("name") String name, @Param("birdsNum") int birdsNum, @Param("startDate") Timestamp startDate,
-			@Param("endDate") Timestamp endDate, @Param("restTimePerDay") float restTimePerDay,
-			@Param("isActived") boolean isActived, @Param("updatedAt") Timestamp updatedAt,
-			@Param("updatedBy") Long updatedBy, @Param("id") long id);
+	int update(@Param("name") String name, @Param("description") String description, @Param("birdsNum") int birdsNum,
+			@Param("startDateInfo") Timestamp startDateInfo, @Param("endDateInfo") Timestamp endDateInfo,
+			@Param("startDateReceive") Timestamp startDateReceive, @Param("endDateReceive") Timestamp endDateReceive,
+			@Param("updatedAt") Timestamp updatedAt, @Param("updatedBy") Long updatedBy, @Param("id") long id);
 
 	@Query(value = "SELECT birds_num FROM tournament WHERE id = :tourId", nativeQuery = true)
 	int findBirdsNumById(@Param("tourId") long tourId);
+//	
+	@Modifying
+	@Query(value = "UPDATE Tournament t SET t.isDeleted = :isDeleted WHERE t.id = :id")
+	int deleteLogical(@Param("isDeleted") boolean isDeleted, @Param("id") long id);
+//	
+//	@Modifying
+//	@Query(value = "UPDATE tournament SET is_actived = :isActived, is_finished = :isFinished"
+//			+ " WHERE id = :id", nativeQuery = true)
+//	void doFinishedTour(@Param("isActived") boolean isActived, @Param("isFinished") boolean isFinished, @Param("id") long id);
 }

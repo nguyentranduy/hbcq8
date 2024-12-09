@@ -20,6 +20,7 @@ public class BirdResponseDto implements Serializable {
 	private long id;
 	private String code;
 	private String name;
+	private String description;
 	private long userId;
 	private String imgUrl;
 	@JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
@@ -34,6 +35,7 @@ public class BirdResponseDto implements Serializable {
 		dto.id = bird.getId();
 		dto.code = bird.getCode();
 		dto.name = bird.getName();
+		dto.description = bird.getDescription();
 		dto.userId = bird.getUser().getId();
 		dto.imgUrl = bird.getImgUrl();
 		dto.createdAt = bird.getCreatedAt();

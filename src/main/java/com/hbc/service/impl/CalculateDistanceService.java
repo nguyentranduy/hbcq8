@@ -7,6 +7,7 @@ import org.springframework.util.ObjectUtils;
 
 import com.hbc.dto.tourlocation.CalDistanceRequestDto;
 import com.hbc.dto.tourlocation.CalDistanceResponseDto;
+import com.hbc.dto.tourlocation.CalDistanceTwoPointRequestDto;
 import com.hbc.exception.calculatedistance.InvalidCoorFormatException;
 import com.hbc.util.MathUtil;
 
@@ -88,6 +89,14 @@ public class CalculateDistanceService {
 		
 		return calDistanceResponseDto;
 	}
+	
+	public double calculateDistanceTwoPoint(CalDistanceTwoPointRequestDto calDistanceRequestDto) {
+		String[] startPoint = calDistanceRequestDto.getStartPoint().split(";");
+		String[] endPoint = calDistanceRequestDto.getEndPoint().split(";");
+		return distance(Double.parseDouble(startPoint[0]), Double.parseDouble(startPoint[1]),
+				Double.parseDouble(endPoint[0]), Double.parseDouble(endPoint[1]));
+	}
+	
 	
 	private void validateDto(CalDistanceRequestDto calDistanceRequestDto) throws InvalidCoorFormatException {
 		if (ObjectUtils.isEmpty(calDistanceRequestDto.getStartPoint())) {

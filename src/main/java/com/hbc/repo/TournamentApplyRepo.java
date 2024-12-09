@@ -23,9 +23,15 @@ public interface TournamentApplyRepo extends JpaRepository<TournamentApply, Long
 	
 	TournamentApply findByTourId(long tourId);
 	
-	boolean existsByBirdCodeAndTourId(String birdCode, long tourId);
+	@Query(value = "SELECT DISTINCT tour_id"
+			+ " FROM tournament_apply"
+			+ " WHERE requester_id = :requesterId AND status_code = :statusCode", nativeQuery = true)
+	List<Long> findByRequesterIdAndStatusCode(long requesterId, String statusCode);
 	
+	boolean existsByBirdCodeAndTourId(String birdCode, long tourId);
+	boolean existsByBirdCodeAndRequesterIdAndStatusCodeNot(String birdCode, long requesterId, String statusCode);
 	boolean existsByTourIdAndRequesterId(long tourId, long requesterId);
+	boolean existsByTourIdAndStatusCodeNot(long tourId, String statusCode);
 	
 	int countByTourIdAndRequesterId(long tourId, long requesterId);
 	
@@ -37,6 +43,14 @@ public interface TournamentApplyRepo extends JpaRepository<TournamentApply, Long
 			+ " WHERE tour_id = :tourId"
 			+ " GROUP BY requester_id, approver_id, memo, created_at, status_code, tour_id", nativeQuery = true)
 	List<Object[]> findCustomByTourId(@Param("tourId") long tourId);
+	
+	@Query(value = "SELECT tour_id, GROUP_CONCAT(bird_code) AS birdCodes, requester_id, approver_id,"
+			+ " status_code, memo, created_at"
+			+ " FROM tournament_apply"
+			+ " WHERE tour_id = :tourId AND requester_id = :requesterId"
+			+ " GROUP BY requester_id, approver_id, memo, created_at, status_code, tour_id", nativeQuery = true)
+	List<Object[]> findCustomByTourIdAndRequesterId(@Param("tourId") long tourId,
+			@Param("requesterId") long requesterId);
 	
 	@Modifying
 	@Query(value = "UPDATE tournament_apply SET status_code = :statusCode, memo = :memo,"
@@ -57,4 +71,8 @@ public interface TournamentApplyRepo extends JpaRepository<TournamentApply, Long
 			+ " WHERE tour_id = :tourId AND requester_id = :requesterId"
 			+ " GROUP BY memo, tour_id, requester_id", nativeQuery = true)
 	String findMemoByTourIdAndRequesterId(@Param("tourId") long tourId, @Param("requesterId") long requesterId);
+
+	@Query(value = "SELECT bird_code FROM tournament_apply"
+			+ " WHERE tour_id = :tourId AND requester_id = :requesterId", nativeQuery = true)
+	List<String> findBirdCodeByTourIdAndRequesterId(@Param("tourId") long tourId, @Param("requesterId") long requesterId);
 }

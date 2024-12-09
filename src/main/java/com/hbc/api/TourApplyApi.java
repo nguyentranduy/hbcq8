@@ -29,7 +29,7 @@ public class TourApplyApi {
 
 	@Autowired
 	TournamentApplyService tournamentApplyService;
-	
+
 	@PostMapping
 	public ResponseEntity<?> doPost(@RequestBody TourApplyRequestDto dto, HttpSession session) {
 		try {
@@ -60,6 +60,7 @@ public class TourApplyApi {
 			ErrorResponse errorResponse = new ErrorResponse(ex.getErrorCode(), ex.getErrorMessage());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 		} catch (Exception ex) {
+			ex.printStackTrace();
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex);
 		}
 	}

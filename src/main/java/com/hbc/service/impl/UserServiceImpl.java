@@ -1,6 +1,7 @@
 package com.hbc.service.impl;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -142,5 +143,16 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserResponseDto findById(long userId) {
 		return UserResponseDto.build(repo.findById(userId).get());
+	}
+
+	@Override
+	public List<UserResponseDto> findAllAvailable() {
+		List<User> dataRaw = repo.findByIsDeletedOrderByUsernameAsc(false);
+		return dataRaw.stream().map(UserResponseDto::build).toList();
+	}
+
+	@Override
+	public UserResponseDto findByIdAvailable(long userId) {
+		return UserResponseDto.build(repo.findByIdAndIsDeleted(userId, false).get());
 	}
 }

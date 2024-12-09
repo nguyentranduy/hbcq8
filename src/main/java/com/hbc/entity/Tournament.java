@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 import com.hbc.dto.tournament.TourRequestDto;
-import com.hbc.dto.tournament.UpdateTourRequestDto;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,7 +25,7 @@ import lombok.Setter;
 public class Tournament implements Serializable {
 
 	private static final long serialVersionUID = -6150517181586432342L;
-	
+
 	@Id
 	@Column
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,24 +33,33 @@ public class Tournament implements Serializable {
 	
 	@Column
 	private String name;
-	
+
+	@Column
+	private String description;
+
 	@Column(name = "birds_num")
 	private Integer birdsNum;
 	
 	@Column(name = "img_url")
 	private String imgUrl;
 	
-	@Column(name = "start_date")
-	private Timestamp startDate;
+	@Column(name = "start_date_info")
+	private Timestamp startDateInfo;
 	
-	@Column(name = "end_date")
-	private Timestamp endDate;
+	@Column(name = "end_date_info")
+	private Timestamp endDateInfo;
 	
-	@Column(name = "rest_time_per_day")
-	private Float restTimePerDay;
+	@Column(name = "start_date_receive")
+	private Timestamp startDateReceive;
 	
-	@Column(name = "is_actived")
-	private Boolean isActived;
+	@Column(name = "end_date_receive")
+	private Timestamp endDateReceive;
+	
+	@Column(name = "is_deleted")
+	private Boolean isDeleted;
+	
+	@Column(name = "is_finished")
+	private Boolean isFinished;
 	
 	@Column(name = "created_at")
 	private Timestamp createdAt;
@@ -68,31 +76,17 @@ public class Tournament implements Serializable {
 	public static Tournament build(TourRequestDto tourRequestDto, long createdBy) {
 		Tournament entity = new Tournament();
 		entity.setName(tourRequestDto.getName());
+		entity.setDescription(tourRequestDto.getDescription());
 		entity.setBirdsNum(tourRequestDto.getBirdsNum());
 		entity.setImgUrl(tourRequestDto.getImgUrl());
-		entity.setStartDate(tourRequestDto.getStartDate());
-		entity.setEndDate(tourRequestDto.getEndDate());
-		entity.setRestTimePerDay(tourRequestDto.getRestTimePerDay());
-		entity.setIsActived(tourRequestDto.getIsActived());
+		entity.setStartDateInfo(tourRequestDto.getStartDateInfo());
+		entity.setEndDateInfo(tourRequestDto.getEndDateInfo());
+		entity.setStartDateReceive(tourRequestDto.getStartDateReceive());
+		entity.setEndDateReceive(tourRequestDto.getEndDateReceive());
 		entity.setCreatedBy(createdBy);
 		entity.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-		
-		return entity;
-	}
-	
-	public static Tournament buildForUpdate(UpdateTourRequestDto tourRequestDto, long updatedBy) {
-		Tournament entity = new Tournament();
-		entity.setId(tourRequestDto.getId());
-		entity.setName(tourRequestDto.getName());
-		entity.setBirdsNum(tourRequestDto.getBirdsNum());
-		entity.setImgUrl(tourRequestDto.getImgUrl());
-		entity.setStartDate(tourRequestDto.getStartDate());
-		entity.setEndDate(tourRequestDto.getEndDate());
-		entity.setRestTimePerDay(tourRequestDto.getRestTimePerDay());
-		entity.setIsActived(tourRequestDto.getIsActived());
-		entity.setUpdatedBy(updatedBy);
-		entity.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
-
+		entity.setIsDeleted(false);
+		entity.setIsFinished(false);
 		return entity;
 	}
 }

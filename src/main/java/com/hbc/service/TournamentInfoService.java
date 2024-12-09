@@ -7,4 +7,5 @@ import com.hbc.dto.tournament.TournamentInfoDto;
 public interface TournamentInfoService {
 
 	List<TournamentInfoDto> doGetList(long requesterId);
+	List<TournamentInfoDto> doGetListMe(long requesterId);
 }

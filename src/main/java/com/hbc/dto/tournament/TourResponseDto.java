@@ -2,13 +2,15 @@ package com.hbc.dto.tournament;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-
-import org.springframework.util.StringUtils;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.hbc.dto.tournament.TourLocationDto.Point;
 import com.hbc.entity.Tournament;
-import com.hbc.entity.TournamentLocation;
+import com.hbc.entity.TournamentStage;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,76 +27,82 @@ public class TourResponseDto implements Serializable {
 
 	private Long id;
 	private String name;
+	private String description;
 	private Integer birdsNum;
 	private String imgUrl;
 	@JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
-	private Timestamp startDate;
+	private Timestamp startDateInfo;
 	@JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
-	private Timestamp endDate;
-	private Float restTimePerDay;
-	private Boolean isActived;
+	private Timestamp endDateInfo;
+	@JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
+	private Timestamp startDateReceive;
+	@JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
+	private Timestamp endDateReceive;
+	private Boolean isDeleted;
+	private Boolean isFinished;
 	@JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss.SSS", timezone = "Asia/Ho_Chi_Minh")
 	private Timestamp createdAt;
 	private Long createdBy;
 	@JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss.SSS", timezone = "Asia/Ho_Chi_Minh")
 	private Timestamp updatedAt;
 	private Long updatedBy;
-	private TourLocationDto tourLocation;
+	private List<TourStageResponse> tourStages;
 
-	/**
-	 * Build TourResponseDto from Tournament entity.
-	 * 
-	 * @param entity Tournament entity.
-	 * @return a response dto.
-	 */
-	public static TourResponseDto build(Tournament tour, TournamentLocation tourLocation) {
-		TourResponseDto dto = new TourResponseDto();
-		dto.setId(tour.getId());
-		dto.setName(tour.getName());
-		dto.setBirdsNum(tour.getBirdsNum());
-		dto.setImgUrl(tour.getImgUrl());
-		dto.setStartDate(tour.getStartDate());
-		dto.setEndDate(tour.getEndDate());
-		dto.setRestTimePerDay(tour.getRestTimePerDay());
-		dto.setIsActived(tour.getIsActived());
-		dto.setCreatedAt(tour.getCreatedAt());
-		dto.setCreatedBy(tour.getCreatedBy());
-		dto.setUpdatedAt(tour.getUpdatedAt());
-		dto.setUpdatedBy(tour.getUpdatedBy());
-		dto.setTourLocation(buildTourLocationDto(tourLocation));
-		
-		return dto;
+	@Getter
+	@Setter
+	@NoArgsConstructor
+	@AllArgsConstructor
+	private static class TourStageResponse {
+		private long stageId;
+		private int orderNo;
+		private String description;
+		private float restTimePerDay;
+		private String startPointCode;
+		private String startPointName;
+		private String startPointCoor;
+		@JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
+		private Timestamp startTime;
+		private boolean isActived;
 	}
 	
-	private static TourLocationDto buildTourLocationDto(TournamentLocation tourLocation) {
-		TourLocationDto tourLocationDto = new TourLocationDto();
-		tourLocationDto.setStartPoint(new Point(tourLocation.getStartPointName(), tourLocation.getStartPointCoor(), 0F));
-		tourLocationDto.setEndPoint(new Point(tourLocation.getEndPointName(), tourLocation.getEndPointCoor(), tourLocation.getEndPointDist()));
-		tourLocationDto.setCreatedAt(tourLocation.getCreatedAt());
-		tourLocationDto.setCreatedBy(tourLocation.getCreatedBy());
-		tourLocationDto.setUpdatedAt(tourLocation.getUpdatedAt());
-		tourLocationDto.setUpdatedAt(tourLocation.getUpdatedAt());
-		
-		if (StringUtils.hasText(tourLocation.getPoint1Name())) {
-			tourLocationDto.setPoint1(new Point(tourLocation.getPoint1Name(), tourLocation.getPoint1Coor(), tourLocation.getPoint1Dist()));
-		}
-		
-		if (StringUtils.hasText(tourLocation.getPoint2Name())) {
-			tourLocationDto.setPoint2(new Point(tourLocation.getPoint2Name(), tourLocation.getPoint2Coor(), tourLocation.getPoint2Dist()));
-		}
-		
-		if (StringUtils.hasText(tourLocation.getPoint3Name())) {
-			tourLocationDto.setPoint3(new Point(tourLocation.getPoint3Name(), tourLocation.getPoint3Coor(), tourLocation.getPoint3Dist()));
-		}
-		
-		if (StringUtils.hasText(tourLocation.getPoint4Name())) {
-			tourLocationDto.setPoint4(new Point(tourLocation.getPoint4Name(), tourLocation.getPoint4Coor(), tourLocation.getPoint4Dist()));
-		}
-		
-		if (StringUtils.hasText(tourLocation.getPoint5Name())) {
-			tourLocationDto.setPoint5(new Point(tourLocation.getPoint5Name(), tourLocation.getPoint5Coor(), tourLocation.getPoint5Dist()));
-		}
-		
-		return tourLocationDto;
-	}
+    /**
+     * Build TourResponseDto from Tournament entity.
+     * 
+     * @param entity Tournament entity.
+     * @return a response dto.
+     */
+    public static TourResponseDto build(Tournament tour, List<TournamentStage> tourStagesRaw) {
+        TourResponseDto dto = new TourResponseDto();
+        dto.setId(tour.getId());
+        dto.setName(tour.getName());
+        dto.setDescription(tour.getDescription());
+        dto.setBirdsNum(tour.getBirdsNum());
+        dto.setImgUrl(tour.getImgUrl());
+        dto.setStartDateInfo(tour.getStartDateInfo());
+        dto.setEndDateInfo(tour.getEndDateInfo());
+        dto.setStartDateReceive(tour.getStartDateReceive());
+        dto.setEndDateReceive(tour.getEndDateReceive());
+        dto.setIsDeleted(tour.getIsDeleted());
+        dto.setIsFinished(tour.getIsFinished());
+        dto.setCreatedAt(tour.getCreatedAt());
+        dto.setCreatedBy(tour.getCreatedBy());
+        dto.setUpdatedAt(tour.getUpdatedAt());
+        dto.setUpdatedBy(tour.getUpdatedBy());
+        
+		LinkedHashMap<Integer, TournamentStage> sortedtourStages = tourStagesRaw.stream()
+				.sorted(Comparator.comparingInt(TournamentStage::getOrderNo))
+				.collect(Collectors.toMap(TournamentStage::getOrderNo, stage -> stage,
+						(existing, replacement) -> existing, LinkedHashMap::new));
+
+		List<TourStageResponse> tourStagesOrdered = new ArrayList<>();
+
+		sortedtourStages.forEach((key, value) -> {
+			TourStageResponse response = new TourStageResponse(value.getId(), value.getOrderNo(), value.getDescription(),
+					value.getRestTimePerDay(), value.getStartPointCode(), value.getStartPointName(),
+					value.getStartPointCoor(), value.getStartTime(), value.getIsActived());
+			tourStagesOrdered.add(response);
+		});
+		dto.setTourStages(tourStagesOrdered);
+		return dto;
+    }
 }

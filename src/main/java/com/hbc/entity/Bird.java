@@ -40,6 +40,9 @@ public class Bird implements Serializable {
 	@Column
 	private String code;
 	
+	@Column
+	private String description;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@JoinColumn(name = "user_id", referencedColumnName = "id")
@@ -59,4 +62,7 @@ public class Bird implements Serializable {
 	
 	@Column(name = "updated_by")
 	private Long updatedBy;
+	
+	@Column(name = "is_deleted")
+	private Boolean isDeleted;
 }
