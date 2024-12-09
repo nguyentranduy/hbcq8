@@ -8,28 +8,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.hbc.constant.RoleConst;
-import com.hbc.constant.SessionConst;
 import com.hbc.dto.user.UserRegisterRequestDto;
 import com.hbc.dto.user.UserResponseDto;
-import com.hbc.dto.user.UserUpdateRequestDto;
+import com.hbc.dto.user.UserUpdateAdminRequestDto;
 import com.hbc.entity.User;
-import com.hbc.exception.AuthenticationException;
 import com.hbc.exception.CustomException;
 import com.hbc.exception.register.DuplicatedUserException;
+import com.hbc.exception.user.InvalidActionException;
+import com.hbc.exception.user.UserNotFoundException;
 import com.hbc.repo.UserRepo;
-import com.hbc.service.UserService;
-import com.hbc.util.SaveFile;
-import com.hbc.validator.UserValidator;
+import com.hbc.service.AdminUserService;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.servlet.http.HttpSession;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class AdminUserServiceImpl implements AdminUserService {
 
 	@Autowired
 	UserRepo repo;
@@ -38,24 +35,6 @@ public class UserServiceImpl implements UserService {
     private EntityManager entityManager;
 
 	private final BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
-
-	@Override
-	public UserResponseDto doLogin(String username, String password) throws AuthenticationException {
-
-		Optional<User> userResponseOptional = repo.findByUsernameAndIsDeleted(username, false);
-
-		if (userResponseOptional.isEmpty()) {
-			throw new AuthenticationException("401", "User account not found.");
-		}
-
-		User userResponse = userResponseOptional.get();
-
-		if (bcrypt.matches(password, userResponse.getPassword())) {
-			return UserResponseDto.build(userResponse);
-		}
-
-		throw new AuthenticationException("401", "Incorrect password. Please try again.");
-	}
 
 	@Override
 	@Transactional
@@ -87,32 +66,26 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public Boolean doUpdateImg(MultipartFile file, String username) throws Exception {
-		return repo.updateimgUrlByUsername(SaveFile.doSaveFile(file, username), username);
-	}
+	public UserResponseDto doUpdate(UserUpdateAdminRequestDto userUpdateRequestDto, HttpSession session)
+			throws DuplicatedUserException, UserNotFoundException {
 
-	@Override
-	@Transactional(rollbackFor = Exception.class)
-	public UserResponseDto doUpdate(UserUpdateRequestDto userUpdateRequestDto, HttpSession session)
-			throws DuplicatedUserException, AuthenticationException {
-
-		if (!UserValidator.canSelfUpdated(userUpdateRequestDto.getUserId(), session)) {
-			throw new AuthenticationException("401-01", "User do not have permission to update.");
+		if (!repo.existsByIdAndIsDeleted(userUpdateRequestDto.getUserId(), false)) {
+			throw new UserNotFoundException("404", "Người dùng không tồn tại.");
 		}
-
-		if (!repo.existsByIdAndIsDeleted(userUpdateRequestDto.getUserId(), Boolean.FALSE)) {
-			session.removeAttribute(SessionConst.CURRENT_USER);
-			throw new AuthenticationException("401-02", "User account not found.");
+		
+		if (repo.existsByUsername(userUpdateRequestDto.getUsername())) {
+			throw new DuplicatedUserException("409", "Username đã tồn tại.");
 		}
 
 		Optional<User> userWithPhone = repo.findByPhoneAndIdNot(userUpdateRequestDto.getPhone(), userUpdateRequestDto.getUserId());
 		
 		if (userWithPhone.isPresent()) {
-			throw new DuplicatedUserException("409", "Phone number already exists.");
+			throw new DuplicatedUserException("409", "Số điện thoại đã tồn tại.");
 		}
 
 		try {
-			int updatedRecord = repo.update(userUpdateRequestDto.getPhone(), userUpdateRequestDto.getAddress(),
+			int updatedRecord = repo.updateIncludeUsername(userUpdateRequestDto.getUsername(),
+					userUpdateRequestDto.getPhone(), userUpdateRequestDto.getAddress(),
 					userUpdateRequestDto.getBirthday(), userUpdateRequestDto.getImgUrl(),
 					new Timestamp(System.currentTimeMillis()), userUpdateRequestDto.getUserId(),
 					userUpdateRequestDto.getUserId());
@@ -121,9 +94,9 @@ public class UserServiceImpl implements UserService {
 				throw new CustomException("400", String.format("Cannot update user with id: {0}",
 						userUpdateRequestDto.getUserId()));
 			}
-			
+
 			entityManager.clear();
-			
+
 			User userResponse = repo.findById(userUpdateRequestDto.getUserId()).get();
 			
 			if (userResponse == null) {
@@ -141,11 +114,6 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserResponseDto findById(long userId) {
-		return UserResponseDto.build(repo.findById(userId).get());
-	}
-
-	@Override
 	public List<UserResponseDto> findAllAvailable() {
 		List<User> dataRaw = repo.findByIsDeletedOrderByUsernameAsc(false);
 		return dataRaw.stream().map(UserResponseDto::build).toList();
@@ -154,5 +122,20 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserResponseDto findByIdAvailable(long userId) {
 		return UserResponseDto.build(repo.findByIdAndIsDeleted(userId, false).get());
+	}
+
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public void deleteById(long userId, long currentUserId) throws UserNotFoundException, InvalidActionException {
+		if (userId == currentUserId) {
+			throw new InvalidActionException("403", "Không thể tự xóa chính mình.");
+		}
+		
+		if (!repo.existsByIdAndIsDeleted(userId, false)) {
+			throw new UserNotFoundException("404", "Người dùng không tồn tại.");
+		}
+
+		Timestamp updatedAt = new Timestamp(System.currentTimeMillis());
+		repo.deleteLogical(updatedAt, currentUserId, userId);
 	}
 }

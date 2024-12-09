@@ -19,47 +19,44 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Table(name="bird")
+@Table(name = "user_location")
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Bird implements Serializable {
+public class UserLocation implements Serializable {
 
-	private static final long serialVersionUID = -6150517181586432342L;
-	
+	private static final long serialVersionUID = 8109171115540826395L;
+
 	@Id
 	@Column
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
-	@Column
-	private String name;
-	
+
 	@Column
 	private String code;
-	
+
+	@Column(name = "point_coor")
+	private String pointCoor;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	@JoinColumn(name = "user_id", referencedColumnName = "id")
 	private User user;
-	
-	@Column(name = "img_url")
-	private String imgUrl;
-	
-	@Column(name = "created_at")
-	private Timestamp createdAt;
-	
-	@Column(name = "created_by")
-	private Long createdBy;
-	
-	@Column(name = "updated_at")
-	private Timestamp updatedAt;
-	
-	@Column(name = "updated_by")
-	private Long updatedBy;
-	
+
 	@Column(name = "is_deleted")
 	private Boolean isDeleted;
+
+	@Column(name = "created_at")
+	private Timestamp createdAt;
+
+	@Column(name = "created_by")
+	private Long createdBy;
+
+	@Column(name = "updated_at")
+	private Timestamp updatedAt;
+
+	@Column(name = "updated_by")
+	private Long updatedBy;
 }

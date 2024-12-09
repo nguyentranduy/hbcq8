@@ -1,5 +1,7 @@
 package com.hbc.service;
 
+import java.util.List;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import com.hbc.dto.user.UserRegisterRequestDto;
@@ -22,4 +24,7 @@ public interface UserService {
 			throws DuplicatedUserException, AuthenticationException;
 	
 	UserResponseDto findById(long userId);
+	UserResponseDto findByIdAvailable(long userId);
+	
+	List<UserResponseDto> findAllAvailable();
 }

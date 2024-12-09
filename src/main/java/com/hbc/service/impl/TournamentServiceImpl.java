@@ -24,6 +24,7 @@ import com.hbc.entity.TournamentLocation;
 import com.hbc.exception.AuthenticationException;
 import com.hbc.exception.CustomException;
 import com.hbc.exception.tournament.TourInfoFailedException;
+import com.hbc.exception.tournament.TourNotFoundException;
 import com.hbc.repo.TournamentLocationRepo;
 import com.hbc.repo.TournamentRepo;
 import com.hbc.service.TournamentService;
@@ -155,6 +156,27 @@ public class TournamentServiceImpl implements TournamentService {
 			return TourResponseDto.build(tourEntityUpdated, tourLocationEntityUpdated);
 		} catch (Exception ex) {
 			throw new CustomException("400", ex.getMessage());
+		}
+	}
+	
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public void doDelete(long id, UserResponseDto currentUser) throws Exception {
+		if (currentUser == null || currentUser.getRoleId() != RoleConst.ROLE_ADMIN) {
+			throw new AuthenticationException("401", "Người dùng không có quyền này.");
+		}
+		
+		if (!tourRepo.existsByIdAndIsActived(id, true)) {
+			throw new TourNotFoundException("404", "Giải đua không tồn tại.");
+		}
+		
+		try {
+			int countDeleted = tourRepo.deletePhysical(false, id);
+			if (countDeleted < 1) {
+				throw new Exception();
+			}
+		} catch (Exception ex) {
+			throw ex;
 		}
 	}
 	
