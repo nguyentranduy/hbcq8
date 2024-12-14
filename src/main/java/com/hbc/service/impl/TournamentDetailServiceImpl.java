@@ -167,64 +167,8 @@ public class TournamentDetailServiceImpl implements TournamentDetailService {
 	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public void doApprove(AdminTourApproveDto dto, long approverId) {
-//		try {
-//			TournamentDetail tourDetail = tourDetailRepo.findByTour_IdAndBird_Code(dto.getTourId(), dto.getBirdCode());
-//			double point1Speed = 0.0;
-//			double point2Speed = 0.0;
-//			double point3Speed = 0.0;
-//			double point4Speed = 0.0;
-//			double point5Speed = 0.0;
-//			double endPointSpeed = 0.0;
-//			double avgSpeed = 0.0;
-//			double restTimePerDay = Double.valueOf(tourRepo.findRestTimePerDayByTourId(dto.getTourId()));
-//			if (!ObjectUtils.isEmpty(tourDetail.getPoint1Key())) {
-//				double point1Dist = tourDetail.getPoint1Dist();
-//				double time = calculateTimeDifferenceInHours(tourDetail.getStartPointTime(), tourDetail.getPoint1Time(), restTimePerDay);
-//				point1Speed = point1Dist/time;
-//				avgSpeed = point1Speed;
-//			}
-//			
-//			if (!ObjectUtils.isEmpty(tourDetail.getPoint2Key())) {
-//				double point2Dist = tourDetail.getPoint2Dist();
-//				double time = calculateTimeDifferenceInHours(tourDetail.getPoint1Time(), tourDetail.getPoint2Time(), restTimePerDay);
-//				point2Speed = point2Dist/time;
-//				avgSpeed = (avgSpeed + point2Speed)/2;
-//			}
-//			
-//			if (!ObjectUtils.isEmpty(tourDetail.getPoint3Key())) {
-//				double point3Dist = tourDetail.getPoint3Dist();
-//				double time = calculateTimeDifferenceInHours(tourDetail.getPoint2Time(), tourDetail.getPoint3Time(), restTimePerDay);
-//				point3Speed = point3Dist/time;
-//				avgSpeed = (avgSpeed + point3Speed)/2;
-//			}
-//			
-//			if (!ObjectUtils.isEmpty(tourDetail.getPoint4Key())) {
-//				double point4Dist = tourDetail.getPoint4Dist();
-//				double time = calculateTimeDifferenceInHours(tourDetail.getPoint3Time(), tourDetail.getPoint4Time(), restTimePerDay);
-//				point4Speed = point4Dist/time;
-//				avgSpeed = (avgSpeed + point4Speed)/2;
-//			}
-//			
-//			if (!ObjectUtils.isEmpty(tourDetail.getPoint5Key())) {
-//				double point5Dist = tourDetail.getPoint5Dist();
-//				double time = calculateTimeDifferenceInHours(tourDetail.getPoint4Time(), tourDetail.getPoint5Time(), restTimePerDay);
-//				point5Speed = point5Dist/time;
-//				avgSpeed = (avgSpeed + point5Speed)/2;
-//			}
-//			
-//			if (!ObjectUtils.isEmpty(tourDetail.getEndPointKey())) {
-//				double endPointDist = tourDetail.getEndPointDist();
-//				double time = calculateTimeDifferenceInHours(tourDetail.getPoint5Time(), tourDetail.getEndPointTime(), restTimePerDay);
-//				endPointSpeed = endPointDist/time;
-//				avgSpeed = (avgSpeed + endPointSpeed)/2;
-//			}
-//			
-//			Timestamp updatedAt = new Timestamp(System.currentTimeMillis());
-//			tourDetailRepo.doApproveResult(point1Speed, point2Speed, point3Speed, point4Speed, point5Speed, endPointSpeed,
-//					avgSpeed, updatedAt, approverId, dto.getTourId(), dto.getBirdCode());
-//		} catch (Exception ex) {
-//			ex.printStackTrace();
-//		}
+		Timestamp updatedAt = new Timestamp(System.currentTimeMillis());
+		tourDetailRepo.doApproveResult(updatedAt, approverId, dto.getTourId(), dto.getBirdCode());
 	}
 
 	private double calculateTimeDifferenceInHours(Timestamp startTime, Timestamp endTime, double restTimePerDay) {
