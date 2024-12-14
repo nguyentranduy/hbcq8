@@ -47,9 +47,9 @@ public interface TournamentDetailRepo extends JpaRepository<TournamentDetail, Lo
 
 	@Modifying
 	@Query(value = "UPDATE tournament_detail SET updated_at = :updatedAt, updated_by = :updatedBy, status = 'A' "
-			+ "WHERE tour_id = :tourId AND bird_code = :birdCode", nativeQuery = true)
+			+ "WHERE tour_id = :tourId AND bird_code = :birdCode AND stage_id = :stageId", nativeQuery = true)
 	void doApproveResult(@Param("updatedAt") Timestamp updatedAt, @Param("updatedBy") long updatedBy,
-			@Param("tourId") long tourId, @Param("birdCode") String birdCode);
+			@Param("tourId") long tourId, @Param("birdCode") String birdCode, @Param("stageId") long stageId);
 
 	@Modifying
 	@Query(value = "UPDATE tournament_detail SET updated_at = :updatedAt, updated_by = :updatedBy, status = 'R', memo = :memo "

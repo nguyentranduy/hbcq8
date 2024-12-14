@@ -13,5 +13,6 @@ public class AdminTourApproveDto implements Serializable {
 
 	private static final long serialVersionUID = -4474677550099304848L;
 	private long tourId;
+	private long stageId;
 	private String birdCode;
 }

@@ -168,7 +168,7 @@ public class TournamentDetailServiceImpl implements TournamentDetailService {
 	@Override
 	public void doApprove(AdminTourApproveDto dto, long approverId) {
 		Timestamp updatedAt = new Timestamp(System.currentTimeMillis());
-		tourDetailRepo.doApproveResult(updatedAt, approverId, dto.getTourId(), dto.getBirdCode());
+		tourDetailRepo.doApproveResult(updatedAt, approverId, dto.getTourId(), dto.getBirdCode(), dto.getStageId());
 	}
 
 	private double calculateTimeDifferenceInHours(Timestamp startTime, Timestamp endTime, double restTimePerDay) {
