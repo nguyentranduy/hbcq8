@@ -116,11 +116,11 @@ public class AdminTourApi {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 		}
 	}
-	
+
 	@GetMapping("/approve")
-	public ResponseEntity<?> doGetApproveByTourId(@RequestParam("tourId") long tourId) {
+	public ResponseEntity<?> doGetApproveByTourId(@RequestParam("tourId") long tourId, @RequestParam("stageId") long stageId) {
 		try {
-			return ResponseEntity.ok(tourDetailService.findByTourIdForApprove(tourId));
+			return ResponseEntity.ok(tourDetailService.findByTourIdForApprove(tourId, stageId));
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
@@ -133,6 +133,7 @@ public class AdminTourApi {
 			tourDetailService.doApprove(dto, currentUser.getId());
 			return ResponseEntity.ok().build();
 		} catch (Exception e) {
+			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
 	}

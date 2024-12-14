@@ -18,9 +18,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
+import com.hbc.constant.TourDetailStatusCodeConst;
 import com.hbc.dto.pdf.PdfInputDto;
 import com.hbc.dto.tourdetail.TourDetailResponseDto;
 import com.hbc.dto.tourdetail.TourDetailResponseDto.TourStageDetail;
+import com.hbc.dto.tourdetail.ViewTourDetailDto;
 import com.hbc.dto.tournament.AdminTourApproveDto;
 import com.hbc.dto.tournament.AdminTourRejectDto;
 import com.hbc.dto.tournament.TourSubmitTimeRequestDto;
@@ -142,10 +144,24 @@ public class TournamentDetailServiceImpl implements TournamentDetailService {
 	}
 
 	@Override
-	public List<TourDetailResponseDto> findByTourIdForApprove(long tourId) {
-//		List<TournamentDetail> tourDetails = tourDetailRepo.findByTour_IdAndStatus(tourId, TourDetailStatusCodeConst.STATUS_CODE_WAITING);
-//		return tourDetails.stream().map(TourDetailResponseDto::build).toList();
-		return null;
+	public List<ViewTourDetailDto> findByTourIdForApprove(long tourId, long stageId) {
+		Optional<TournamentStage> tourStage = tourStageRepo.findById(stageId);
+		
+		if (tourStage.isEmpty()) {
+			return List.of();
+		}
+		
+		List<TournamentDetail> tourDetails = tourDetailRepo.findByTour_IdAndTourStage_IdAndStatus(tourId, stageId,
+				TourDetailStatusCodeConst.STATUS_CODE_WAITING);
+		
+		List<ViewTourDetailDto> result = new ArrayList<>();
+		
+		tourDetails.forEach(item -> {
+			result.add(new ViewTourDetailDto(tourId, stageId, item.getBird().getCode(),
+					tourStage.get().getStartPointCode(), tourStage.get().getStartTime(),
+					item.getEndPointCode(), item.getEndPointTime(), item.getEndPointKey()));
+		});
+		return result;
 	}
 
 	@Transactional(rollbackFor = Exception.class)
