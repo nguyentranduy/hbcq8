@@ -194,8 +194,8 @@ public class TournamentDetailServiceImpl implements TournamentDetailService {
 	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public void doReject(AdminTourRejectDto dto, long approverId) {
-		tourDetailRepo.doRejectResult(new Timestamp(System.currentTimeMillis()), approverId,
-				dto.getTourId(), dto.getBirdCode());
+		tourDetailRepo.doRejectResult(new Timestamp(System.currentTimeMillis()), approverId, dto.getMemo(),
+				dto.getTourId(), dto.getBirdCode(), dto.getStageId());
 	}
 
 	@Transactional(rollbackFor = Exception.class)

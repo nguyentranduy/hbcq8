@@ -14,5 +14,7 @@ public class AdminTourRejectDto implements Serializable {
 	private static final long serialVersionUID = -8022873554056512634L;
 
 	private long tourId;
+	private long stageId;
 	private String birdCode;
+	private String memo;
 }
