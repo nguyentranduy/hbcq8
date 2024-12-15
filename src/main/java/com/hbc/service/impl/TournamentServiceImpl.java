@@ -125,12 +125,11 @@ public class TournamentServiceImpl implements TournamentService {
 				throw new IllegalStateException();
 			}
 
-			tourStageRepo.deleteByTourId(tourId);
-
 			dto.getTourStages().forEach(tourStage -> {
-				tourStageRepo.insert(tourId, tourStage.getOrderNo(), tourStage.getDescription(), tourStage.getRestTimePerDay(),
+				tourStageRepo.update(tourStage.getDescription(), tourStage.getRestTimePerDay(),
 						tourStage.getStartPointCode(), tourStage.getStartPointName(), tourStage.getStartPointCoor(),
-						tourStage.getStartTime(), new Timestamp(System.currentTimeMillis()), currentUser.getId());
+						tourStage.getStartTime(), new Timestamp(System.currentTimeMillis()), currentUser.getId(),
+						tourId, tourStage.getOrderNo());
 			});
 			entityManager.clear();
 			Tournament tourEntityUpdated = tourRepo.findById(tourId).get();
