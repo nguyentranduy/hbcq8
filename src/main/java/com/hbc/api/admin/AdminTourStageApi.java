@@ -56,4 +56,9 @@ public class AdminTourStageApi {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex);
 		}
 	}
+
+	@GetMapping("/status")
+	public ResponseEntity<?> doGetList(@RequestParam("stageId") long stageId) {
+		return ResponseEntity.ok(tourStageService.isFinished(stageId));
+	}
 }
