@@ -16,6 +16,7 @@ public interface TournamentStageRepo extends JpaRepository<TournamentStage, Long
 
 	List<TournamentStage> findByTourId(long tourId);
 	boolean existsByTourIdAndIsActived(long tourId, boolean isActive);
+	boolean existsByIdAndIsFinished(long id, boolean isFinished);
 	
 	@Modifying
 	@Query(value = "INSERT INTO tournament_stage(tour_id, order_no, description, rest_time_per_day,"
@@ -36,4 +37,9 @@ public interface TournamentStageRepo extends JpaRepository<TournamentStage, Long
 			+ " updated_by = :updatedBy WHERE id = :stageId", nativeQuery = true)
 	void updateStatus(@Param("isActived") boolean isActived, @Param("updatedAt") Timestamp updatedAt,
 			@Param("updatedBy") long updatedBy, @Param("stageId") long stageId);
+	
+	@Modifying
+	@Query(value = "UPDATE tournament_stage SET is_finished = true, updated_at = :updatedAt,"
+			+ " updated_by = :updatedBy WHERE id = :stageId", nativeQuery = true)
+	void updateFinished(@Param("updatedAt") Timestamp updatedAt, @Param("updatedBy") long updatedBy, @Param("stageId") long stageId);
 }

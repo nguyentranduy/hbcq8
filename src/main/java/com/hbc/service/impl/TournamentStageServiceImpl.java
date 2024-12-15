@@ -22,6 +22,17 @@ public class TournamentStageServiceImpl implements TournamentStageService {
 	public void updateStatus(long id, boolean isActive, long currentUserId) {
 		repo.updateStatus(isActive, new Timestamp(System.currentTimeMillis()), currentUserId, id);
 	}
+	
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public void doFinished(long id, long currentUserId) {
+		repo.updateFinished(new Timestamp(System.currentTimeMillis()), currentUserId, id);
+	}
+
+	@Override
+	public boolean isFinished(long id) {
+		return repo.existsByIdAndIsFinished(id, true);
+	}
 
 	@Override
 	public List<TournamentStage> getStageIdsByTour(long tourId) {

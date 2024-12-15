@@ -126,7 +126,7 @@ public class TournamentServiceImpl implements TournamentService {
 			}
 
 			tourStageRepo.deleteByTourId(tourId);
-			
+
 			dto.getTourStages().forEach(tourStage -> {
 				tourStageRepo.insert(tourId, tourStage.getOrderNo(), tourStage.getDescription(), tourStage.getRestTimePerDay(),
 						tourStage.getStartPointCode(), tourStage.getStartPointName(), tourStage.getStartPointCoor(),

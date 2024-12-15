@@ -63,6 +63,9 @@ public class TournamentStage implements Serializable {
 	@Column(name = "is_actived")
 	private Boolean isActived;
 
+	@Column(name = "is_finished")
+	private Boolean isFinished;
+
 	@Column(name = "created_at")
 	private Timestamp createdAt;
 

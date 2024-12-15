@@ -88,42 +88,42 @@ public class TournamentDetailServiceImpl implements TournamentDetailService {
 	@Override
 	public PdfInputDto doSubmitTime(TourSubmitTimeRequestDto requestDto, long userId) throws Exception {
 		validatePointKey(requestDto.getPointKey());
-		
-        ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
-        Instant instant = zonedDateTime.toInstant();
-        Timestamp submitTimeNow = Timestamp.from(instant);
 
-		TournamentDetail tourDetail = tourDetailRepo.findByTourIdAndUserIdAndBirdCodeAndTourStage_Id(requestDto.getTourId(),
-				requestDto.getRequesterId(), requestDto.getBirdCode(), requestDto.getStageId());
-		
+		ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
+		Instant instant = zonedDateTime.toInstant();
+		Timestamp submitTimeNow = Timestamp.from(instant);
+
+		TournamentDetail tourDetail = tourDetailRepo.findByTourIdAndUserIdAndBirdCodeAndTourStage_Id(
+				requestDto.getTourId(), requestDto.getRequesterId(), requestDto.getBirdCode(), requestDto.getStageId());
+
 		if (ObjectUtils.isEmpty(tourDetail)) {
 			throw new SubmitInfoNotFoundException("404", "Thông tin chặng đua không tồn tại.");
 		}
-		
+
 		if (!ObjectUtils.isEmpty(tourDetail.getEndPointSubmitTime())
 				&& !checkSubmitTime(tourDetail.getEndPointSubmitTime(), submitTimeNow)) {
 			throw new OutOfTimeException("408", "Quá thời hạn chỉnh sửa lại.");
 		}
-		
+
 		Optional<TournamentStage> tourStage = tourStageRepo.findById(requestDto.getStageId());
-		
+
 		if (tourStage.isEmpty()) {
 			throw new IllegalArgumentException();
 		}
-		
+
 		if (!tourStage.get().getIsActived()) {
 			throw new OutOfTimeException("408", "Chặng đua không cho phép báo cáo.");
 		}
-		
-		double time = calculateTimeDifferenceInHours(tourStage.get().getStartTime(), submitTimeNow, tourStage.get().getRestTimePerDay());
-		double speed = tourDetail.getEndPointDist()/time;
-		
+
+		double time = calculateTimeDifferenceInHours(tourStage.get().getStartTime(), submitTimeNow,
+				tourStage.get().getRestTimePerDay());
+		double speed = tourDetail.getEndPointDist() / time;
+
 		tourDetailRepo.doUpdateEndPoint(requestDto.getPointKey(), submitTimeNow, submitTimeNow, speed,
 				requestDto.getTourId(), userId, requestDto.getBirdCode(), requestDto.getStageId());
 
-
-		return new PdfInputDto(requestDto.getTourId(), tourDetail.getEndPointCode(),
-				requestDto.getBirdCode(), requestDto.getPointKey(), timestampToString(submitTimeNow));
+		return new PdfInputDto(requestDto.getTourId(), tourDetail.getEndPointCode(), requestDto.getBirdCode(),
+				requestDto.getPointKey(), timestampToString(submitTimeNow));
 	}
 
 	private String timestampToString(Timestamp timestamp) {

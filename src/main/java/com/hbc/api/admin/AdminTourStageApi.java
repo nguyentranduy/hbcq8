@@ -44,4 +44,16 @@ public class AdminTourStageApi {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex);
 		}
 	}
+
+	@GetMapping("/finished")
+	public ResponseEntity<?> doFinished(@RequestParam("id") long stageId, HttpSession session) {
+		try {
+			UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
+			tourStageService.doFinished(stageId, currentUser.getId());
+			return ResponseEntity.ok().build();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex);
+		}
+	}
 }
