@@ -118,6 +118,7 @@ CREATE TABLE `tournament_stage` (
   `start_point_coor` varchar(255) NOT NULL,
   `start_time` timestamp DEFAULT NULL,
   `is_actived` tinyint(1) DEFAULT 0,
+  `is_finished` tinyint(1) DEFAULT 0,
   `created_at` timestamp DEFAULT NOW(),
   `created_by` bigint NOT NULL,
   `updated_at` timestamp DEFAULT NULL,
