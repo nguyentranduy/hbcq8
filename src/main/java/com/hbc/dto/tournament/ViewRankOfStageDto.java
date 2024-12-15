@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ViewRankDto implements Serializable {
+public class ViewRankOfStageDto implements Serializable {
 
 	private static final long serialVersionUID = 2327397615677079144L;
 

@@ -9,7 +9,8 @@ import com.hbc.dto.tournament.AdminTourApproveDto;
 import com.hbc.dto.tournament.AdminTourCancelDto;
 import com.hbc.dto.tournament.AdminTourRejectDto;
 import com.hbc.dto.tournament.TourSubmitTimeRequestDto;
-import com.hbc.dto.tournament.ViewRankDto;
+import com.hbc.dto.tournament.ViewRankOfStageDto;
+import com.hbc.dto.tournament.ViewRankOfTourDto;
 
 public interface TournamentDetailService {
 
@@ -19,6 +20,6 @@ public interface TournamentDetailService {
 	void doApprove(AdminTourApproveDto dto, long approverId);
 	void doReject(AdminTourRejectDto dto, long approverId);
 	void doCancel(AdminTourCancelDto dto, long approverId);
-	void doSortRankByTourId(long tourId);
-	List<ViewRankDto> viewRankByTourIdAndStageId(long tourId, long stageId);
+	List<ViewRankOfStageDto> viewRankByTourIdAndStageId(long tourId, long stageId);
+	List<ViewRankOfTourDto> viewRankByTourId(long tourId);
 }

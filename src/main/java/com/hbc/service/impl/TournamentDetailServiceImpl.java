@@ -29,7 +29,8 @@ import com.hbc.dto.tournament.AdminTourApproveDto;
 import com.hbc.dto.tournament.AdminTourCancelDto;
 import com.hbc.dto.tournament.AdminTourRejectDto;
 import com.hbc.dto.tournament.TourSubmitTimeRequestDto;
-import com.hbc.dto.tournament.ViewRankDto;
+import com.hbc.dto.tournament.ViewRankOfStageDto;
+import com.hbc.dto.tournament.ViewRankOfTourDto;
 import com.hbc.entity.Bird;
 import com.hbc.entity.TournamentDetail;
 import com.hbc.entity.TournamentStage;
@@ -209,30 +210,8 @@ public class TournamentDetailServiceImpl implements TournamentDetailService {
 				dto.getTourId(), dto.getBirdCode(), dto.getStageId());
 	}
 
-	@Transactional(rollbackFor = Exception.class)
 	@Override
-	public void doSortRankByTourId(long tourId) {
-//		try {
-//			List<TournamentDetail> tourDetails = tourDetailRepo.findByTour_IdAndStatus(tourId,
-//					TourApplyStatusCodeConst.STATUS_CODE_APPROVED);
-//			LinkedHashMap<String, Float> result = tourDetails.stream()
-//					.sorted(Comparator.comparingDouble(TournamentDetail::getAvgSpeed).reversed())
-//					.collect(Collectors.toMap(tourDetail -> tourDetail.getBird().getCode(), TournamentDetail::getAvgSpeed,
-//							(oldValue, newValue) -> oldValue, LinkedHashMap::new));
-//			List<Map.Entry<String, Float>> entryList = new ArrayList<>(result.entrySet());
-//	
-//			for (int i = 0; i < entryList.size(); i++) {
-//				String code = entryList.get(i).getKey();
-//				tourDetailRepo.sortRankByTourId(i + 1, tourId, code);
-//			}
-//			tourRepo.doFinishedTour(false, true, tourId);
-//		} catch (Exception ex) {
-//			ex.printStackTrace();
-//		}
-	}
-
-	@Override
-	public List<ViewRankDto> viewRankByTourIdAndStageId(long tourId, long stageId) {
+	public List<ViewRankOfStageDto> viewRankByTourIdAndStageId(long tourId, long stageId) {
 		List<TournamentDetail> tourDetails = tourDetailRepo.findByTourStage_IdAndTour_IdAndStatusNotNullOrderByEndPointSpeedDesc(stageId, tourId);
 		List<String> userLocationCodes = tourDetails.stream().map(TournamentDetail::getEndPointCode).toList();
 		List<UserLocation> userLocations = userLocationRepo.findByCodeIn(userLocationCodes);
@@ -240,18 +219,25 @@ public class TournamentDetailServiceImpl implements TournamentDetailService {
 				.collect(Collectors.toMap(UserLocation::getCode, UserLocation::getName));
 		int i = 1;
 		
-		List<ViewRankDto> result = new ArrayList<>();
+		List<ViewRankOfStageDto> result = new ArrayList<>();
 		for (TournamentDetail item : tourDetails) {
 			String userLocationName = userLocationMap.get(item.getEndPointCode());
 			double totalTime = calculateTimeDifferenceInHours(item.getTourStage().getStartTime(), item.getEndPointTime(),
 					item.getTourStage().getRestTimePerDay());
-			ViewRankDto dto = new ViewRankDto(i++, item.getEndPointCode(), userLocationName,
+			ViewRankOfStageDto dto = new ViewRankOfStageDto(i++, item.getEndPointCode(), userLocationName,
 					item.getBird().getCode(), item.getEndPointCoor(), item.getEndPointDist(),
 					item.getEndPointTime(), item.getTourStage().getStartTime(),
 					doubleToHHMMSS(totalTime), item.getEndPointSpeed());
 			result.add(dto);
 		}
 		return result;
+	}
+	
+	@Override
+	public List<ViewRankOfTourDto> viewRankByTourId(long tourId) {
+		return List.of();
+		
+//		List<Object[]> rawData = tourDetailRepo.viewRankByTourId(tourId);
 	}
 	
 	private String doubleToHHMMSS(double time) {

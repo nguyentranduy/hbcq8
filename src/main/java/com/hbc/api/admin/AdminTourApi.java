@@ -161,15 +161,14 @@ public class AdminTourApi {
 		}
 	}
 
-	@GetMapping("/sort")
-	public ResponseEntity<?> doGetSort(@RequestParam("tourId") long tourId) {
+	@GetMapping("/finished")
+	public ResponseEntity<?> doGetFinished(@RequestParam("id") long id, HttpSession session) {
+		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
 		try {
-			tourDetailService.doSortRankByTourId(tourId);
+			tournamentService.doFinished(id, currentUser.getId());
 			return ResponseEntity.ok().build();
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			ErrorResponse errorResponse = new ErrorResponse("400", ex.getMessage());
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
 	}
 }

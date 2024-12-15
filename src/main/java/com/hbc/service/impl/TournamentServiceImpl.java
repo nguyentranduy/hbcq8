@@ -184,4 +184,10 @@ public class TournamentServiceImpl implements TournamentService {
 			throw new TourInfoFailedException("400", "Chặng đua không được bỏ trống.");
 		}
 	}
+
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public void doFinished(long tourId, long approverId) {
+		tourRepo.doFinishedTour(new Timestamp(System.currentTimeMillis()), approverId, tourId);
+	}
 }

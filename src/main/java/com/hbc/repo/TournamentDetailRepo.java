@@ -63,12 +63,9 @@ public interface TournamentDetailRepo extends JpaRepository<TournamentDetail, Lo
 	void doCancelResult(@Param("updatedAt") Timestamp updatedAt, @Param("updatedBy") long updatedBy, 
 			@Param("tourId") long tourId, @Param("birdCode") String birdCode, @Param("stageId") long stageId);
 
-	@Modifying
-	@Query(value = "UPDATE tournament_detail SET rank_of_bird = :rank WHERE tour_id = :tourId AND bird_code = :birdCode", nativeQuery = true)
-	void sortRankByTourId(@Param("rank") int rank, @Param("tourId") long tourId, @Param("birdCode") String birdCode);
-
-	@Query(value = "SELECT rank_of_bird, bird_code, avg_speed FROM tournament_detail WHERE tour_id = :tourId AND status = 'A'"
-			+ " ORDER BY rank_of_bird ASC", nativeQuery = true)
+	@Query(value = "SELECT bird_code, end_point_code, AVG(end_point_speed) AS avg_speed, sum(end_point_dist) as dist"
+			+ " FROM tournament_detail WHERE tour_id = :tourId GROUP BY bird_code"
+			+ " HAVING COUNT(*) = COUNT(CASE WHEN status = 'A' THEN 1 END) ORDER BY avg_speed DESC", nativeQuery = true)
 	List<Object[]> viewRankByTourId(@Param("tourId") long tourId);
 
 	List<TournamentDetail> findByTourStage_IdAndTour_IdAndStatusNotNullOrderByEndPointSpeedDesc(long stageId, long tourId);
