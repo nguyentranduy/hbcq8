@@ -38,19 +38,18 @@ public class PdfExporterServiceImpl implements PdfExporterService {
 
 		document.add(p);
 
-		PdfPTable table = new PdfPTable(5);
-		table.setWidthPercentage(100f);
-		table.setWidths(new float[] { 2f, 2f, 2f, 2f, 3f });
+		PdfPTable table = new PdfPTable(2);
+		table.setWidthPercentage(50f);
+		table.setWidths(new float[] { 3f, 3f});
 		table.setSpacingBefore(10);
 
-		writeTableHeader(table);
-		writeTableData(table, input);
+		writeTable(table, input);
 
 		document.add(table);
 		document.close();
 	}
 	
-	private void writeTableHeader(PdfPTable table) {
+	private void writeTable(PdfPTable table, PdfInputDto input) {
 		PdfPCell cell = new PdfPCell();
 		cell.setBackgroundColor(Color.BLUE);
 		cell.setPadding(5);
@@ -60,25 +59,22 @@ public class PdfExporterServiceImpl implements PdfExporterService {
 
 		cell.setPhrase(new Phrase("Mã giải đua", font));
 		table.addCell(cell);
+		table.addCell(String.valueOf(input.getTourId()));
 
 		cell.setPhrase(new Phrase("Mã căn cứ", font));
 		table.addCell(cell);
+		table.addCell(input.getPointCode());
 
 		cell.setPhrase(new Phrase("Mã kiềng", font));
 		table.addCell(cell);
+        table.addCell(input.getBirdCode());
 
 		cell.setPhrase(new Phrase("Mã bí mật", font));
 		table.addCell(cell);
+        table.addCell(input.getPointKey());
 
 		cell.setPhrase(new Phrase("Thời gian ghi nhận", font));
 		table.addCell(cell);
-	}
-	
-    private void writeTableData(PdfPTable table, PdfInputDto input) {
-        table.addCell(String.valueOf(input.getTourId()));
-        table.addCell(input.getPointCode());
-        table.addCell(input.getBirdCode());
-        table.addCell(input.getPointKey());
         table.addCell(input.getPointSubmitTime());
-    }
+	}
 }
