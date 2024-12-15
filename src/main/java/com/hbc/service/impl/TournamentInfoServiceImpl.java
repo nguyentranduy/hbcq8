@@ -45,6 +45,7 @@ public class TournamentInfoServiceImpl implements TournamentInfoService {
 			dto.setBirdsNum(item.getBirdsNum());
 			dto.setTourApplyStatusCode(tourStatusCode);
 			dto.setMemo(memo);
+			dto.setIsFinished(item.getIsFinished());
 			result.add(dto);
 		});
 

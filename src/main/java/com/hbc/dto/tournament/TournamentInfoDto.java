@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,4 +28,10 @@ public class TournamentInfoDto implements Serializable {
 	private int birdsNum;
 	private String tourApplyStatusCode;
 	private String memo;
+	@JsonProperty("isFinished")
+	private boolean isFinished;
+
+	public void setIsFinished(boolean isFinished) {
+		this.isFinished = isFinished;
+	}
 }
