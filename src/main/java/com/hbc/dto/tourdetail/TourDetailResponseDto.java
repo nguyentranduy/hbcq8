@@ -17,6 +17,7 @@ public class TourDetailResponseDto implements Serializable {
 	private static final long serialVersionUID = 1924135729044709707L;
 
 	private long tourId;
+	private String tourName;
 	private List<TourStageDetail> tourStages;
 	private List<String> birdCodes;
 	

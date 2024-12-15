@@ -32,6 +32,7 @@ import com.hbc.dto.tournament.TourSubmitTimeRequestDto;
 import com.hbc.dto.tournament.ViewRankOfStageDto;
 import com.hbc.dto.tournament.ViewRankOfTourDto;
 import com.hbc.entity.Bird;
+import com.hbc.entity.Tournament;
 import com.hbc.entity.TournamentDetail;
 import com.hbc.entity.TournamentStage;
 import com.hbc.entity.UserLocation;
@@ -82,7 +83,9 @@ public class TournamentDetailServiceImpl implements TournamentDetailService {
 		
 		List<String> birdCodes = tourDetails.stream().map(TournamentDetail::getBird).map(Bird::getCode).distinct().toList();
 		
-		return new TourDetailResponseDto(tourId, tourStages, birdCodes);
+		Tournament tour = tourRepo.findById(tourId).get();
+		
+		return new TourDetailResponseDto(tourId, tour.getName(), tourStages, birdCodes);
 	}
 
 	@Transactional(rollbackFor = Exception.class)
