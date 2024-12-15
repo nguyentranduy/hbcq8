@@ -235,9 +235,32 @@ public class TournamentDetailServiceImpl implements TournamentDetailService {
 	
 	@Override
 	public List<ViewRankOfTourDto> viewRankByTourId(long tourId) {
-		return List.of();
+		if (tourRepo.existsByIdAndIsFinished(tourId, false)) {
+			return List.of();
+		}
 		
-//		List<Object[]> rawData = tourDetailRepo.viewRankByTourId(tourId);
+		List<UserLocation> userLocations = userLocationRepo.findAll();
+		Map<String, UserLocation> mapUserLocations = userLocations.stream()
+				.collect(Collectors.toMap(UserLocation::getCode, userLocation -> userLocation));
+		
+		List<ViewRankOfTourDto> result = new ArrayList<>();
+		List<Object[]> rawData = tourDetailRepo.viewRankByTourId(tourId);
+		
+		for (int i = 0; i < rawData.size(); i++) {
+			Object[] object = rawData.get(i);
+			String userLocationCode = (String) object[1];
+			
+			ViewRankOfTourDto dto = new ViewRankOfTourDto();
+			dto.setRank(i+1);
+			dto.setBirdCode((String) object[0]);
+			dto.setUserLocationCode(userLocationCode);
+			dto.setUserLocationName(mapUserLocations.get(userLocationCode).getName());
+			dto.setUserLocationCoor(mapUserLocations.get(userLocationCode).getPointCoor());
+			dto.setSpeed((double) object[2]);
+			dto.setDistance((double) object[3]);
+			result.add(dto);
+		}
+		return result;
 	}
 	
 	private String doubleToHHMMSS(double time) {

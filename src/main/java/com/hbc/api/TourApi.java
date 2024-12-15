@@ -128,6 +128,16 @@ public class TourApi {
 		}
 	}
 	
+	@GetMapping("/view-rank-of-tour")
+	public ResponseEntity<?> doGetRankOfTour(@RequestParam("tourId") long tourId) {
+		try {
+			return ResponseEntity.ok(tourDetailService.viewRankByTourId(tourId));
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex);
+		}
+	}
+	
 	@GetMapping("/stage")
 	public ResponseEntity<?> doGetByTourId(@RequestParam("tourId") long tourId) {
 		try {

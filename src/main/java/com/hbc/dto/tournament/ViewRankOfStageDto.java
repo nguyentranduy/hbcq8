@@ -27,5 +27,5 @@ public class ViewRankOfStageDto implements Serializable {
 	@JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
 	private Timestamp startTime;
 	private String totalTime;
-	private float speed;
+	private double speed;
 }

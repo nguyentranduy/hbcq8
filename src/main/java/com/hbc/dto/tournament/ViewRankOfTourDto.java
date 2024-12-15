@@ -19,5 +19,5 @@ public class ViewRankOfTourDto implements Serializable {
 	private String birdCode;
 	private String userLocationCoor;
 	private double distance;
-	private float speed;
+	private double speed;
 }
