@@ -15,7 +15,7 @@ import com.hbc.entity.TournamentDetail;
 public interface TournamentDetailRepo extends JpaRepository<TournamentDetail, Long> {
 	
 	List<TournamentDetail> findByTour_IdAndUser_Id(long tourId, long userId);
-	List<TournamentDetail> findByTour_IdAndTourStage_IdAndStatus(long tourId, long stageId, String status);
+	List<TournamentDetail> findByTour_IdAndTourStage_IdOrderByStatus(long tourId, long stageId);
 	TournamentDetail findByTour_IdAndBird_Code(long tourId, String birdCode);
 
 	@Modifying

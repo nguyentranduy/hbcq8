@@ -26,4 +26,5 @@ public class ViewTourDetailDto implements Serializable {
 	@JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
 	private Timestamp endTime;
 	private String pointKey;
+	private String status;
 }

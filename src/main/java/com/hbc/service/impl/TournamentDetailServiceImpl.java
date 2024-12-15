@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
-import com.hbc.constant.TourDetailStatusCodeConst;
 import com.hbc.dto.pdf.PdfInputDto;
 import com.hbc.dto.tourdetail.TourDetailResponseDto;
 import com.hbc.dto.tourdetail.TourDetailResponseDto.TourStageDetail;
@@ -157,15 +156,14 @@ public class TournamentDetailServiceImpl implements TournamentDetailService {
 			return List.of();
 		}
 		
-		List<TournamentDetail> tourDetails = tourDetailRepo.findByTour_IdAndTourStage_IdAndStatus(tourId, stageId,
-				TourDetailStatusCodeConst.STATUS_CODE_WAITING);
+		List<TournamentDetail> tourDetails = tourDetailRepo.findByTour_IdAndTourStage_IdOrderByStatus(tourId, stageId);
 		
 		List<ViewTourDetailDto> result = new ArrayList<>();
 		
 		tourDetails.forEach(item -> {
 			result.add(new ViewTourDetailDto(tourId, stageId, item.getBird().getCode(),
 					tourStage.get().getStartPointCode(), tourStage.get().getStartTime(),
-					item.getEndPointCode(), item.getEndPointTime(), item.getEndPointKey()));
+					item.getEndPointCode(), item.getEndPointTime(), item.getEndPointKey(), item.getStatus()));
 		});
 		return result;
 	}
