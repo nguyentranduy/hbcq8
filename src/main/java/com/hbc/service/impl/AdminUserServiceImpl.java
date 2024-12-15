@@ -150,6 +150,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public void doResetPassword(ResetPasswordRequestDto resetPasswordRequestDto, long userId) {
-		repo.updatePassword(resetPasswordRequestDto.getPassword(), userId);
+		String hashPassword = bcrypt.encode(resetPasswordRequestDto.getPassword());
+		repo.updatePassword(hashPassword, userId);
 	}
 }
