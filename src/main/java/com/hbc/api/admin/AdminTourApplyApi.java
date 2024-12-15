@@ -98,17 +98,6 @@ public class AdminTourApplyApi {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex);
 		}
 	}
-
-//	@PostMapping("/calculate-distance")
-//	public ResponseEntity<?> calculateDistance(@RequestBody CalDistanceRequestDto calDistanceRequestDto) {
-//		try {
-//			CalDistanceResponseDto response = calculateDistanceService.calculateDistance(calDistanceRequestDto);
-//			return ResponseEntity.ok(response);
-//		} catch (InvalidCoorFormatException ex) {
-//			ErrorResponse errorResponse = new ErrorResponse("400", ex.getMessage());
-//			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-//		}
-//	}
 	
 	@PostMapping("/cal-distance")
 	public ResponseEntity<?> calculateDistanceTwoPoint(@RequestBody CalDistanceTwoPointRequestDto calDistanceRequestDto) {
