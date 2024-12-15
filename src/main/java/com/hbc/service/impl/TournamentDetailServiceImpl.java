@@ -156,7 +156,7 @@ public class TournamentDetailServiceImpl implements TournamentDetailService {
 			return List.of();
 		}
 		
-		List<TournamentDetail> tourDetails = tourDetailRepo.findByTour_IdAndTourStage_IdOrderByStatus(tourId, stageId);
+		List<TournamentDetail> tourDetails = tourDetailRepo.findByTour_IdAndTourStage_IdAndStatusNotNullOrderByStatusAsc(tourId, stageId);
 		
 		List<ViewTourDetailDto> result = new ArrayList<>();
 		
