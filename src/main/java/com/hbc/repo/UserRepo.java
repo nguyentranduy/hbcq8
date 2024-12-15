@@ -33,6 +33,10 @@ public interface UserRepo extends JpaRepository<User, Long> {
 	Boolean updateimgUrlByUsername(@Param("imgUrl") String imgUrl, @Param("username") String username);
 	
 	@Modifying
+	@Query("UPDATE User u SET u.password = :password WHERE u.id = :id")
+	Boolean updatePassword(@Param("password") String password, @Param("id") long id);
+	
+	@Modifying
 	@Query("UPDATE User u SET u.phone = :phone, u.address = :address,"
 			+ "u.birthday = :birthday, u.imgUrl = :imgUrl,"
 			+ "u.updatedAt = :updatedAt, u.updatedBy = :updatedBy WHERE u.id = :id")

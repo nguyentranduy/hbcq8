@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hbc.constant.SessionConst;
 import com.hbc.dto.ErrorResponse;
+import com.hbc.dto.user.ResetPasswordRequestDto;
 import com.hbc.dto.user.UserRegisterRequestDto;
 import com.hbc.dto.user.UserResponseDto;
 import com.hbc.dto.user.UserUpdateAdminRequestDto;
@@ -73,6 +74,18 @@ public class AdminUserApi {
 		} catch (DuplicatedUserException ex) {
 			ErrorResponse errorResponse = new ErrorResponse(ex.getErrorCode(), ex.getErrorMessage());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex);
+		}
+	}
+	
+	@PutMapping("/reset-pw/{id}")
+	public ResponseEntity<?> doResetPass(@PathVariable("id") long id,
+			@RequestBody ResetPasswordRequestDto resetPasswordRequestDto) {
+		try {
+			adminUserService.doResetPassword(resetPasswordRequestDto, id);
+			return ResponseEntity.ok().build();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex);

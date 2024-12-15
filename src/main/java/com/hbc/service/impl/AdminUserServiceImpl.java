@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.hbc.constant.RoleConst;
+import com.hbc.dto.user.ResetPasswordRequestDto;
 import com.hbc.dto.user.UserRegisterRequestDto;
 import com.hbc.dto.user.UserResponseDto;
 import com.hbc.dto.user.UserUpdateAdminRequestDto;
@@ -144,5 +145,11 @@ public class AdminUserServiceImpl implements AdminUserService {
 
 		Timestamp updatedAt = new Timestamp(System.currentTimeMillis());
 		repo.deleteLogical(updatedAt, currentUserId, userId);
+	}
+
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public void doResetPassword(ResetPasswordRequestDto resetPasswordRequestDto, long userId) {
+		repo.updatePassword(resetPasswordRequestDto.getPassword(), userId);
 	}
 }

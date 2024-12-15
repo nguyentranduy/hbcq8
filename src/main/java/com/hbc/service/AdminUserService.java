@@ -2,6 +2,7 @@ package com.hbc.service;
 
 import java.util.List;
 
+import com.hbc.dto.user.ResetPasswordRequestDto;
 import com.hbc.dto.user.UserRegisterRequestDto;
 import com.hbc.dto.user.UserResponseDto;
 import com.hbc.dto.user.UserUpdateAdminRequestDto;
@@ -17,6 +18,8 @@ public interface AdminUserService {
 
 	UserResponseDto doUpdate(UserUpdateAdminRequestDto userUpdateRequestDto, HttpSession session)
 			throws DuplicatedUserException, UserNotFoundException;
+	
+	void doResetPassword(ResetPasswordRequestDto resetPasswordRequestDto, long userId);
 
 	UserResponseDto findByIdAvailable(long userId) throws UserNotFoundException;
 
