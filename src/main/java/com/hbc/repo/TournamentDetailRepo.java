@@ -64,7 +64,7 @@ public interface TournamentDetailRepo extends JpaRepository<TournamentDetail, Lo
 			@Param("tourId") long tourId, @Param("birdCode") String birdCode, @Param("stageId") long stageId);
 
 	@Query(value = "SELECT bird_code, end_point_code, AVG(end_point_speed) AS avg_speed, sum(end_point_dist) as dist"
-			+ " FROM tournament_detail WHERE tour_id = :tourId GROUP BY bird_code"
+			+ " FROM tournament_detail WHERE tour_id = :tourId GROUP BY bird_code, end_point_code"
 			+ " HAVING COUNT(*) = COUNT(CASE WHEN status = 'A' THEN 1 END) ORDER BY avg_speed DESC", nativeQuery = true)
 	List<Object[]> viewRankByTourId(@Param("tourId") long tourId);
 
