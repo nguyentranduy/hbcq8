@@ -30,7 +30,7 @@ public interface TournamentStageRepo extends JpaRepository<TournamentStage, Long
 	
 	@Modifying
 	@Query(value = "UPDATE tournament_stage SET description = :description, rest_time_per_day = :restTimePerDay,"
-			+ " start_point_code = :startPointCode, start_point_name = :startPointName, start_point_coor = :startPointCoor"
+			+ " start_point_code = :startPointCode, start_point_name = :startPointName, start_point_coor = :startPointCoor,"
 			+ " start_time = :startTime, updated_at = :updatedAt, updated_by = :updatedBy"
 			+ " WHERE tour_id = :tourId AND order_no = :orderNo", nativeQuery = true)
 	void update(@Param("description") String description, @Param("restTimePerDay") float restTimePerDay,
