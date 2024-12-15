@@ -2,7 +2,10 @@ package com.hbc.service.impl;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +27,7 @@ import com.hbc.dto.tourdetail.TourDetailResponseDto;
 import com.hbc.dto.tourdetail.TourDetailResponseDto.TourStageDetail;
 import com.hbc.dto.tourdetail.ViewTourDetailDto;
 import com.hbc.dto.tournament.AdminTourApproveDto;
+import com.hbc.dto.tournament.AdminTourCancelDto;
 import com.hbc.dto.tournament.AdminTourRejectDto;
 import com.hbc.dto.tournament.TourSubmitTimeRequestDto;
 import com.hbc.dto.tournament.ViewRankDto;
@@ -86,7 +90,9 @@ public class TournamentDetailServiceImpl implements TournamentDetailService {
 	public PdfInputDto doSubmitTime(TourSubmitTimeRequestDto requestDto, long userId) throws Exception {
 		validatePointKey(requestDto.getPointKey());
 		
-		Timestamp submitTimeNow = new Timestamp(System.currentTimeMillis());
+        ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
+        Instant instant = zonedDateTime.toInstant();
+        Timestamp submitTimeNow = Timestamp.from(instant);
 
 		TournamentDetail tourDetail = tourDetailRepo.findByTourIdAndUserIdAndBirdCodeAndTourStage_Id(requestDto.getTourId(),
 				requestDto.getRequesterId(), requestDto.getBirdCode(), requestDto.getStageId());
@@ -195,6 +201,13 @@ public class TournamentDetailServiceImpl implements TournamentDetailService {
 	@Override
 	public void doReject(AdminTourRejectDto dto, long approverId) {
 		tourDetailRepo.doRejectResult(new Timestamp(System.currentTimeMillis()), approverId, dto.getMemo(),
+				dto.getTourId(), dto.getBirdCode(), dto.getStageId());
+	}
+
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public void doCancel(AdminTourCancelDto dto, long approverId) {
+		tourDetailRepo.doCancelResult(new Timestamp(System.currentTimeMillis()), approverId,
 				dto.getTourId(), dto.getBirdCode(), dto.getStageId());
 	}
 

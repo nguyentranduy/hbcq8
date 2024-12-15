@@ -149,6 +149,17 @@ public class AdminTourApi {
 		}
 	}
 	
+	@PostMapping("/cancel-result")
+	public ResponseEntity<?> doPostCancelResult(@RequestBody AdminTourRejectDto dto, HttpSession session) {
+		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
+		try {
+			tourDetailService.doReject(dto, currentUser.getId());
+			return ResponseEntity.ok().build();
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+	}
+
 	@GetMapping("/sort")
 	public ResponseEntity<?> doGetSort(@RequestParam("tourId") long tourId) {
 		try {
