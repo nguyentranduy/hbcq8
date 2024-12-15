@@ -19,6 +19,7 @@ public interface TournamentRepo extends JpaRepository<Tournament, Long> {
 	List<Tournament> findByIsDeletedOrderByCreatedAtDesc(boolean isDeleted);
 	boolean existsByNameAndIsDeleted(String tourName, boolean isDeleted);
 	boolean existsByIdAndIsDeleted(long id, boolean isDeleted);
+	boolean existsByIdAndIsFinished(long id, boolean isFinished);
 	
 	@Modifying
 	@Query(value = "UPDATE Tournament t SET t.name = :name, t.description = :description, t.birdsNum = :birdsNum,"
@@ -39,7 +40,7 @@ public interface TournamentRepo extends JpaRepository<Tournament, Long> {
 	int deleteLogical(@Param("isDeleted") boolean isDeleted, @Param("id") long id);
 	
 	@Modifying
-	@Query(value = "UPDATE tournament SET is_finished = true, updatedAt = :updatedAt, updatedBy = :updatedBy"
+	@Query(value = "UPDATE tournament SET is_finished = true, updated_at = :updatedAt, updated_by = :updatedBy"
 			+ " WHERE id = :id", nativeQuery = true)
 	void doFinishedTour(@Param("updatedAt") Timestamp updatedAt, @Param("updatedBy") long updatedBy, @Param("id") long id);
 }
