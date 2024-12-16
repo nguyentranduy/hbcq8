@@ -11,7 +11,7 @@
 	<groupId>com.hbc</groupId>
 	<artifactId>hoibocauq8</artifactId>
 	<version>1.0</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<name>hoibocauq8</name>
 	<description>hoibocauq8</description>
 	<url/>
