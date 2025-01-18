@@ -19,7 +19,6 @@ public class BirdResponseDto implements Serializable {
 
 	private long id;
 	private String code;
-	private String name;
 	private String description;
 	private long userId;
 	private String imgUrl;
@@ -34,7 +33,6 @@ public class BirdResponseDto implements Serializable {
 		BirdResponseDto dto = new BirdResponseDto();
 		dto.id = bird.getId();
 		dto.code = bird.getCode();
-		dto.name = bird.getName();
 		dto.description = bird.getDescription();
 		dto.userId = bird.getUser().getId();
 		dto.imgUrl = bird.getImgUrl();

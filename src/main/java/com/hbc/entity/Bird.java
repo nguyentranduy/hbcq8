@@ -35,9 +35,6 @@ public class Bird implements Serializable {
 	private Long id;
 	
 	@Column
-	private String name;
-	
-	@Column
 	private String code;
 	
 	@Column

@@ -60,16 +60,12 @@ public class AdminBirdServiceImpl implements AdminBirdService {
 			throw new CustomException("400", "Mã kiềng không được để trống.");
 		}
 		
-		if (!StringUtils.hasText(birdDto.getName())) {
-			throw new CustomException("400", "Tên chim không được để trống.");
-		}
-		
 		if (birdRepo.existsByCode(birdDto.getCode())) {
 			throw new DuplicatedBirdInfoException("400", "Mã kiềng đã tồn tại.");
 		}
 
 		try {
-			birdRepo.doRegister(birdDto.getName(), birdDto.getCode(), birdDto.getUserId(), currentUserId);
+			birdRepo.doRegister(birdDto.getCode(), birdDto.getUserId(), currentUserId);
 			entityManager.clear();
 			Bird birdInserted = birdRepo.findByCode(birdDto.getCode());
 			if (ObjectUtils.isEmpty(birdInserted)) {
@@ -100,7 +96,7 @@ public class AdminBirdServiceImpl implements AdminBirdService {
 		}
 
 		try {
-			birdRepo.doUpdate(birdDto.getCode(), birdDto.getName(), birdDto.getDescription(), birdDto.getImgUrl(), currentUserId,
+			birdRepo.doUpdate(birdDto.getCode(), birdDto.getDescription(), birdDto.getImgUrl(), currentUserId,
 					new Timestamp(System.currentTimeMillis()), birdDto.getId());
 			entityManager.clear();
 			Bird birdUpdated = birdRepo.findById(birdDto.getId()).get();

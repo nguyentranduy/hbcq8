@@ -13,7 +13,6 @@ public class AdminBirdRequestDto implements Serializable {
 
 	private static final long serialVersionUID = 8075065438234302050L;
 	
-	private String name;
 	private String code;
 	private long userId;
 }
