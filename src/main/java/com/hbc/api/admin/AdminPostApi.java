@@ -3,6 +3,7 @@ package com.hbc.api.admin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,6 +39,21 @@ public class AdminPostApi {
 	public ResponseEntity<?> doGetById(@PathVariable("id") long id) {
 		try {
 			return ResponseEntity.ok(adminPostService.findById(id));
+		} catch (PostNotFoundException e) {
+			ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode(), e.getMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+	}
+	
+	@DeleteMapping("/{id}")
+	public ResponseEntity<?> doDeleteById(@PathVariable("id") long id, HttpSession session) {
+		try {
+			UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
+			adminPostService.delete(id, currentUser.getId());
+			return ResponseEntity.ok().build();
 		} catch (PostNotFoundException e) {
 			ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode(), e.getMessage());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);

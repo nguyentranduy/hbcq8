@@ -28,8 +28,13 @@ public interface PostRepo extends JpaRepository<Post, Long> {
 
 	@Modifying
 	@Query(value = "UPDATE post SET title = :title, content = :content, img_url = :imgUrl, slug = :slug,"
-			+ " :updatedAt, :updatedBy) WHERE id = :id", nativeQuery = true)
+			+ " updated_at = :updatedAt, updated_by = :updatedBy WHERE id = :id", nativeQuery = true)
 	void update(@Param("title") String title, @Param("content") String content, @Param("imgUrl") String imgUrl,
 			@Param("slug") String slug, @Param("updatedAt") Timestamp updatedAt,
 			@Param("updatedBy") long updatedBy, @Param("id") long id);
+	
+	@Modifying
+	@Query(value = "UPDATE post SET is_deleted = true, updated_at = :updatedAt, updated_by = :updatedBy"
+			+ " WHERE id = :id", nativeQuery = true)
+	void deleteLogical(@Param("updatedAt") Timestamp updatedAt, @Param("updatedBy") long updatedBy, @Param("id") long id);
 }

@@ -116,4 +116,15 @@ public class AdminPostServiceImpl implements AdminPostService {
 		User author = userRepo.findById(post.getCreatedBy()).get();
 		return PostResponseDto.build(post, author.getUsername());
 	}
+
+	@Transactional(rollbackFor = Exception.class)
+	@Override
+	public void delete(long id, long currentUserId) throws Exception {
+		Post post = postRepo.findByIdAndIsDeleted(id, false);
+		if (post == null) {
+			throw new PostNotFoundException("404", "Không tìm thấy bài viết.");
+		}
+		Timestamp updatedAt = new Timestamp(System.currentTimeMillis());
+		postRepo.deleteLogical(updatedAt, currentUserId, id);
+	}
 }
