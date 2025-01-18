@@ -25,7 +25,7 @@ public class PdfExporterServiceImpl implements PdfExporterService {
 
 	@Override
 	public void exportPdf(HttpServletResponse response, PdfInputDto input) throws DocumentException, IOException {
-		Document document = new Document(PageSize.A5);
+		Document document = new Document(PageSize.A4);
 		PdfWriter.getInstance(document, response.getOutputStream());
 
 		document.open();
