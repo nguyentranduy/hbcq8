@@ -91,10 +91,6 @@ public class AdminBirdServiceImpl implements AdminBirdService {
 			throw new DuplicatedBirdInfoException("400", "Mã kiềng đã tồn tại.");
 		}
 
-		if (!StringUtils.hasText(birdDto.getName())) {
-			throw new CustomException("400", "Tên chim không được để trống.");
-		}
-
 		try {
 			birdRepo.doUpdate(birdDto.getCode(), birdDto.getDescription(), birdDto.getImgUrl(), currentUserId,
 					new Timestamp(System.currentTimeMillis()), birdDto.getId());

@@ -16,7 +16,6 @@ public class AdminBirdUpdateRequestDto implements Serializable {
 	private static final long serialVersionUID = -1592404358082602921L;
 
 	private long id;
-	private String name;
 	private String code;
 	private String description;
 	private String imgUrl;
