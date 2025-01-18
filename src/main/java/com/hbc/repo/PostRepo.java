@@ -16,6 +16,7 @@ public interface PostRepo extends JpaRepository<Post, Long> {
 
 	List<Post> findByIsDeletedOrderByCreatedAtDesc(boolean isDeleted);
 	Post findBySlugAndIsDeleted(String slug, boolean isDeleted);
+	Post findByIdAndIsDeleted(long id, boolean isDeleted);
 	boolean existsBySlug(String slug);
 
 	@Modifying
@@ -24,4 +25,11 @@ public interface PostRepo extends JpaRepository<Post, Long> {
 	void insert(@Param("categoryId") long categoryId, @Param("title") String title, @Param("content") String content,
 			@Param("slug") String slug, @Param("imgUrl") String imgUrl, @Param("createdAt") Timestamp createdAt,
 			@Param("createdBy") long createdBy, @Param("isDeleted") boolean isDeleted);
+
+	@Modifying
+	@Query(value = "UPDATE post SET title = :title, content = :content, img_url = :imgUrl, slug = :slug,"
+			+ " :updatedAt, :updatedBy) WHERE id = :id", nativeQuery = true)
+	void update(@Param("title") String title, @Param("content") String content, @Param("imgUrl") String imgUrl,
+			@Param("slug") String slug, @Param("updatedAt") Timestamp updatedAt,
+			@Param("updatedBy") long updatedBy, @Param("id") long id);
 }
