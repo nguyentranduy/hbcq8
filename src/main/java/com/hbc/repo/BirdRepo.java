@@ -23,7 +23,7 @@ public interface BirdRepo extends JpaRepository<Bird, Long> {
 	
 	@Modifying
 	@Query(value = "INSERT INTO bird(code, user_id, created_by)"
-			+ " VALUE (:name, :code, :userId, :createdBy)", nativeQuery = true)
+			+ " VALUE (:code, :userId, :createdBy)", nativeQuery = true)
 	void doRegister(@Param("code") String code, @Param("userId") long userId, @Param("createdBy") long createdBy);
 	
 	@Modifying
