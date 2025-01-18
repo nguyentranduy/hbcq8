@@ -39,7 +39,7 @@ public class PdfExporterServiceImpl implements PdfExporterService {
 		document.add(p);
 
 		PdfPTable table = new PdfPTable(2);
-		table.setWidthPercentage(50f);
+		table.setWidthPercentage(70f);
 		table.setWidths(new float[] { 3f, 3f});
 		table.setSpacingBefore(10);
 

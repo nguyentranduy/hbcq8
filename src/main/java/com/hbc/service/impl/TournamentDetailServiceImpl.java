@@ -12,8 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +34,6 @@ import com.hbc.entity.Tournament;
 import com.hbc.entity.TournamentDetail;
 import com.hbc.entity.TournamentStage;
 import com.hbc.entity.UserLocation;
-import com.hbc.exception.tournament.submit.InvalidSubmitPointKeyException;
 import com.hbc.exception.tournament.submit.OutOfTimeException;
 import com.hbc.exception.tournament.submit.SubmitInfoNotFoundException;
 import com.hbc.repo.TournamentDetailRepo;
@@ -91,7 +88,7 @@ public class TournamentDetailServiceImpl implements TournamentDetailService {
 	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public PdfInputDto doSubmitTime(TourSubmitTimeRequestDto requestDto, long userId) throws Exception {
-		validatePointKey(requestDto.getPointKey());
+//		validatePointKey(requestDto.getPointKey());
 
 		ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
 		Instant instant = zonedDateTime.toInstant();
@@ -141,16 +138,16 @@ public class TournamentDetailServiceImpl implements TournamentDetailService {
         return diffInMinutes <= 60;
 	}
 
-	private void validatePointKey(String pointKey) {
-		String regex = "^\\d{5}$";
-
-		Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(pointKey);
-
-        if (!matcher.matches()) {
-            throw new InvalidSubmitPointKeyException("400", "Mã bí mật không đúng định dạng.");
-        }
-	}
+//	private void validatePointKey(String pointKey) {
+//		String regex = "^\\d{5}$";
+//
+//		Pattern pattern = Pattern.compile(regex);
+//        Matcher matcher = pattern.matcher(pointKey);
+//
+//        if (!matcher.matches()) {
+//            throw new InvalidSubmitPointKeyException("400", "Mã bí mật không đúng định dạng.");
+//        }
+//	}
 
 	@Override
 	public List<ViewTourDetailDto> findByTourIdForApprove(long tourId, long stageId) {
