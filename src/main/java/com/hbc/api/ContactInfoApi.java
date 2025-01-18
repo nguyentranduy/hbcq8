@@ -13,10 +13,10 @@ import com.hbc.service.ContactInfoService;
 public class ContactInfoApi {
 
 	@Autowired
-	ContactInfoService aontactInfoService;
+	ContactInfoService contactInfoService;
 
 	@GetMapping
 	public ResponseEntity<?> doGet() {
-		return ResponseEntity.ok(aontactInfoService.doGet());
+		return ResponseEntity.ok(contactInfoService.doGet());
 	}
 }
