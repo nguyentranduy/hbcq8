@@ -53,7 +53,7 @@ public class AdminUserLocationApi {
 
 	@PostMapping
 	public ResponseEntity<?> doRegister(@RequestBody UserLocationAdminRequestDto requestDto, HttpSession session) {
-		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
+		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_ADMIN);
 		try {
 			adminUserLocationService.doRegister(requestDto, currentUser.getId());
 			return ResponseEntity.ok().build();
@@ -75,7 +75,7 @@ public class AdminUserLocationApi {
 	@PutMapping("/{id}")
 	public ResponseEntity<?> doUpdate(@PathVariable("id") long userLocationId,
 			@RequestBody UserLocationAdminRequestDto requestDto, HttpSession session) {
-		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
+		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_ADMIN);
 		try {
 			adminUserLocationService.doUpdate(userLocationId, requestDto, currentUser.getId());
 			return ResponseEntity.ok().build();
@@ -99,7 +99,7 @@ public class AdminUserLocationApi {
 
 	@DeleteMapping("/{code}")
 	public ResponseEntity<?> doDelete(@PathVariable("code") String code, HttpSession session) {
-		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
+		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_ADMIN);
 		try {
 			adminUserLocationService.doDelete(code, currentUser.getId());
 			return ResponseEntity.ok().build();

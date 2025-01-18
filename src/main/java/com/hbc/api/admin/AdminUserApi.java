@@ -95,7 +95,7 @@ public class AdminUserApi {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> doDelete(@PathVariable("id") long id, HttpSession session) {
 		try {
-			UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
+			UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_ADMIN);
 			adminUserService.deleteById(id, currentUser.getId());
 			return ResponseEntity.ok().build();
 		} catch (UserNotFoundException ex) {

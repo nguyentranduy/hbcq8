@@ -24,7 +24,7 @@ public class AdminTourStageApi {
 	@GetMapping("/active")
 	public ResponseEntity<?> doActive(@RequestParam("id") long stageId, HttpSession session) {
 		try {
-			UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
+			UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_ADMIN);
 			tourStageService.updateStatus(stageId, true, currentUser.getId());
 			return ResponseEntity.ok().build();
 		} catch (Exception ex) {
@@ -36,7 +36,7 @@ public class AdminTourStageApi {
 	@GetMapping("/deactive")
 	public ResponseEntity<?> doDeactive(@RequestParam("id") long stageId, HttpSession session) {
 		try {
-			UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
+			UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_ADMIN);
 			tourStageService.updateStatus(stageId, false, currentUser.getId());
 			return ResponseEntity.ok().build();
 		} catch (Exception ex) {
@@ -48,7 +48,7 @@ public class AdminTourStageApi {
 	@GetMapping("/finished")
 	public ResponseEntity<?> doFinished(@RequestParam("id") long stageId, HttpSession session) {
 		try {
-			UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
+			UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_ADMIN);
 			tourStageService.doFinished(stageId, currentUser.getId());
 			return ResponseEntity.ok().build();
 		} catch (Exception ex) {

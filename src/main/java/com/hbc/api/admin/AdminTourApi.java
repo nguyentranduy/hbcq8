@@ -59,7 +59,7 @@ public class AdminTourApi {
 	public ResponseEntity<?> doRegister(@RequestBody TourRequestDto requestDto, HttpSession session) {
 		try {
 			TourResponseDto response = tournamentService.doRegister(requestDto,
-					(UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER));
+					(UserResponseDto) session.getAttribute(SessionConst.CURRENT_ADMIN));
 			return ResponseEntity.ok(response);
 		} catch (AuthenticationException ex) {
 			ErrorResponse errorResponse = new ErrorResponse(ex.getErrorCode(), ex.getErrorMessage());
@@ -79,7 +79,7 @@ public class AdminTourApi {
 			@RequestBody TourRequestDto requestDto, HttpSession session) {
 		try {
 			TourResponseDto response = tournamentService.doUpdate(tourId, requestDto,
-					(UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER));
+					(UserResponseDto) session.getAttribute(SessionConst.CURRENT_ADMIN));
 			return ResponseEntity.ok(response);
 		} catch (AuthenticationException ex) {
 			ErrorResponse errorResponse = new ErrorResponse(ex.getErrorCode(), ex.getErrorMessage());
@@ -100,7 +100,7 @@ public class AdminTourApi {
 	@DeleteMapping("/{tourId}")
 	public ResponseEntity<?> doDelete(@PathVariable("tourId") long tourId, HttpSession session) {
 		try {
-			tournamentService.doDelete(tourId, (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER));
+			tournamentService.doDelete(tourId, (UserResponseDto) session.getAttribute(SessionConst.CURRENT_ADMIN));
 			return ResponseEntity.ok().build();
 		} catch (AuthenticationException ex) {
 			ErrorResponse errorResponse = new ErrorResponse(ex.getErrorCode(), ex.getErrorMessage());
@@ -129,7 +129,7 @@ public class AdminTourApi {
 	
 	@PostMapping("/approve-result")
 	public ResponseEntity<?> doPostApprove(@RequestBody AdminTourApproveDto dto, HttpSession session) {
-		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
+		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_ADMIN);
 		try {
 			tourDetailService.doApprove(dto, currentUser.getId());
 			return ResponseEntity.ok().build();
@@ -141,7 +141,7 @@ public class AdminTourApi {
 
 	@PostMapping("/reject-result")
 	public ResponseEntity<?> doPostReject(@RequestBody AdminTourRejectDto dto, HttpSession session) {
-		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
+		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_ADMIN);
 		try {
 			tourDetailService.doReject(dto, currentUser.getId());
 			return ResponseEntity.ok().build();
@@ -152,7 +152,7 @@ public class AdminTourApi {
 	
 	@PostMapping("/cancel-result")
 	public ResponseEntity<?> doPostCancelResult(@RequestBody AdminTourCancelDto dto, HttpSession session) {
-		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
+		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_ADMIN);
 		try {
 			tourDetailService.doCancel(dto, currentUser.getId());
 			return ResponseEntity.ok().build();
@@ -163,7 +163,7 @@ public class AdminTourApi {
 
 	@GetMapping("/finished")
 	public ResponseEntity<?> doGetFinished(@RequestParam("id") long id, HttpSession session) {
-		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
+		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_ADMIN);
 		try {
 			tournamentService.doFinished(id, currentUser.getId());
 			return ResponseEntity.ok().build();

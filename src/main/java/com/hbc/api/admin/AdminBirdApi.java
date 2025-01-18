@@ -38,7 +38,7 @@ public class AdminBirdApi {
 
 	@PostMapping
 	public ResponseEntity<?> doRegister(@RequestBody AdminBirdRequestDto requestDto, HttpSession session) {
-		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
+		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_ADMIN);
 		try {
 			BirdResponseDto response = adminBirdService.register(requestDto, currentUser.getId());
 			return ResponseEntity.ok(response);
@@ -68,7 +68,7 @@ public class AdminBirdApi {
 
 	@PutMapping
 	public ResponseEntity<?> doUpdate(@RequestBody AdminBirdUpdateRequestDto requestDto, HttpSession session) {
-		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
+		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_ADMIN);
 		try {
 			BirdResponseDto response = adminBirdService.update(requestDto, currentUser.getId());
 			return ResponseEntity.ok(response);
@@ -86,7 +86,7 @@ public class AdminBirdApi {
 
 	@DeleteMapping("/{code}")
 	public ResponseEntity<?> doDelete(@PathVariable("code") String code, HttpSession session) {
-		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
+		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_ADMIN);
 		try {
 			adminBirdService.delete(code, currentUser.getId());
 			return ResponseEntity.ok().build();

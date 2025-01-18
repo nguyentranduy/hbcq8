@@ -40,7 +40,8 @@ public class SessionFilter implements Filter {
 			"/api/v1/admin/bird",
 			"/api/v1/admin/tour-stage",
 			"/api/v1/admin/ggdrive",
-			"/api/v1/admin/contact-info");
+			"/api/v1/admin/contact-info",
+			"/api/v1/admin/logout");
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)

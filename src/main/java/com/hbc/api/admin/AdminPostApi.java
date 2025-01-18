@@ -51,7 +51,7 @@ public class AdminPostApi {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> doDeleteById(@PathVariable("id") long id, HttpSession session) {
 		try {
-			UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
+			UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_ADMIN);
 			adminPostService.delete(id, currentUser.getId());
 			return ResponseEntity.ok().build();
 		} catch (PostNotFoundException e) {
@@ -66,7 +66,7 @@ public class AdminPostApi {
 	@PostMapping
 	public ResponseEntity<?> doPost(@RequestBody AdminPostRequestDto requestDto, HttpSession session) {
 		try {
-			UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
+			UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_ADMIN);
 			adminPostService.insert(requestDto, currentUser.getId());
 			return ResponseEntity.ok().build();
 		} catch (InvalidTitleException ex) {
@@ -82,7 +82,7 @@ public class AdminPostApi {
 	@PutMapping
 	public ResponseEntity<?> doPut(@RequestBody AdminPostRequestUpdateDto requestDto, HttpSession session) {
 		try {
-			UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
+			UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_ADMIN);
 			adminPostService.update(requestDto, currentUser.getId());
 			return ResponseEntity.ok().build();
 		} catch (InvalidTitleException ex) {

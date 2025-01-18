@@ -50,7 +50,7 @@ public class AdminSystemLocationApi {
 
 	@PostMapping
 	public ResponseEntity<?> doRegister(@RequestBody SystemLocationRequestDto requestDto, HttpSession session) {
-		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
+		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_ADMIN);
 		try {
 			adminSystemLocationService.doRegister(requestDto, currentUser.getId());
 			return ResponseEntity.ok().build();
@@ -69,7 +69,7 @@ public class AdminSystemLocationApi {
 	@PutMapping("/{id}")
 	public ResponseEntity<?> doUpdate(@PathVariable("id") long systemLocationId,
 			@RequestBody SystemLocationRequestDto requestDto, HttpSession session) {
-		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
+		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_ADMIN);
 		try {
 			adminSystemLocationService.doUpdate(systemLocationId, requestDto, currentUser.getId());
 			return ResponseEntity.ok().build();
@@ -90,7 +90,7 @@ public class AdminSystemLocationApi {
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> doDelete(@PathVariable("id") long systemLocationId, HttpSession session) {
-		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
+		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_ADMIN);
 		try {
 			adminSystemLocationService.doDelete(systemLocationId, currentUser.getId());
 			return ResponseEntity.ok().build();
