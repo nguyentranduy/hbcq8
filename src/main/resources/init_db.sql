@@ -37,7 +37,6 @@ CREATE TABLE `user` (
 DROP TABLE IF EXISTS `bird`;
 CREATE TABLE `bird` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `name` varchar(255),
   `code` varchar(255) NOT NULL UNIQUE,
   `description` varchar(255),
   `user_id` bigint NOT NULL,
@@ -212,4 +211,16 @@ CREATE TABLE post (
 	PRIMARY KEY (`id`),
 	UNIQUE KEY `slug` (`slug`),
 	UNIQUE KEY `title` (`title`)
+);
+
+DROP TABLE IF EXISTS `contact_info`;
+CREATE TABLE contact_info (
+	`id` bigint NOT NULL AUTO_INCREMENT,
+	`address` varchar(255) NOT NULL,
+	`phone1` varchar(255) NOT NULL,
+	`name1` varchar(255) NOT NULL,
+	`phone2` varchar(255),
+	`name2` varchar(255),
+	`email` varchar(255) NOT NULL,
+	PRIMARY KEY (`id`)
 );

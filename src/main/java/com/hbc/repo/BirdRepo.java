@@ -20,7 +20,7 @@ public interface BirdRepo extends JpaRepository<Bird, Long> {
 	boolean existsByCodeAndUserId(String birdCode, long userId);
 	List<Bird> findByUserIdAndIsDeleted(long userId, boolean isDeleted);
 	Bird findByCode(String birdCode);
-	
+
 	@Modifying
 	@Query(value = "INSERT INTO bird(code, user_id, created_by)"
 			+ " VALUE (:code, :userId, :createdBy)", nativeQuery = true)
