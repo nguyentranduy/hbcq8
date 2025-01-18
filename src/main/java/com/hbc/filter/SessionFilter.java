@@ -61,12 +61,12 @@ public class SessionFilter implements Filter {
 
 		if (URL_ADMIN_PATTERNS.stream().anyMatch(pattern -> requestURI.startsWith(pattern))) {
 			HttpSession session = req.getSession(false);
-			if (session == null || session.getAttribute(SessionConst.CURRENT_USER) == null) {
+			if (session == null || session.getAttribute(SessionConst.CURRENT_ADMIN) == null) {
 				res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
 				return;
 			}
 
-			UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
+			UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_ADMIN);
 			if (currentUser.getRoleId() != RoleConst.ROLE_ADMIN) {
 				res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
 				return;
