@@ -23,7 +23,7 @@ public interface BirdRepo extends JpaRepository<Bird, Long> {
 	
 	@Modifying
 	@Query(value = "INSERT INTO bird(code, user_id, created_by)"
-			+ " VALUE (:name, :code, :userId, :createdBy)", nativeQuery = true)
+			+ " VALUE (:code, :userId, :createdBy)", nativeQuery = true)
 	void doRegister(@Param("code") String code, @Param("userId") long userId, @Param("createdBy") long createdBy);
 	
 	@Modifying
@@ -31,14 +31,6 @@ public interface BirdRepo extends JpaRepository<Bird, Long> {
 			+ " updated_by = :updatedBy, updated_at = :updatedAt"
 			+ " WHERE id = :id", nativeQuery = true)
 	void doUpdate(@Param("code") String code, @Param("description") String description,
-			@Param("imgUrl") String imgUrl, @Param("updatedBy") long updatedBy,
-			@Param("updatedAt") Timestamp updatedAt, @Param("id") long id);
-	
-	@Modifying
-	@Query(value = "UPDATE bird SET name = :name, description = :description, img_url = :imgUrl,"
-			+ " updated_by = :updatedBy, updated_at = :updatedAt"
-			+ " WHERE id = :id", nativeQuery = true)
-	void doUserUpdate(@Param("name") String name, @Param("description") String description,
 			@Param("imgUrl") String imgUrl, @Param("updatedBy") long updatedBy,
 			@Param("updatedAt") Timestamp updatedAt, @Param("id") long id);
 
