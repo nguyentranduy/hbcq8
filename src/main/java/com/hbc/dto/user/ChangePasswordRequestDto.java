@@ -11,8 +11,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResetPasswordRequestDto implements Serializable {
+public class ChangePasswordRequestDto implements Serializable {
 
-	private static final long serialVersionUID = -2316721372404116705L;
-	private String password;
+	private static final long serialVersionUID = -156869442426456244L;
+	private String username;
+	private String currentPass;
+	private String newPass;
 }

@@ -8,13 +8,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.hbc.constant.SessionConst;
 import com.hbc.dto.ErrorResponse;
+import com.hbc.dto.user.ChangePasswordRequestDto;
 import com.hbc.dto.user.UserResponseDto;
 import com.hbc.dto.user.UserUpdateRequestDto;
 import com.hbc.exception.AuthenticationException;
@@ -31,22 +29,10 @@ public class UserApi {
 
 	@Autowired
 	UserService userService;
-	
+
 	@Autowired
 	BirdService birdService;
-	
-	@PostMapping("/img")
-	public ResponseEntity<?> doUpdateImgUrl(@RequestParam(value = "username") String username,
-			@RequestPart("image") MultipartFile img) {
-		try {
-			userService.doUpdateImg(img, username);
-			return ResponseEntity.ok("OK");
-		} catch (Exception e) {
-			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload the file");
-		}
-	}
-	
+
 	@GetMapping("/me")
 	public ResponseEntity<?> doGetProfile(HttpSession session) {
 		UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
@@ -70,6 +56,23 @@ public class UserApi {
 		} catch (CustomException ex) {
 			ErrorResponse errorResponse = new ErrorResponse(ex.getErrorCode(), ex.getErrorMessage());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+		}
+	}
+
+	@PostMapping("/change-pass")
+	public ResponseEntity<?> doChangePass(@RequestBody ChangePasswordRequestDto changePasswordRequestDto,
+			HttpSession session) {
+		try {
+			UserResponseDto currentUser = (UserResponseDto) session.getAttribute(SessionConst.CURRENT_USER);
+			userService.doChangePass(currentUser, changePasswordRequestDto);
+			session.removeAttribute(SessionConst.CURRENT_USER);
+			return ResponseEntity.ok().build();
+		} catch (AuthenticationException ex) {
+			ErrorResponse errorResponse = new ErrorResponse(ex.getErrorCode(), ex.getErrorMessage());
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex);
 		}
 	}
 }

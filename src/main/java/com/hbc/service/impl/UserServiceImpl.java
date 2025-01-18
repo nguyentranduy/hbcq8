@@ -8,10 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.hbc.constant.RoleConst;
 import com.hbc.constant.SessionConst;
+import com.hbc.dto.user.ChangePasswordRequestDto;
 import com.hbc.dto.user.UserRegisterRequestDto;
 import com.hbc.dto.user.UserResponseDto;
 import com.hbc.dto.user.UserUpdateRequestDto;
@@ -21,7 +21,6 @@ import com.hbc.exception.CustomException;
 import com.hbc.exception.register.DuplicatedUserException;
 import com.hbc.repo.UserRepo;
 import com.hbc.service.UserService;
-import com.hbc.util.SaveFile;
 import com.hbc.validator.UserValidator;
 
 import jakarta.persistence.EntityManager;
@@ -87,12 +86,6 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public Boolean doUpdateImg(MultipartFile file, String username) throws Exception {
-		return repo.updateimgUrlByUsername(SaveFile.doSaveFile(file, username), username);
-	}
-
-	@Override
-	@Transactional(rollbackFor = Exception.class)
 	public UserResponseDto doUpdate(UserUpdateRequestDto userUpdateRequestDto, HttpSession session)
 			throws DuplicatedUserException, AuthenticationException {
 
@@ -154,5 +147,25 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public UserResponseDto findByIdAvailable(long userId) {
 		return UserResponseDto.build(repo.findByIdAndIsDeleted(userId, false).get());
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public void doChangePass(UserResponseDto currentUser, ChangePasswordRequestDto dto) throws Exception {
+		if (!currentUser.getUsername().equals(dto.getUsername())) {
+			throw new AuthenticationException("401", "Not have permission.");
+		}
+		
+		Optional<User> currentUserOpt = repo.findByUsernameAndIsDeleted(dto.getUsername(), Boolean.FALSE);
+		if (currentUserOpt.isEmpty()) {
+			throw new AuthenticationException("401-02", "User account not found.");
+		}
+		User user = currentUserOpt.get();
+		if (!bcrypt.matches(dto.getCurrentPass(), user.getPassword())) {
+			throw new AuthenticationException("401", "Incorrect password. Please try again.");
+		}
+
+		String hashPassword = bcrypt.encode(dto.getNewPass());
+		repo.changePassword(hashPassword, user.getId());
 	}
 }
