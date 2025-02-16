@@ -56,7 +56,7 @@ public class TournamentServiceImpl implements TournamentService {
 	public List<TourResponseDto> findAllAvailable() {
 		List<Tournament> tournaments = tourRepo.findByIsDeletedOrderByCreatedAtDesc(false);
 		List<TourResponseDto> response = new ArrayList<>();
-		tournaments.forEach(tour -> response.add(TourResponseDto.build(tour, List.of())));
+		tournaments.forEach(tour -> response.add(TourResponseDto.build(tour, List.of(), 0)));
 		return response;
 	}
 
@@ -67,8 +67,10 @@ public class TournamentServiceImpl implements TournamentService {
 			throw new TourNotFoundException("404", "Giải đua không tồn tại.");
 		}
 		
+		int totalBirds = tourApplyRepo.countTotalBirdsByTourId(tourId);
+		
 		List<TournamentStage> tourStageRaw = tourStageRepo.findByTourId(tourId);
-		return TourResponseDto.build(tournament.get(), tourStageRaw);
+		return TourResponseDto.build(tournament.get(), tourStageRaw, totalBirds);
 	}
 
 	@Override
@@ -91,7 +93,7 @@ public class TournamentServiceImpl implements TournamentService {
 						tourStage.getStartTime(), new Timestamp(System.currentTimeMillis()), currentUser.getId());
 			});
 			List<TournamentStage> tourStageInserted = tourStageRepo.findByTourId(tourResponse.getId());
-			return TourResponseDto.build(tourResponse, tourStageInserted);
+			return TourResponseDto.build(tourResponse, tourStageInserted, 0);
 		} catch (Exception ex) {
 			throw new CustomException("400", ex.getMessage());
 		}
@@ -134,7 +136,7 @@ public class TournamentServiceImpl implements TournamentService {
 			entityManager.clear();
 			Tournament tourEntityUpdated = tourRepo.findById(tourId).get();
 			List<TournamentStage> tourStageInserted = tourStageRepo.findByTourId(tourId);
-			return TourResponseDto.build(tourEntityUpdated, tourStageInserted);
+			return TourResponseDto.build(tourEntityUpdated, tourStageInserted, 0);
 		} catch (Exception ex) {
 			throw new CustomException("400", ex.getMessage());
 		}
