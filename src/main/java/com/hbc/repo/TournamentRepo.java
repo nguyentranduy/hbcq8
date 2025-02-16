@@ -22,12 +22,12 @@ public interface TournamentRepo extends JpaRepository<Tournament, Long> {
 	boolean existsByIdAndIsFinished(long id, boolean isFinished);
 	
 	@Modifying
-	@Query(value = "UPDATE Tournament t SET t.name = :name, t.description = :description, t.birdsNum = :birdsNum,"
+	@Query(value = "UPDATE Tournament t SET t.name = :name, t.description = :description,"
 			+ " t.startDateInfo = :startDateInfo, t.endDateInfo = :endDateInfo,"
 			+ " t.startDateReceive = :startDateReceive, t.endDateReceive = :endDateReceive,"
 			+ " t.updatedAt = :updatedAt, t.updatedBy = :updatedBy"
 			+ " WHERE t.id = :id")
-	int update(@Param("name") String name, @Param("description") String description, @Param("birdsNum") int birdsNum,
+	int update(@Param("name") String name, @Param("description") String description,
 			@Param("startDateInfo") Timestamp startDateInfo, @Param("endDateInfo") Timestamp endDateInfo,
 			@Param("startDateReceive") Timestamp startDateReceive, @Param("endDateReceive") Timestamp endDateReceive,
 			@Param("updatedAt") Timestamp updatedAt, @Param("updatedBy") Long updatedBy, @Param("id") long id);

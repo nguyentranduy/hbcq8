@@ -19,7 +19,6 @@ public class TourRequestDto implements Serializable {
 	private static final long serialVersionUID = -5201269028402956941L;
 	private String name;
 	private String description;
-	private Integer birdsNum;
 	private String imgUrl;
 	@JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss", timezone = "Asia/Ho_Chi_Minh")
 	private Timestamp startDateInfo;

@@ -42,7 +42,6 @@ public class TournamentInfoServiceImpl implements TournamentInfoService {
 			dto.setTourName(item.getName());
 			dto.setStartDateInfo(item.getStartDateInfo());
 			dto.setEndDateInfo(item.getEndDateInfo());
-			dto.setBirdsNum(item.getBirdsNum());
 			dto.setTourApplyStatusCode(tourStatusCode);
 			dto.setMemo(memo);
 			dto.setIsFinished(item.getIsFinished());
@@ -72,7 +71,6 @@ public class TournamentInfoServiceImpl implements TournamentInfoService {
 			dto.setStageIds(stages.stream().map(TournamentStage::getId).toList());
 			dto.setStartDateInfo(item.getStartDateInfo());
 			dto.setEndDateInfo(item.getEndDateInfo());
-			dto.setBirdsNum(item.getBirdsNum());
 			dto.setTourApplyStatusCode(tourStatusCode);
 			dto.setMemo(memo);
 			result.add(dto);

@@ -119,7 +119,7 @@ public class TournamentServiceImpl implements TournamentService {
 		}
 		
 		try {
-			int tourUpdatedCount = tourRepo.update(dto.getName(), dto.getDescription(), dto.getBirdsNum(),
+			int tourUpdatedCount = tourRepo.update(dto.getName(), dto.getDescription(),
 					dto.getStartDateInfo(), dto.getEndDateInfo(), dto.getStartDateReceive(), dto.getEndDateReceive(),
 					new Timestamp(System.currentTimeMillis()), currentUser.getId(), tourId);
 

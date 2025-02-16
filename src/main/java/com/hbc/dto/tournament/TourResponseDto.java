@@ -77,7 +77,6 @@ public class TourResponseDto implements Serializable {
         dto.setId(tour.getId());
         dto.setName(tour.getName());
         dto.setDescription(tour.getDescription());
-        dto.setBirdsNum(tour.getBirdsNum());
         dto.setImgUrl(tour.getImgUrl());
         dto.setStartDateInfo(tour.getStartDateInfo());
         dto.setEndDateInfo(tour.getEndDateInfo());

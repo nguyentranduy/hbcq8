@@ -36,9 +36,6 @@ public class Tournament implements Serializable {
 
 	@Column
 	private String description;
-
-	@Column(name = "birds_num")
-	private Integer birdsNum;
 	
 	@Column(name = "img_url")
 	private String imgUrl;
@@ -77,7 +74,6 @@ public class Tournament implements Serializable {
 		Tournament entity = new Tournament();
 		entity.setName(tourRequestDto.getName());
 		entity.setDescription(tourRequestDto.getDescription());
-		entity.setBirdsNum(tourRequestDto.getBirdsNum());
 		entity.setImgUrl(tourRequestDto.getImgUrl());
 		entity.setStartDateInfo(tourRequestDto.getStartDateInfo());
 		entity.setEndDateInfo(tourRequestDto.getEndDateInfo());
