@@ -28,7 +28,8 @@ public class SessionFilter implements Filter {
 			"/api/v1/tour",
 			"/api/v1/bird",
 			"/api/v1/user-location",
-			"/api/v1/tour-stage");
+			"/api/v1/tour-stage",
+			"/api/v1/change-pass");
 
 	private static final List<String> URL_ADMIN_PATTERNS = List.of(
 			"/api/v1/admin/tournament",
@@ -41,7 +42,8 @@ public class SessionFilter implements Filter {
 			"/api/v1/admin/tour-stage",
 			"/api/v1/admin/ggdrive",
 			"/api/v1/admin/contact-info",
-			"/api/v1/admin/logout");
+			"/api/v1/admin/logout",
+			"/api/v1/admin/about-us");
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
