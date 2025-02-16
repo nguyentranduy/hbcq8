@@ -47,6 +47,7 @@ public class TourResponseDto implements Serializable {
 	private Timestamp updatedAt;
 	private Long updatedBy;
 	private List<TourStageResponse> tourStages;
+	private int totalBirds;
 
 	@Getter
 	@Setter
@@ -71,7 +72,7 @@ public class TourResponseDto implements Serializable {
      * @param entity Tournament entity.
      * @return a response dto.
      */
-    public static TourResponseDto build(Tournament tour, List<TournamentStage> tourStagesRaw) {
+    public static TourResponseDto build(Tournament tour, List<TournamentStage> tourStagesRaw, int totalBirds) {
         TourResponseDto dto = new TourResponseDto();
         dto.setId(tour.getId());
         dto.setName(tour.getName());
@@ -88,6 +89,7 @@ public class TourResponseDto implements Serializable {
         dto.setCreatedBy(tour.getCreatedBy());
         dto.setUpdatedAt(tour.getUpdatedAt());
         dto.setUpdatedBy(tour.getUpdatedBy());
+        dto.setTotalBirds(totalBirds);
         
 		LinkedHashMap<Integer, TournamentStage> sortedtourStages = tourStagesRaw.stream()
 				.sorted(Comparator.comparingInt(TournamentStage::getOrderNo))
