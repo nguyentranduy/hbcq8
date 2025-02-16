@@ -227,7 +227,7 @@ public class TournamentDetailServiceImpl implements TournamentDetailService {
 			ViewRankOfStageDto dto = new ViewRankOfStageDto(i++, item.getEndPointCode(), userLocationName,
 					item.getBird().getCode(), item.getEndPointCoor(), item.getEndPointDist(),
 					item.getEndPointTime(), item.getTourStage().getStartTime(),
-					doubleToHHMMSS(totalTime), item.getEndPointSpeed());
+					doubleToHHMMSS(totalTime), item.getEndPointSpeed(), item.getEndPointKey());
 			result.add(dto);
 		}
 		return result;

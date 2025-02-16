@@ -28,4 +28,5 @@ public class ViewRankOfStageDto implements Serializable {
 	private Timestamp startTime;
 	private String totalTime;
 	private double speed;
+	private String pointKey;
 }
