@@ -162,12 +162,11 @@ public class TournamentApplyServiceImpl implements TournamentApplyService {
 				String statusCode = String.valueOf(item[4]);
 				String memo = (String) item[5];
 				Timestamp createdAt = (Timestamp) item[6];
-				int birdsNum = tourRepo.findBirdsNumById(dtoTourId);
 
 				List<TournamentStage> tourStages = tourStageRepo.findByTourId(dtoTourId);
 				
 				AdminTourApplyInfoDto dto = AdminTourApplyInfoDto.build(dtoTourId, birdCodes, requesterId, requesterName,
-						approverId, approverName, statusCode, memo, createdAt, birdsNum, tourStages);
+						approverId, approverName, statusCode, memo, createdAt, tourStages);
 				result.add(dto);
 			});
 			return result;
@@ -293,12 +292,11 @@ public class TournamentApplyServiceImpl implements TournamentApplyService {
 				String statusCode = String.valueOf(item[4]);
 				String memo = (String) item[5];
 				Timestamp createdAt = (Timestamp) item[6];
-				int birdsNum = tourRepo.findBirdsNumById(dtoTourId);
 				
 				List<TournamentStage> tourStages = tourStageRepo.findByTourId(dtoTourId);
 				
 				AdminTourApplyInfoDto dto = AdminTourApplyInfoDto.build(dtoTourId, birdCodes, requesterId, requesterName,
-						approverId, approverName, statusCode, memo, createdAt, birdsNum, tourStages);
+						approverId, approverName, statusCode, memo, createdAt, tourStages);
 				result.add(dto);
 			});
 			return result;

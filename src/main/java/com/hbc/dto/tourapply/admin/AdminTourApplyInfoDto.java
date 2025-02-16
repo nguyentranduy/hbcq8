@@ -27,7 +27,6 @@ public class AdminTourApplyInfoDto implements Serializable {
 	private String statusCode;
 	private String memo;
 	private Timestamp createdAt;
-	private int birdsNum;
 	private List<TourStageInfo> tourStages;
 
 	@Data
@@ -43,7 +42,7 @@ public class AdminTourApplyInfoDto implements Serializable {
 	
 	public static AdminTourApplyInfoDto build (long tourId, List<String> birdCodes, long requesterId,
 			String requesterName, Long approverId, String approverName, String statusCode, String memo,
-			Timestamp createdAt, int birdsNum, List<TournamentStage> tourStagesRaw) {
+			Timestamp createdAt, List<TournamentStage> tourStagesRaw) {
 		AdminTourApplyInfoDto result = new AdminTourApplyInfoDto();
 		result.tourId = tourId;
 		result.birdCodes = birdCodes;
@@ -54,7 +53,6 @@ public class AdminTourApplyInfoDto implements Serializable {
 		result.statusCode = statusCode;
 		result.memo = memo;
 		result.createdAt = createdAt;
-		result.birdsNum = birdsNum;
 		
 		List<TourStageInfo> tourStagesInfo = new ArrayList<>();
 		tourStagesRaw.forEach(i -> {
