@@ -157,7 +157,7 @@ public class TournamentServiceImpl implements TournamentService {
 			throw new CannotDeleteTourActivedException("400", "Không thể xóa giải đua đang mở.");
 		}
 		
-		if (tourApplyRepo.existsByTourIdAndStatusCodeNot(id, TourApplyStatusCodeConst.STATUS_CODE_WAITING)) {
+		if (tourApplyRepo.existsByTourIdAndStatusCode(id, TourApplyStatusCodeConst.STATUS_CODE_WAITING)) {
 			throw new CannotDeleteTourActivedException("400", "Không thể xóa giải đua đang có đơn chờ phê duyệt.");
 		}
 

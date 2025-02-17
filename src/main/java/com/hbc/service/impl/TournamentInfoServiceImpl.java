@@ -1,5 +1,9 @@
 package com.hbc.service.impl;
 
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +27,7 @@ public class TournamentInfoServiceImpl implements TournamentInfoService {
 
 	@Autowired
 	TournamentApplyRepo tourApplyRepo;
-	
+
 	@Autowired
 	TournamentStageRepo tourStageRepo;
 
@@ -37,7 +41,7 @@ public class TournamentInfoServiceImpl implements TournamentInfoService {
 			long tourId = item.getId();
 			String tourStatusCode = tourApplyRepo.findStatusCodeByTourIdAndRequesterId(tourId, requesterId);
 			String memo = tourApplyRepo.findMemoByTourIdAndRequesterId(tourId, requesterId);
-			
+
 			dto.setTourId(tourId);
 			dto.setTourName(item.getName());
 			dto.setStartDateInfo(item.getStartDateInfo());
@@ -45,6 +49,16 @@ public class TournamentInfoServiceImpl implements TournamentInfoService {
 			dto.setTourApplyStatusCode(tourStatusCode);
 			dto.setMemo(memo);
 			dto.setIsFinished(item.getIsFinished());
+
+			ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
+			Instant instant = zonedDateTime.toInstant();
+			Timestamp now = Timestamp.from(instant);
+			if (now.before(item.getStartDateReceive()) || now.after(item.getEndDateReceive())) {
+				dto.setIsActivedForRegister(false);
+			} else {
+				dto.setIsActivedForRegister(true);
+			}
+
 			result.add(dto);
 		});
 
@@ -56,7 +70,7 @@ public class TournamentInfoServiceImpl implements TournamentInfoService {
 		List<Long> tourIds = tourApplyRepo.findByRequesterIdAndStatusCode(requesterId,
 				TourApplyStatusCodeConst.STATUS_CODE_APPROVED);
 		List<Tournament> rawData = tourRepo.findByIdInAndIsDeletedOrderByCreatedAtDesc(tourIds, false);
-		
+
 		List<TournamentInfoDto> result = new ArrayList<>();
 
 		rawData.forEach(item -> {
@@ -64,7 +78,7 @@ public class TournamentInfoServiceImpl implements TournamentInfoService {
 			long tourId = item.getId();
 			String tourStatusCode = tourApplyRepo.findStatusCodeByTourIdAndRequesterId(tourId, requesterId);
 			String memo = tourApplyRepo.findMemoByTourIdAndRequesterId(tourId, requesterId);
-			
+
 			dto.setTourId(tourId);
 			dto.setTourName(item.getName());
 			List<TournamentStage> stages = tourStageRepo.findByTourId(tourId);
@@ -73,9 +87,19 @@ public class TournamentInfoServiceImpl implements TournamentInfoService {
 			dto.setEndDateInfo(item.getEndDateInfo());
 			dto.setTourApplyStatusCode(tourStatusCode);
 			dto.setMemo(memo);
+
+			ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh"));
+			Instant instant = zonedDateTime.toInstant();
+			Timestamp now = Timestamp.from(instant);
+			if (now.before(item.getStartDateReceive()) || now.after(item.getEndDateReceive())) {
+				dto.setIsActivedForRegister(false);
+			} else {
+				dto.setIsActivedForRegister(true);
+			}
+
 			result.add(dto);
 		});
-		
+
 		return result;
 	}
 }

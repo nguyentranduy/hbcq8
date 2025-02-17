@@ -25,7 +25,7 @@ import com.hbc.util.VNCharUtil;
 
 @Service
 public class AdminPostServiceImpl implements AdminPostService {
-	
+
 	private static final int MAX_SLUG_LENGTH = 250;
 
 	@Autowired
@@ -54,14 +54,14 @@ public class AdminPostServiceImpl implements AdminPostService {
 		if (requestDto.getTitle().length() > 255) {
 			throw new InvalidTitleException("400", "Tên bài viết không được dài quá 255 ký tự.");
 		}
-		
+
 		String slug = generateSlug(requestDto.getTitle());
-		
+
 		Timestamp createdAt = new Timestamp(System.currentTimeMillis());
 		postRepo.insert(requestDto.getCategoryId(), requestDto.getTitle(), requestDto.getContent(), slug,
 				requestDto.getImgUrl(), createdAt, currentUserId, false);
 	}
-	
+
 	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public void update(AdminPostRequestUpdateDto requestDto, long currentUserId) throws Exception {
@@ -73,17 +73,20 @@ public class AdminPostServiceImpl implements AdminPostService {
 		if (requestDto.getTitle().length() > 255) {
 			throw new InvalidTitleException("400", "Tên bài viết không được dài quá 255 ký tự.");
 		}
-		
+
 		post.setContent(requestDto.getContent());
 		post.setImgUrl(requestDto.getImgUrl());
 		post.setTitle(requestDto.getTitle());
-		String slug = generateSlug(requestDto.getTitle());
+		String slug = post.getSlug();
+		if (!post.getTitle().equalsIgnoreCase(requestDto.getTitle())) {
+			slug = generateSlug(requestDto.getTitle());
+		}
 
 		Timestamp updatedAt = new Timestamp(System.currentTimeMillis());
 		postRepo.update(requestDto.getTitle(), requestDto.getContent(), requestDto.getImgUrl(), slug, updatedAt,
 				currentUserId, requestDto.getId());
 	}
-	
+
 	private String generateSlug(String title) {
 		String slug = Normalizer.normalize(title.toLowerCase(), Normalizer.Form.NFD);
 		slug = slug.replaceAll("[^\\p{L}\\d\\s:]", "");

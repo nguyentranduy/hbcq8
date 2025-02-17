@@ -30,8 +30,14 @@ public class TournamentInfoDto implements Serializable {
 	private String memo;
 	@JsonProperty("isFinished")
 	private boolean isFinished;
+	@JsonProperty("isActivedForRegister")
+	private boolean isActivedForRegister;
 
 	public void setIsFinished(boolean isFinished) {
 		this.isFinished = isFinished;
+	}
+	
+	public void setIsActivedForRegister(boolean isActivedForRegister) {
+		this.isActivedForRegister = isActivedForRegister;
 	}
 }

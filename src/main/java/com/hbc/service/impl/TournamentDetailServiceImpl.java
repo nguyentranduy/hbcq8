@@ -135,7 +135,7 @@ public class TournamentDetailServiceImpl implements TournamentDetailService {
 	private boolean checkSubmitTime(Timestamp timeBefore, Timestamp timeAfter) {
 		long diffInMillis = timeAfter.getTime() - timeBefore.getTime();
         long diffInMinutes = TimeUnit.MILLISECONDS.toMinutes(diffInMillis);
-        return diffInMinutes <= 60;
+        return diffInMinutes <= 180;
 	}
 
 //	private void validatePointKey(String pointKey) {
